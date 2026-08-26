@@ -1,0 +1,7 @@
+ID_Setor;Nome_Setor;Gestor_Responsavel;Email_Gestor
+sec_multi;Equipe Multi;Dra. Patricia Lima (Coordenadora Fisioterapia);patricia.lima@hospital.com.br
+sec_enfermagem;Enfermagem / Bloco Cirurgico;Enf. Roberto Santos (Gerente Enfermagem);roberto.santos@hospital.com.br
+sec_higienizacao;Higienizacao e Biosseguranca;Ingrid Mendes (Supervisora Operacoes);ingrid.mendes@hospital.com.br
+sec_eng_clinica;Engenharia Clinica & Manutencao;Eng. Fernando Souza (Diretor Tecnico);fernando.souza@hospital.com.br
+sec_nutricao;Nutricao & Dietetica;Nut. Camila Barbosa (Gestora SND);camila.barbosa@hospital.com.br
+sec_laboratorio;Laboratorio & Diagnosticos;Dr. Marcelo Ribeiro (Diretor Medico);marcelo.ribeiro@hospital.com.br
