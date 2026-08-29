@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Evaluation, EvaluationAnswers, ScoreValue, Sector, Supplier, User } from '../types';
-import { EVALUATION_QUESTIONS } from '../services/questions';
-import { calculateAverages, getMetaBadgeDetails } from '../services/evaluationCalculation';
+import { Evaluation, Sector, Supplier, User } from '../types';
+import { ArchetypesService } from '../services/archetypesService';
 import { 
+  Building2, 
+  Calendar, 
+  UserCheck, 
+  CheckCircle2, 
   AlertTriangle, 
-  Save, 
-  ArrowLeft, 
   HelpCircle, 
-  FilePlus, 
-  Calculator,
-  Building2
+  Save, 
+  X,
+  FileSpreadsheet,
+  Layers
 } from 'lucide-react';
 
 interface EvaluationFormProps {
@@ -31,475 +33,552 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   onSave,
   onCancel
 }) => {
-  // Form State
-  const [fornecedorId, setFornecedorId] = useState<string>(
-    initialEvaluation?.fornecedorId || preselectedSupplierId || (suppliers[0]?.id || '')
+  // Selection state
+  const [selectedSupplierId, setSelectedSupplierId] = useState<string>(
+    initialEvaluation?.fornecedorId || preselectedSupplierId || suppliers[0]?.id || ''
   );
-  const [setorId, setSetorId] = useState<string>(
-    initialEvaluation?.setorId || (suppliers.find(s => s.id === (preselectedSupplierId || suppliers[0]?.id))?.setorResponsavelId || sectors[0]?.id || '')
-  );
-  const [ano, setAno] = useState<number>(initialEvaluation?.ano || 2026);
-  const [gestorAvaliador, setGestorAvaliador] = useState<string>(
-    initialEvaluation?.gestorAvaliador || currentUser?.nome || 'Gestor da Diretoria Operacional'
+  
+  const [selectedYear, setSelectedYear] = useState<number>(
+    initialEvaluation?.ano || 2026
   );
 
-  const [respostas, setRespostas] = useState<EvaluationAnswers>(() => {
+  // Selected Supplier & Sector
+  const selectedSupplier = useMemo(() => {
+    return suppliers.find(s => s.id === selectedSupplierId);
+  }, [suppliers, selectedSupplierId]);
+
+  const selectedSector = useMemo(() => {
+    if (!selectedSupplier) return undefined;
+    return sectors.find(sec => sec.id === selectedSupplier.setorResponsavelId);
+  }, [sectors, selectedSupplier]);
+
+  // Detect Archetype for selected supplier
+  const detectedArchetype = useMemo(() => {
+    if (!selectedSupplier) return 'ARQUETIPO_2_MANUTENCAO_PREDIAL';
+    return ArchetypesService.detectArchetype(
+      selectedSupplier.setorResponsavelId,
+      selectedSupplier.categoriaServico
+    );
+  }, [selectedSupplier]);
+
+  // Load Criteria based on detected Archetype
+  const legalCriteria = useMemo(() => {
+    return ArchetypesService.getLegalCriteria(detectedArchetype);
+  }, [detectedArchetype]);
+
+  const { behavioral: behavioralCriteria, quality: qualityCriteria } = useMemo(() => {
+    return ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
+  }, [detectedArchetype]);
+
+  // Answers State: Map of criterion ID -> score (1..5 or 'NA')
+  const [respostas, setRespostas] = useState<Record<string, number | 'NA'>>(() => {
     if (initialEvaluation?.respostas) {
       return initialEvaluation.respostas;
     }
-    // Default all questions to score 5
-    const initial: EvaluationAnswers = {};
-    EVALUATION_QUESTIONS.forEach(q => {
-      initial[q.id] = 5;
-    });
-    return initial;
+    return {};
   });
 
-  const [observacoesLegais, setObservacoesLegais] = useState<string>(initialEvaluation?.observacoesLegais || '');
-  const [observacoesComportamentais, setObservacoesComportamentais] = useState<string>(initialEvaluation?.observacoesComportamentais || '');
-  const [observacoesQualidade, setObservacoesQualidade] = useState<string>(initialEvaluation?.observacoesQualidade || '');
-  const [parecerGeral, setParecerGeral] = useState<string>(initialEvaluation?.parecerGeral || '');
+  // Observations & Feedback
+  const [observacoesLegais, setObservacoesLegais] = useState(initialEvaluation?.observacoesLegais || '');
+  const [observacoesComportamentais, setObservacoesComportamentais] = useState(initialEvaluation?.observacoesComportamentais || '');
+  const [observacoesQualidade, setObservacoesQualidade] = useState(initialEvaluation?.observacoesQualidade || '');
+  const [parecerGeral, setParecerGeral] = useState(initialEvaluation?.parecerGeral || '');
 
-  // Auto-update Sector when Supplier changes
+  // Reset or initialize default answers when supplier or archetype changes
   useEffect(() => {
-    const sup = suppliers.find(s => s.id === fornecedorId);
-    if (sup && sup.setorResponsavelId) {
-      setSetorId(sup.setorResponsavelId);
+    if (initialEvaluation && initialEvaluation.fornecedorId === selectedSupplierId) {
+      setRespostas(initialEvaluation.respostas);
+      return;
     }
-  }, [fornecedorId, suppliers]);
 
-  // Live Averages Calculation
-  const calcResults = useMemo(() => {
-    return calculateAverages(respostas);
-  }, [respostas]);
+    const defaultResps: Record<string, number | 'NA'> = {};
+    legalCriteria.forEach(c => { defaultResps[c.id] = 5; });
+    behavioralCriteria.forEach(c => { defaultResps[c.id] = 5; });
+    qualityCriteria.forEach(c => { defaultResps[c.id] = 5; });
+    setRespostas(defaultResps);
+  }, [selectedSupplierId, legalCriteria, behavioralCriteria, qualityCriteria, initialEvaluation]);
 
-  const badgeDetails = getMetaBadgeDetails(calcResults.statusMeta, calcResults.mediaGeral);
+  // Calculate live block averages
+  const calculateBlockAverage = (criteriaList: { id: string }[]): number => {
+    let sum = 0;
+    let count = 0;
 
-  // Score option button handler
-  const handleScoreSelect = (questionId: string, score: ScoreValue) => {
+    criteriaList.forEach(c => {
+      const val = respostas[c.id];
+      if (typeof val === 'number' && !isNaN(val)) {
+        sum += val;
+        count++;
+      }
+    });
+
+    if (count === 0) return 0;
+    return Number((sum / count).toFixed(2));
+  };
+
+  const mediaLegais = calculateBlockAverage(legalCriteria);
+  const mediaComportamentais = calculateBlockAverage(behavioralCriteria);
+  const mediaQualidade = calculateBlockAverage(qualityCriteria);
+
+  // Média Geral Anual (Média simples das médias dos 3 blocos válidos)
+  const mediaGeral = useMemo(() => {
+    const validBlocks = [mediaLegais, mediaComportamentais, mediaQualidade].filter(m => m > 0);
+    if (validBlocks.length === 0) return 0;
+    const avg = validBlocks.reduce((acc, curr) => acc + curr, 0) / validBlocks.length;
+    return Number(avg.toFixed(2));
+  }, [mediaLegais, mediaComportamentais, mediaQualidade]);
+
+  // Status de Meta (< 4.00 exige Plano de Ação 5W2H)
+  const necessitaPlanoAcao = mediaGeral > 0 && mediaGeral < 4.00;
+  const statusMeta = mediaGeral >= 4.00 ? 'DENTRO_DA_META' : mediaGeral >= 3.00 ? 'ABAIXO_DA_META' : 'CRITICO';
+
+  const handleScoreChange = (criterionId: string, score: number | 'NA') => {
     setRespostas(prev => ({
       ...prev,
-      [questionId]: score
+      [criterionId]: score
     }));
   };
 
-  // Submit Handler
-  const handleSubmit = (e: React.FormEvent, createActionPlan: boolean = false) => {
+  const handleSubmit = (e: React.FormEvent, openActionPlanModalDirectly: boolean = false) => {
     e.preventDefault();
 
-    const evaluationData: Evaluation = {
+    if (!selectedSupplier) {
+      alert('Por favor, selecione um fornecedor válido.');
+      return;
+    }
+
+    const newEval: Evaluation = {
       id: initialEvaluation?.id || `eval_${Date.now()}`,
-      fornecedorId,
-      setorId,
-      ano,
-      dataAvaliacao: initialEvaluation?.dataAvaliacao || new Date().toISOString().split('T')[0],
-      gestorAvaliador,
-      emailAvaliador: initialEvaluation?.emailAvaliador || currentUser?.email,
+      fornecedorId: selectedSupplier.id,
+      setorId: selectedSupplier.setorResponsavelId,
+      ano: selectedYear,
+      dataAvaliacao: new Date().toISOString().split('T')[0],
+      gestorAvaliador: currentUser?.nome || selectedSector?.gestorResponsavel || 'Gestor Responsável',
+      emailAvaliador: currentUser?.email || selectedSector?.emailGestor || 'gestor@vilanovastar.com.br',
       respostas,
       observacoesLegais,
       observacoesComportamentais,
       observacoesQualidade,
-      parecerGeral,
-      mediaLegais: calcResults.mediaLegais,
-      mediaComportamentais: calcResults.mediaComportamentais,
-      mediaQualidade: calcResults.mediaQualidade,
-      mediaGeral: calcResults.mediaGeral,
-      statusMeta: calcResults.statusMeta,
-      necessitaPlanoAcao: calcResults.necessitaPlanoAcao,
-      statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO',
-      dataCiencia: initialEvaluation?.dataCiencia,
-      nomeSignatario: initialEvaluation?.nomeSignatario,
-      cargoSignatario: initialEvaluation?.cargoSignatario,
-      parecerFornecedor: initialEvaluation?.parecerFornecedor,
-      assinaturaBase64: initialEvaluation?.assinaturaBase64
+      parecerGeral: parecerGeral || `Avaliação Anual ${selectedYear} referente ao contrato ${selectedSupplier.numeroContrato}. Média Geral: ${mediaGeral.toFixed(2)}.`,
+      mediaLegais,
+      mediaComportamentais,
+      mediaQualidade,
+      mediaGeral,
+      statusMeta,
+      necessitaPlanoAcao,
+      statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO'
     };
 
-    onSave(evaluationData, createActionPlan);
+    onSave(newEval, openActionPlanModalDirectly);
   };
 
-  const selectedSupplier = suppliers.find(s => s.id === fornecedorId);
-  const selectedSectorObj = sectors.find(s => s.id === setorId);
+  const archetypeLabelMap: Record<string, string> = {
+    'ARQUETIPO_1_EQUIPAMENTO_MEDICO': 'Arquétipo 1: Fabricante / Equipamento Médico Especializado',
+    'ARQUETIPO_1B_REAGENTES_LABORATORIO': 'Arquétipo 1B: Reagentes e Insumos de Laboratório',
+    'ARQUETIPO_2_MANUTENCAO_PREDIAL': 'Arquétipo 2: Manutenção Predial / Múltiplas Especialidades',
+    'ARQUETIPO_3_ESTACIONAMENTO_FROTA': 'Arquétipo 3: Estacionamento, Valet e Frota',
+    'ARQUETIPO_4_ELEVADORES': 'Arquétipo 4: Manutenção Especializada de Elevadores',
+    'ARQUETIPO_5_GASES_MEDICINAIS': 'Arquétipo 5: Gases Medicinais e Criogenia',
+    'ARQUETIPO_6_CLIMATIZACAO_PMOC': 'Arquétipo 6: Climatização e PMOC Hospitalar',
+    'ARQUETIPO_7_MAO_DE_OBRA_CLINICA': 'Arquétipo 7: Mão de Obra Clínica / Assistencial (Equipe Multi)',
+    'ARQUETIPO_8_VIGILANCIA_SEGURANCA': 'Arquétipo 8: Vigilância e Segurança Patrimonial',
+    'ARQUETIPO_9_RESPONSABILIDADE_TECNICA_HEMODIALISE': 'Arquétipo 9: Responsabilidade Técnica / Hemodiálise',
+    'ARQUETIPO_10_SERVICO_AGENDADO_SLA': 'Arquétipo 10: Serviços Pontuais Agendados por SLA'
+  };
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-8 pb-12">
-      {/* Top Bar Navigation */}
-      <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar
-        </button>
-
-        <h2 className="text-xl font-bold text-slate-900">
-          {initialEvaluation ? 'Editar Avaliação Anual' : 'Nova Avaliação Anual de Desempenho'}
-        </h2>
-      </div>
-
-      {/* Card 1: Identificação do Contrato */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
-        <div className="border-b border-slate-100 pb-3 flex items-center space-x-2">
-          <Building2 className="w-5 h-5 text-hospital-600" />
-          <h3 className="font-bold text-slate-800 text-base">Identificação da Avaliação Anual e Contrato</h3>
+    <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-8 max-w-5xl mx-auto">
+      {/* Top Header */}
+      <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="bg-hospital-500/20 text-hospital-200 text-xs font-bold px-2.5 py-0.5 rounded border border-hospital-400/30 uppercase">
+              Formulário Oficial SLA
+            </span>
+            <span className="text-slate-400 text-xs font-medium">| Avaliação Anual de Desempenho</span>
+          </div>
+          <h2 className="text-2xl font-bold mt-1 text-white">
+            {initialEvaluation ? 'Editar Avaliação Anual de Contrato' : 'Nova Avaliação Anual de Contrato'}
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Fornecedor */}
+        <div className="flex items-center space-x-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            className="inline-flex items-center px-5 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg transition"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            Salvar Avaliação
+          </button>
+        </div>
+      </div>
+
+      {/* Bloco de Seleção de Fornecedor, Setor e Ano */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+        <h3 className="font-bold text-slate-900 text-sm flex items-center">
+          <Building2 className="w-4 h-4 mr-2 text-hospital-600" />
+          Dados do Contrato e Fornecedor Avaliado
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Fornecedor / Prestador de Serviço *
-            </label>
+            <label className="block font-bold text-slate-700 mb-1">Selecione o Fornecedor / Empresa *</label>
             <select
-              value={fornecedorId}
-              onChange={(e) => setFornecedorId(e.target.value)}
-              required
-              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500 font-medium"
+              value={selectedSupplierId}
+              onChange={(e) => setSelectedSupplierId(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-300 text-slate-900 font-semibold rounded-xl p-3 focus:ring-2 focus:ring-hospital-500"
             >
-              {suppliers.map(s => (
-                <option key={s.id} value={s.id}>
-                  {s.nomeFantasia} ({s.razaoSocial})
+              {suppliers.map((sup) => (
+                <option key={sup.id} value={sup.id}>
+                  {sup.nomeFantasia} ({sup.numeroContrato})
                 </option>
               ))}
             </select>
-            {selectedSupplier && (
-              <p className="text-xs text-slate-500 mt-1">CNPJ: {selectedSupplier.cnpj} | Contrato: {selectedSupplier.numeroContrato}</p>
-            )}
           </div>
 
-          {/* Setor Responsável */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Setor Responsável no Hospital *
-            </label>
-            <select
-              value={setorId}
-              onChange={(e) => setSetorId(e.target.value)}
-              required
-              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500 font-medium"
-            >
-              {sectors.map(sec => (
-                <option key={sec.id} value={sec.id}>{sec.nome}</option>
-              ))}
-            </select>
-            {selectedSectorObj && (
-              <p className="text-xs text-slate-500 mt-1">Gestor do Setor: {selectedSectorObj.gestorResponsavel}</p>
-            )}
+            <label className="block font-bold text-slate-700 mb-1">Setor Hospitalar Responsável</label>
+            <input
+              type="text"
+              readOnly
+              value={selectedSector?.nome || 'Setor Responsável'}
+              className="w-full bg-slate-100 border border-slate-200 text-slate-700 font-bold rounded-xl p-3"
+            />
           </div>
 
-          {/* Ano */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Ano do Ciclo de Avaliação *
-            </label>
+            <label className="block font-bold text-slate-700 mb-1">Ano do Ciclo de Avaliação *</label>
             <select
-              value={ano}
-              onChange={(e) => setAno(Number(e.target.value))}
-              required
-              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500 font-bold text-hospital-700"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="w-full bg-slate-50 border border-slate-300 text-slate-900 font-bold rounded-xl p-3 focus:ring-2 focus:ring-hospital-500"
             >
-              <option value={2026}>2026 (Ciclo Anual)</option>
-              <option value={2025}>2025 (Ciclo Anual)</option>
-              <option value={2024}>2024 (Ciclo Anual)</option>
+              <option value={2026}>Ano 2026 (Ciclo Atual)</option>
+              <option value={2025}>Ano 2025</option>
+              <option value={2024}>Ano 2024</option>
             </select>
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Nome do Gestor Avaliador</label>
-          <input
-            type="text"
-            value={gestorAvaliador}
-            onChange={(e) => setGestorAvaliador(e.target.value)}
-            required
-            placeholder="Ex: Dra. Patricia Lima / Enf. Roberto Santos"
-            className="w-full md:w-1/2 bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500"
-          />
-        </div>
-      </div>
-
-      {/* Painel Flutuante / Fixo de Médias em Tempo Real */}
-      <div className={`p-5 rounded-xl border shadow-md transition-all ${
-        calcResults.mediaGeral >= 4.0 
-          ? 'bg-emerald-50 border-emerald-300' 
-          : calcResults.mediaGeral >= 3.0 
-          ? 'bg-amber-50 border-amber-300' 
-          : 'bg-rose-50 border-rose-300'
-      }`}>
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2">
-              <Calculator className="w-5 h-5 text-slate-800" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">Resumo das Médias em Tempo Real</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-4 mt-2">
-              <span className="text-xs text-slate-700">
-                Aspectos Legais: <strong className="text-slate-900">{calcResults.mediaLegais.toFixed(2)}</strong>
-              </span>
-              <span className="text-slate-300">|</span>
-              <span className="text-xs text-slate-700">
-                Aspectos Comportamentais: <strong className="text-slate-900">{calcResults.mediaComportamentais.toFixed(2)}</strong>
-              </span>
-              <span className="text-slate-300">|</span>
-              <span className="text-xs text-slate-700">
-                Qualidade & Segurança: <strong className="text-slate-900">{calcResults.mediaQualidade.toFixed(2)}</strong>
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4 border-t lg:border-t-0 pt-3 lg:pt-0 border-slate-200">
-            <div className="text-right">
-              <span className="block text-xs font-medium text-slate-600">MÉDIA GERAL</span>
-              <span className={`text-3xl font-extrabold ${badgeDetails.textColor}`}>
-                {calcResults.mediaGeral.toFixed(2)}
-              </span>
-            </div>
-            <div className={`px-3 py-1.5 rounded-lg border text-xs font-extrabold ${badgeDetails.colorClass}`}>
-              {badgeDetails.label}
-            </div>
-          </div>
-        </div>
-
-        {/* Gatilho Automático: Alerta de Plano de Ação se nota < 4.0 */}
-        {calcResults.necessitaPlanoAcao && (
-          <div className="mt-4 p-4 bg-rose-100 border border-rose-300 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3 animate-pulse">
-            <div className="flex items-center space-x-3">
-              <AlertTriangle className="w-6 h-6 text-rose-600 flex-shrink-0" />
+        {/* Card do Fornecedor Selecionado com Indicador de Arquétipo Automático */}
+        {selectedSupplier && (
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h4 className="font-extrabold text-rose-900 text-sm">PLANO DE AÇÃO NECESSÁRIO (Média &lt; 4,00)</h4>
-                <p className="text-xs text-rose-800">
-                  A média geral atingida ({calcResults.mediaGeral.toFixed(2)}) ficou abaixo da meta aceitável (4,00). É obrigatória a abertura de plano de ação de melhoria.
-                </p>
+                <strong className="text-slate-900 text-sm font-bold block">{selectedSupplier.razaoSocial}</strong>
+                <p className="text-slate-500">{selectedSupplier.categoriaServico} | CNPJ: {selectedSupplier.cnpj}</p>
+              </div>
+
+              {/* Badge do Arquétipo Detectado */}
+              <div className="inline-flex items-center px-3 py-1 bg-teal-900/10 border border-teal-300 text-teal-950 font-bold rounded-lg space-x-1.5">
+                <Layers className="w-4 h-4 text-teal-600" />
+                <span>{archetypeLabelMap[detectedArchetype] || 'Arquétipo Específico'}</span>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={(e) => handleSubmit(e, true)}
-              className="inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-lg shadow-sm transition whitespace-nowrap self-end md:self-center"
-            >
-              <FilePlus className="w-4 h-4 mr-1.5" />
-              Salvar e Configurar Plano de Ação
-            </button>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200/80 text-[11px] text-slate-600">
+              <div>Contrato: <strong className="text-slate-800">{selectedSupplier.numeroContrato}</strong></div>
+              <div>Vigência: <strong className="text-slate-800">{selectedSupplier.vigenciaFim}</strong></div>
+              <div>Avaliador: <strong className="text-slate-800">{currentUser?.nome || selectedSector?.gestorResponsavel}</strong></div>
+              <div>E-mail: <strong className="text-slate-800">{currentUser?.email || selectedSector?.emailGestor}</strong></div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* --- GRUPO 1: ASPECTOS LEGAIS --- */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden space-y-4">
-        <div className="bg-slate-800 text-white p-4 flex items-center justify-between">
+      {/* Escala de Pontuação explicativa */}
+      <div className="bg-slate-900 text-slate-200 p-4 rounded-xl text-xs space-y-1">
+        <strong className="text-teal-300 font-bold block">Escala de Avaliação (1 a 5 e NA):</strong>
+        <div className="flex flex-wrap items-center gap-3 text-[11px]">
+          <span><strong className="text-emerald-400">5</strong> = Ótimo / Sempre / Sim</span>
+          <span><strong className="text-teal-400">4</strong> = Bom</span>
+          <span><strong className="text-amber-400">3</strong> = Regular / Às vezes</span>
+          <span><strong className="text-orange-400">2</strong> = Ruim</span>
+          <span><strong className="text-rose-400">1</strong> = Péssimo / Nunca / Não</span>
+          <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-400"><strong>NA</strong> = Não se aplica (Excluído da média)</span>
+        </div>
+      </div>
+
+      {/* BLOCO 1: ASPECTOS LEGAIS (Dinâmico pelo Arquétipo) */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h3 className="font-bold text-base">1. ASPECTOS LEGAIS</h3>
-            <p className="text-xs text-slate-300">Regulamentações, certificações, habilitação profissional, EPIs e regimento interno</p>
+            <h3 className="font-bold text-slate-900 text-sm">1. ASPECTOS LEGAIS & REGULATÓRIOS</h3>
+            <p className="text-xs text-slate-500">Conformidade técnica, licenças, normas e obrigações contratuais específicas do arquétipo</p>
           </div>
           <div className="text-right">
-            <span className="text-xs uppercase text-slate-400 block">Média do Bloco</span>
-            <span className="text-xl font-extrabold text-teal-400">{calcResults.mediaLegais.toFixed(2)}</span>
+            <span className="text-xs text-slate-400 block">Média do Bloco</span>
+            <span className={`text-base font-extrabold ${mediaLegais >= 4 ? 'text-emerald-600' : 'text-amber-600'}`}>
+              {mediaLegais.toFixed(2)}
+            </span>
           </div>
         </div>
 
-        <div className="p-6 divide-y divide-slate-100">
-          {EVALUATION_QUESTIONS.filter(q => q.category === 'LEGAIS').map((q, index) => (
-            <QuestionRow
-              key={q.id}
-              questionNumber={index + 1}
-              question={q}
-              currentValue={respostas[q.id]}
-              onSelect={(val) => handleScoreSelect(q.id, val)}
-            />
-          ))}
+        <div className="space-y-3">
+          {legalCriteria.map((c, index) => (
+            <div key={c.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <span className="text-xs text-slate-800 font-medium leading-relaxed">
+                <strong className="text-slate-400 mr-2">{index + 1}.</strong> {c.pergunta}
+              </span>
 
-          {/* Campo de Observações do Bloco Legais */}
-          <div className="pt-4 mt-4">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Observações / Justificativas dos Aspectos Legais
-            </label>
-            <textarea
-              rows={2}
-              value={observacoesLegais}
-              onChange={(e) => setObservacoesLegais(e.target.value)}
-              placeholder="Descreva detalhes, apontamentos de auditoria ou ressalvas dos aspectos legais..."
-              className="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500"
-            />
-          </div>
+              {/* Botões de nota 5..1 e NA */}
+              <div className="flex items-center space-x-1 flex-shrink-0">
+                {[5, 4, 3, 2, 1].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleScoreChange(c.id, val)}
+                    className={`w-8 h-8 rounded-lg text-xs font-extrabold transition ${
+                      respostas[c.id] === val
+                        ? val >= 4 ? 'bg-emerald-600 text-white shadow' : val === 3 ? 'bg-amber-500 text-white shadow' : 'bg-rose-600 text-white shadow'
+                        : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleScoreChange(c.id, 'NA')}
+                  className={`px-2.5 h-8 rounded-lg text-[11px] font-bold transition ${
+                    respostas[c.id] === 'NA'
+                      ? 'bg-slate-800 text-white shadow'
+                      : 'bg-white border border-slate-300 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  NA
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Observações dos Aspectos Legais (opcional)</label>
+          <textarea
+            rows={2}
+            value={observacoesLegais}
+            onChange={(e) => setObservacoesLegais(e.target.value)}
+            placeholder="Comentários sobre documentação, seguros ou EPIs..."
+            className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl p-3"
+          />
         </div>
       </div>
 
-      {/* --- GRUPO 2: ASPECTOS COMPORTAMENTAIS --- */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden space-y-4">
-        <div className="bg-slate-800 text-white p-4 flex items-center justify-between">
+      {/* BLOCO 2: ASPECTOS COMPORTAMENTAIS */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h3 className="font-bold text-base">2. ASPECTOS COMPORTAMENTAIS</h3>
-            <p className="text-xs text-slate-300">Ética, urbanidade, sigilo/LGPD, pontualidade e resolução de ocorrências</p>
+            <h3 className="font-bold text-slate-900 text-sm">2. ASPECTOS COMPORTAMENTAIS</h3>
+            <p className="text-xs text-slate-500">Postura, apresentação, adornos e ética dos colaboradores prestadores de serviço</p>
           </div>
           <div className="text-right">
-            <span className="text-xs uppercase text-slate-400 block">Média do Bloco</span>
-            <span className="text-xl font-extrabold text-teal-400">{calcResults.mediaComportamentais.toFixed(2)}</span>
+            <span className="text-xs text-slate-400 block">Média do Bloco</span>
+            <span className={`text-base font-extrabold ${mediaComportamentais >= 4 ? 'text-emerald-600' : 'text-amber-600'}`}>
+              {mediaComportamentais.toFixed(2)}
+            </span>
           </div>
         </div>
 
-        <div className="p-6 divide-y divide-slate-100">
-          {EVALUATION_QUESTIONS.filter(q => q.category === 'COMPORTAMENTAIS').map((q, index) => (
-            <QuestionRow
-              key={q.id}
-              questionNumber={index + 1}
-              question={q}
-              currentValue={respostas[q.id]}
-              onSelect={(val) => handleScoreSelect(q.id, val)}
-            />
-          ))}
+        <div className="space-y-3">
+          {behavioralCriteria.map((c, index) => (
+            <div key={c.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <span className="text-xs text-slate-800 font-medium leading-relaxed">
+                <strong className="text-slate-400 mr-2">{index + 1}.</strong> {c.pergunta}
+              </span>
 
-          {/* Campo de Observações do Bloco Comportamentais */}
-          <div className="pt-4 mt-4">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Observações / Justificativas dos Aspectos Comportamentais
-            </label>
-            <textarea
-              rows={2}
-              value={observacoesComportamentais}
-              onChange={(e) => setObservacoesComportamentais(e.target.value)}
-              placeholder="Descreva observações de conduta, comunicação da liderança ou postura da equipe..."
-              className="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500"
-            />
-          </div>
+              <div className="flex items-center space-x-1 flex-shrink-0">
+                {[5, 4, 3, 2, 1].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleScoreChange(c.id, val)}
+                    className={`w-8 h-8 rounded-lg text-xs font-extrabold transition ${
+                      respostas[c.id] === val
+                        ? val >= 4 ? 'bg-emerald-600 text-white shadow' : val === 3 ? 'bg-amber-500 text-white shadow' : 'bg-rose-600 text-white shadow'
+                        : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleScoreChange(c.id, 'NA')}
+                  className={`px-2.5 h-8 rounded-lg text-[11px] font-bold transition ${
+                    respostas[c.id] === 'NA'
+                      ? 'bg-slate-800 text-white shadow'
+                      : 'bg-white border border-slate-300 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  NA
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Observações Comportamentais (opcional)</label>
+          <textarea
+            rows={2}
+            value={observacoesComportamentais}
+            onChange={(e) => setObservacoesComportamentais(e.target.value)}
+            placeholder="Comentários sobre conduta, horários ou atendimento..."
+            className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl p-3"
+          />
         </div>
       </div>
 
-      {/* --- GRUPO 3: PROGRAMA QUALIDADE E SEGURANÇA --- */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden space-y-4">
-        <div className="bg-slate-800 text-white p-4 flex items-center justify-between">
+      {/* BLOCO 3: PROGRAMA QUALIDADE E SEGURANÇA */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div>
-            <h3 className="font-bold text-base">3. PROGRAMA QUALIDADE E SEGURANÇA</h3>
-            <p className="text-xs text-slate-300">Acreditação (ONA/JCI), biossegurança, calibrações, eventos adversos e SLAs</p>
+            <h3 className="font-bold text-slate-900 text-sm">3. PROGRAMA QUALIDADE E SEGURANÇA</h3>
+            <p className="text-xs text-slate-500">Satisfação do paciente/setor, treinamentos e controle de não conformidades</p>
           </div>
           <div className="text-right">
-            <span className="text-xs uppercase text-slate-400 block">Média do Bloco</span>
-            <span className="text-xl font-extrabold text-teal-400">{calcResults.mediaQualidade.toFixed(2)}</span>
+            <span className="text-xs text-slate-400 block">Média do Bloco</span>
+            <span className={`text-base font-extrabold ${mediaQualidade >= 4 ? 'text-emerald-600' : 'text-amber-600'}`}>
+              {mediaQualidade.toFixed(2)}
+            </span>
           </div>
         </div>
 
-        <div className="p-6 divide-y divide-slate-100">
-          {EVALUATION_QUESTIONS.filter(q => q.category === 'QUALIDADE').map((q, index) => (
-            <QuestionRow
-              key={q.id}
-              questionNumber={index + 1}
-              question={q}
-              currentValue={respostas[q.id]}
-              onSelect={(val) => handleScoreSelect(q.id, val)}
-            />
+        <div className="space-y-3">
+          {qualityCriteria.map((c, index) => (
+            <div key={c.id} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <span className="text-xs text-slate-800 font-medium leading-relaxed">
+                <strong className="text-slate-400 mr-2">{index + 1}.</strong> {c.pergunta}
+              </span>
+
+              <div className="flex items-center space-x-1 flex-shrink-0">
+                {[5, 4, 3, 2, 1].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleScoreChange(c.id, val)}
+                    className={`w-8 h-8 rounded-lg text-xs font-extrabold transition ${
+                      respostas[c.id] === val
+                        ? val >= 4 ? 'bg-emerald-600 text-white shadow' : val === 3 ? 'bg-amber-500 text-white shadow' : 'bg-rose-600 text-white shadow'
+                        : 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => handleScoreChange(c.id, 'NA')}
+                  className={`px-2.5 h-8 rounded-lg text-[11px] font-bold transition ${
+                    respostas[c.id] === 'NA'
+                      ? 'bg-slate-800 text-white shadow'
+                      : 'bg-white border border-slate-300 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  NA
+                </button>
+              </div>
+            </div>
           ))}
+        </div>
 
-          {/* Campo de Observações do Bloco Qualidade */}
-          <div className="pt-4 mt-4">
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Observações / Justificativas do Programa Qualidade e Segurança
-            </label>
-            <textarea
-              rows={2}
-              value={observacoesQualidade}
-              onChange={(e) => setObservacoesQualidade(e.target.value)}
-              placeholder="Descreva apontamentos de segurança do paciente, relatórios técnicos ou cumprimento de metas..."
-              className="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-lg p-2.5 focus:ring-hospital-500 focus:border-hospital-500"
-            />
-          </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Observações do Programa de Qualidade (opcional)</label>
+          <textarea
+            rows={2}
+            value={observacoesQualidade}
+            onChange={(e) => setObservacoesQualidade(e.target.value)}
+            placeholder="Comentários sobre treinamentos, indicadores ou satisfação..."
+            className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-xl p-3"
+          />
         </div>
       </div>
 
-      {/* Card de Parecer Geral Final */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-3">
-        <label className="block text-sm font-bold text-slate-800">
-          Parecer Geral Conclusivo da Gestão / Diretoria Operacional
-        </label>
-        <textarea
-          rows={3}
-          value={parecerGeral}
-          onChange={(e) => setParecerGeral(e.target.value)}
-          placeholder="Síntese conclusiva da avaliação anual do prestador de serviço..."
-          className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs sm:text-sm rounded-lg p-3 focus:ring-hospital-500 focus:border-hospital-500"
-        />
-      </div>
+      {/* PARECER GERAL E MÉDIA FINAL ANUAL */}
+      <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xl space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span className="text-xs text-teal-400 font-bold uppercase block">Resultado do Ciclo Anual {selectedYear}</span>
+            <h3 className="text-xl font-bold text-white">Média Geral da Avaliação de Contrato</h3>
+          </div>
 
-      {/* Botões de Ação do Form */}
-      <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition"
-        >
-          Cancelar
-        </button>
+          <div className="flex items-center space-x-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <div className="text-right">
+              <span className="text-[10px] text-slate-400 block uppercase font-bold">Média Final</span>
+              <span className={`text-2xl font-black ${mediaGeral >= 4 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                {mediaGeral.toFixed(2)}
+              </span>
+            </div>
+            <span className={`text-xs font-bold px-3 py-1 rounded-lg uppercase ${
+              statusMeta === 'DENTRO_DA_META' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-amber-950 text-amber-300 border border-amber-700'
+            }`}>
+              {statusMeta === 'DENTRO_DA_META' ? 'Dentro da Meta (≥ 4,00)' : 'Abaixo da Meta (< 4,00)'}
+            </span>
+          </div>
+        </div>
 
-        <button
-          type="submit"
-          className="inline-flex items-center px-6 py-2.5 text-sm font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-lg shadow transition"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          Salvar Avaliação Anual
-        </button>
+        {necessitaPlanoAcao && (
+          <div className="p-4 bg-amber-950/80 border border-amber-700 text-amber-200 text-xs rounded-xl flex items-start space-x-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-bold block text-white text-sm">Geração Automática de Plano de Ação (5W2H) Obrigatória:</strong>
+              <span>A Média Geral ficou abaixo da meta mínima aceitável (4.00). Ao salvar a avaliação, o sistema direcionará você para o preenchimento do Plano de Ação 5W2H.</span>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-300 mb-1">
+            Parecer Geral e Conclusão do Gestor do Contrato *
+          </label>
+          <textarea
+            rows={3}
+            value={parecerGeral}
+            onChange={(e) => setParecerGeral(e.target.value)}
+            required
+            placeholder="Resumo anual do desempenho do fornecedor, pontos fortes e recomendação de continuidade contratual..."
+            className="w-full bg-slate-950 border border-slate-700 text-white text-xs rounded-xl p-3 focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-800 rounded-xl"
+          >
+            Cancelar
+          </button>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+            {necessitaPlanoAcao && (
+              <button
+                type="button"
+                onClick={(e) => handleSubmit(e, true)}
+                className="w-full sm:w-auto px-5 py-2.5 text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-xl shadow transition flex items-center justify-center"
+              >
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Salvar & Preencher 5W2H
+              </button>
+            )}
+
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg transition flex items-center justify-center"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Finalizar e Salvar Avaliação
+            </button>
+          </div>
+        </div>
       </div>
     </form>
-  );
-};
-
-// Componente para a linha de cada Pergunta com Botões Clicáveis
-interface QuestionRowProps {
-  questionNumber: number;
-  question: any;
-  currentValue: ScoreValue;
-  onSelect: (val: ScoreValue) => void;
-}
-
-const QuestionRow: React.FC<QuestionRowProps> = ({
-  questionNumber,
-  question,
-  currentValue,
-  onSelect
-}) => {
-  const options: { val: ScoreValue; label: string; activeClass: string }[] = [
-    { val: 5, label: '5 - Ótimo', activeClass: 'bg-emerald-600 text-white border-emerald-600 font-bold ring-2 ring-emerald-300' },
-    { val: 4, label: '4 - Bom', activeClass: 'bg-teal-600 text-white border-teal-600 font-bold ring-2 ring-teal-300' },
-    { val: 3, label: '3 - Regular', activeClass: 'bg-amber-500 text-slate-950 border-amber-500 font-bold ring-2 ring-amber-300' },
-    { val: 2, label: '2 - Ruim', activeClass: 'bg-orange-600 text-white border-orange-600 font-bold ring-2 ring-orange-300' },
-    { val: 1, label: '1 - Péssimo', activeClass: 'bg-rose-600 text-white border-rose-600 font-bold ring-2 ring-rose-300' },
-    { val: 'NA', label: 'NA', activeClass: 'bg-slate-700 text-white border-slate-700 font-bold ring-2 ring-slate-400' },
-  ];
-
-  return (
-    <div className="py-4 space-y-3">
-      <div className="flex items-start space-x-3">
-        <span className="bg-slate-100 text-slate-700 font-bold text-xs px-2.5 py-1 rounded-md mt-0.5 border border-slate-200">
-          Item {questionNumber}
-        </span>
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-slate-800">{question.text}</p>
-          {question.helpText && (
-            <p className="text-xs text-slate-500 mt-0.5 flex items-center">
-              <HelpCircle className="w-3 h-3 mr-1 text-slate-400 inline" /> {question.helpText}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Opções Clicáveis [5] [4] [3] [2] [1] [NA] */}
-      <div className="flex flex-wrap items-center gap-2 pl-0 sm:pl-10">
-        {options.map((opt) => {
-          const isSelected = currentValue === opt.val;
-          return (
-            <button
-              key={opt.val.toString()}
-              type="button"
-              onClick={() => onSelect(opt.val)}
-              className={`px-3.5 py-2 text-xs rounded-lg border transition-all duration-150 shadow-sm font-medium ${
-                isSelected
-                  ? opt.activeClass
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-              }`}
-            >
-              {opt.label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
   );
 };
