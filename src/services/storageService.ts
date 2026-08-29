@@ -2,12 +2,12 @@ import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUPPLIERS, INITIAL_USERS } from './mockData';
 
 const KEYS = {
-  USERS: 'sla_hospital_users_v4',
-  CURRENT_USER: 'sla_hospital_current_user_v4',
-  SECTORS: 'sla_hospital_sectors_v4',
-  SUPPLIERS: 'sla_hospital_suppliers_v4',
-  EVALUATIONS: 'sla_hospital_evaluations_v4',
-  ACTION_PLANS: 'sla_hospital_action_plans_v4'
+  USERS: 'sla_hospital_users_v5',
+  CURRENT_USER: 'sla_hospital_current_user_v5',
+  SECTORS: 'sla_hospital_sectors_v5',
+  SUPPLIERS: 'sla_hospital_suppliers_v5',
+  EVALUATIONS: 'sla_hospital_evaluations_v5',
+  ACTION_PLANS: 'sla_hospital_action_plans_v5'
 };
 
 export class StorageService {
@@ -113,12 +113,6 @@ export class StorageService {
     return evaluations;
   }
 
-  static deleteEvaluation(evaluationId: string): Evaluation[] {
-    const evaluations = this.getEvaluations().filter(e => e.id !== evaluationId);
-    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
-    return evaluations;
-  }
-
   static getActionPlans(): ActionPlan[] {
     const data = localStorage.getItem(KEYS.ACTION_PLANS);
     if (!data) {
@@ -140,18 +134,11 @@ export class StorageService {
     return plans;
   }
 
-  static deleteActionPlan(planId: string): ActionPlan[] {
-    const plans = this.getActionPlans().filter(p => p.id !== planId);
-    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(plans));
-    return plans;
-  }
-
-  static resetToDefault(): void {
-    localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
-    localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(INITIAL_USERS[0]));
+  static resetAllData(): void {
     localStorage.setItem(KEYS.SECTORS, JSON.stringify(INITIAL_SECTORS));
     localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(INITIAL_SUPPLIERS));
     localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(INITIAL_EVALUATIONS));
     localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(INITIAL_ACTION_PLANS));
+    localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
   }
 }

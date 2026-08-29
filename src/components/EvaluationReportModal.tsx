@@ -59,6 +59,8 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
     grupo: MASTER_15_QUESTIONS[key].grupo
   }));
 
+  const temContatoFornecedor = supplier?.contatoNome || supplier?.contatoEmail || supplier?.contatoTelefone;
+
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto printable-laudo-container">
@@ -168,7 +170,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               </div>
               <div>
                 <span className="text-slate-500 text-[10px] font-bold block uppercase">CONTATO DO FORNECEDOR</span>
-                <strong className="text-slate-900 font-bold block truncate">{supplier?.contatoNome} ({supplier?.contatoTelefone})</strong>
+                <strong className="text-slate-900 font-bold block truncate">
+                  {temContatoFornecedor 
+                    ? `${supplier?.contatoNome} ${supplier?.contatoTelefone ? `(${supplier.contatoTelefone})` : ''}` 
+                    : 'A definir'}
+                </strong>
               </div>
             </div>
           </div>
@@ -278,7 +284,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                 ) : (
                   <div>
                     <strong className="text-slate-900 font-bold block text-xs">
-                      {evaluation.nomeSignatario || supplier?.contatoNome || 'Preposto / Representante Legal'}
+                      {evaluation.nomeSignatario || (supplier?.contatoNome ? supplier.contatoNome : 'Preposto / Representante Legal (A definir)')}
                     </strong>
                     <span className="text-[11px] text-slate-600 block">{evaluation.cargoSignatario || 'Representante do Fornecedor'}</span>
                     <span className="text-[10px] text-slate-500 block">
