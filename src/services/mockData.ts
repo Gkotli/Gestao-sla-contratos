@@ -90,7 +90,7 @@ export const INITIAL_USERS: User[] = [
     fornecedorId: 'sup_vo2'
   },
 
-  // Gestores de Setores cadastrados
+  // Gestores dos 11 Setores do Vila Nova Star
   {
     id: 'usr_maria_luisa',
     nome: 'Maria Luisa do Nascimento Moura',
@@ -300,396 +300,157 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'oncostar-19-060-02',
-    vigenciaFim: '2026-11-13'
+    numeroContrato: 'VNS19-011-00',
+    vigenciaFim: 'Indeterminado'
   },
   {
-    id: 'sup_schindler',
-    cnpj: '00.028.986/0051-77',
+    id: 'sup_atlas',
+    cnpj: '61.074.001/0001-90',
     razaoSocial: 'Elevadores Atlas Schindler LTDA',
     nomeFantasia: 'Atlas Schindler',
-    categoriaServico: 'Manutenção de Elevadores e Escadas Rolantes',
+    categoriaServico: 'Manutenção Preventiva e Corretiva de Elevadores',
     setorResponsavelId: 'sec_manutencao',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'CT-SCHINDLER-01',
+    numeroContrato: 'VNS/19-002/00',
     vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_engepower',
-    cnpj: '00.772.864/0001-21',
-    razaoSocial: 'Engepower Eng e Com LTDA',
-    nomeFantasia: 'Engepower Subestações',
-    categoriaServico: 'Manutenção Preventiva e Corretiva de Subestação',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede/18-102/01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_everest',
-    cnpj: '01.953.146/0001-14',
-    razaoSocial: 'Everest Comércio de Refrigeração e Serviços SLU LTDA',
-    nomeFantasia: 'Everest Purificadores',
-    categoriaServico: 'Higienização externa dos purificadores',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-EVEREST-01',
-    vigenciaFim: '2027-05-14'
   },
   {
     id: 'sup_kpm',
-    cnpj: '18.126.361/0001-44',
-    razaoSocial: 'KPM SERVICE LTDA',
-    nomeFantasia: 'KPM Climatização PMOC',
-    categoriaServico: 'Manutenção de Ar-condicionado - PMOC',
+    cnpj: '15.421.902/0001-44',
+    razaoSocial: 'KPM Service Climatização LTDA',
+    nomeFantasia: 'KPM Climatização (PMOC)',
+    categoriaServico: 'Manutenção de Ar Condicionado e PMOC',
     setorResponsavelId: 'sec_manutencao',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'Rede25-227-00',
-    vigenciaFim: '2031-05-06'
-  },
-  {
-    id: 'sup_manusa',
-    cnpj: '14.995.623/0001-56',
-    razaoSocial: 'Manusa Do Brasil Industria E Com De Portas Automaticas Ltda',
-    nomeFantasia: 'Manusa Portas Automáticas',
-    categoriaServico: 'Automação das Portas Hospitalares',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS24-018-00',
-    vigenciaFim: '2026-10-31'
-  },
-  {
-    id: 'sup_microambiental',
-    cnpj: '68.312.032/0001-66',
-    razaoSocial: 'Microambiental Laboratório e Serviços em Água LTDA',
-    nomeFantasia: 'Microambiental Águas',
-    categoriaServico: 'Análise Potabilidade de Água Hospitalar',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-MICRO-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_nobreak',
-    cnpj: '10.692.808/0001-30',
-    razaoSocial: 'Nobreak Quality LTDA',
-    nomeFantasia: 'Nobreak Quality',
-    categoriaServico: 'Manutenção de Nobreak e Energia Crítica',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede-19-030-15',
-    vigenciaFim: '2026-07-07'
-  },
-  {
-    id: 'sup_petroserv',
-    cnpj: '43.227.610/0001-35',
-    razaoSocial: 'Petroserv Comércio de Derivados de Petróleo LTDA',
-    nomeFantasia: 'Petroserv Diesel',
-    categoriaServico: 'Circulação e Fornecimento de Diesel para Geradores',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede/18-089/05',
-    vigenciaFim: '2027-10-02'
-  },
-  {
-    id: 'sup_rdi',
-    cnpj: '52.133.485/0001-95',
-    razaoSocial: 'RDI Bender LTDA',
-    nomeFantasia: 'RDI Bender IT Médico',
-    categoriaServico: 'Manutenção do Sistema IT Médico',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS24-011-00',
-    vigenciaFim: '2027-08-11'
-  },
-  {
-    id: 'sup_sos_portas',
-    cnpj: '05.357.829/0001-60',
-    razaoSocial: 'SOS Portas Corta Fogo LTDA',
-    nomeFantasia: 'SOS Portas Corta Fogo',
-    categoriaServico: 'Manutenção em Portas Corta Fogo',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS25-150-00',
-    vigenciaFim: '2026-10-02'
-  },
-  {
-    id: 'sup_thyssen',
-    cnpj: '90.347.840/0001-18',
-    razaoSocial: 'ThyssenKrupp Elevadores LTDA',
-    nomeFantasia: 'ThyssenKrupp TKE',
-    categoriaServico: 'Manutenção Elevadores TKE',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-TKE-01',
-    vigenciaFim: '2025-09-23'
-  },
-  {
-    id: 'sup_wtc',
-    cnpj: '19.524.939/0001-83',
-    razaoSocial: 'W.T.C. Tecnologia em Tratamento de Água LTDA',
-    nomeFantasia: 'WTC Água & Chiller',
-    categoriaServico: 'Tratamento de Água / Chiller',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS20-071-00',
-    vigenciaFim: '2026-06-27'
-  },
-  {
-    id: 'sup_wgl',
-    cnpj: '11.063.844/0001-06',
-    razaoSocial: 'Wgl Solucoes Em Tecnologias E Servicos Ltda',
-    nomeFantasia: 'WGL Geradores',
-    categoriaServico: 'Manutenção nos Geradores de Energia',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede25-202-00',
-    vigenciaFim: '2027-06-27'
-  },
-  {
-    id: 'sup_aerocom',
-    cnpj: '23.757.662/0001-06',
-    razaoSocial: 'Wm Comercio E Servicos (Aerocom)',
-    nomeFantasia: 'Aerocom Pneumático',
-    categoriaServico: 'Manutenção do Sistema Correio Pneumático',
-    setorResponsavelId: 'sec_manutencao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS21-025-01',
-    vigenciaFim: 'Indeterminado'
+    numeroContrato: 'VNS23-018-00',
+    vigenciaFim: '2026-12-31'
   },
 
   // Engenharia Clínica
   {
+    id: 'sup_techmed',
+    cnpj: '11.222.333/0001-44',
+    razaoSocial: 'TechMed Equipamentos Hospitalares LTDA',
+    nomeFantasia: 'TechMed Equipamentos',
+    categoriaServico: 'Manutenção e Calibração de Equipamentos Médicos',
+    setorResponsavelId: 'sec_eng_clinica',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS23-104-00',
+    vigenciaFim: '2027-05-15'
+  },
+  {
     id: 'sup_air_liquide_eng',
     cnpj: '00.331.788/0023-24',
     razaoSocial: 'Air Liquide Brasil LTDA',
-    nomeFantasia: 'Air Liquide Gases Medicinais',
-    categoriaServico: 'Gases Medicinais - Engenharia Clínica',
+    nomeFantasia: 'Air Liquide (Eng. Clínica)',
+    categoriaServico: 'Gases Medicinais - Eng. Clínica',
     setorResponsavelId: 'sec_eng_clinica',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'CT-AIRLIQUIDE-ENG',
+    numeroContrato: 'VNS23-088-00',
     vigenciaFim: '2027-08-10'
   },
   {
-    id: 'sup_baxter',
-    cnpj: '49.351.789/0002-61',
-    razaoSocial: 'Baxter Hospitalar LTDA',
-    nomeFantasia: 'Baxter Starling',
-    categoriaServico: 'Locação de monitor de débito cardíaco (Starling)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-BAXTER-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_bbraun',
-    cnpj: '31.673.254/0001-02',
-    razaoSocial: 'Bbraun Laboratórios S/A',
-    nomeFantasia: 'BBraun Bombas Infusão',
-    categoriaServico: 'Locação de bombas de infusão (Perfusor/Infusomat Space)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Oncostar-19-054-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_brainlab',
-    cnpj: '02.981.566/0001-77',
-    razaoSocial: 'Brainlab LTDA',
-    nomeFantasia: 'Brainlab Neuronavegador',
-    categoriaServico: 'Manutenção de Neuronavegador Cirúrgico',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede23-310-01',
-    vigenciaFim: '2026-04-16'
-  },
-  {
-    id: 'sup_brazil3',
-    cnpj: '10.515.403/0001-27',
-    razaoSocial: 'Brazil 3 Business LTDA',
-    nomeFantasia: 'Brazil 3 Hologic Mamografia',
-    categoriaServico: 'Manutenção de equipamento de Mamografia (Hologic)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'REDE/21-275/00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_canon',
-    cnpj: '46.563.938/0001-10',
-    razaoSocial: 'Canon Medical Systems do Brasil LTDA',
-    nomeFantasia: 'Canon Medical Ultrassom',
-    categoriaServico: 'Manutenção de Ultrassom / bens móveis',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede19-037-25',
-    vigenciaFim: '2026-02-01'
-  },
-  {
-    id: 'sup_carestream',
-    cnpj: '08.546.929/0003-94',
-    razaoSocial: 'Carestream Health Brasil Comércio e Serviços LTDA',
-    nomeFantasia: 'Carestream Raio-X & Dry',
-    categoriaServico: 'Manutenção de impressora/revelador a seco (Dry) e Raio-X',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CARESTREAM-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_cisa',
-    cnpj: '05.120.289/0001-04',
-    razaoSocial: 'Cisa Brasile LTDA',
-    nomeFantasia: 'Cisa Termodesinfectora',
-    categoriaServico: 'Manutenção de equipamento Termodesinfectora CME',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CISA-01',
-    vigenciaFim: '2025-09-30'
-  },
-  {
-    id: 'sup_drager',
-    cnpj: '61.185.922/0001-05',
-    razaoSocial: 'Drager do Brasil LTDA',
-    nomeFantasia: 'Drager Anestesia',
-    categoriaServico: 'Manutenção de equipamentos de Anestesia',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-DRAGER-01',
-    vigenciaFim: '2025-09-30'
-  },
-  {
     id: 'sup_ge_healthcare',
-    cnpj: '00.029.372/0003-02',
+    cnpj: '00.029.372/0001-03',
     razaoSocial: 'GE Healthcare do Brasil LTDA',
-    nomeFantasia: 'GE Healthcare Imagem',
-    categoriaServico: 'Manutenção de equipamentos de imagem (Ressonância/Tomografia)',
+    nomeFantasia: 'GE Healthcare',
+    categoriaServico: 'Manutenção de Tomógrafos e Ressonâncias',
     setorResponsavelId: 'sec_eng_clinica',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'Rede16-077-28',
-    vigenciaFim: '2029-08-30'
-  },
-  {
-    id: 'sup_strattner',
-    cnpj: '33.250.713/0001-62',
-    razaoSocial: 'H Strattner e Cia LTDA',
-    nomeFantasia: 'Strattner CyberKnife',
-    categoriaServico: 'Manutenção de sistema robótico (CyberKnife)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS20-051-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_invita',
-    cnpj: '22.149.853/0001-22',
-    razaoSocial: 'Invita Serviços de Manutenção LTDA',
-    nomeFantasia: 'Invita TomoTherapy',
-    categoriaServico: 'Manutenção e reparação preventiva (CyberKnife e TomoTherapy)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'OncoStar23-005-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_steris',
-    cnpj: '59.233.783/0004-49',
-    razaoSocial: 'Steris Solutions do Brasil Importação e Comercialização',
-    nomeFantasia: 'Steris Lavadoras CME',
-    categoriaServico: 'Manutenção de Lavadoras e Esterilizadoras CME',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede22-338-03',
-    vigenciaFim: '2026-04-23'
-  },
-  {
-    id: 'sup_techmed',
-    cnpj: '55.444.333/0001-22',
-    razaoSocial: 'TechMed Engenharia Clínica & Equipamentos',
-    nomeFantasia: 'TechMed Engenharia Clínica',
-    categoriaServico: 'Manutenção Preventiva/Corretiva e Calibração de Equipamentos Médicos',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-2023/078',
-    vigenciaFim: '2027-08-31'
-  },
-  {
-    id: 'sup_varian',
-    cnpj: '03.009.915/0001-56',
-    razaoSocial: 'Varian Medical Systems Brasil LTDA',
-    nomeFantasia: 'Varian TrueBeam Radioterapia',
-    categoriaServico: 'Manutenção de equipamentos de radioterapia (Gating/TrueBeam)',
-    setorResponsavelId: 'sec_eng_clinica',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede17-122-07',
-    vigenciaFim: '2025-12-30'
+    numeroContrato: 'VNS22-045-00',
+    vigenciaFim: '2028-03-31'
   },
 
-  // Governança / Hotelaria
+  // Medicina Nuclear
+  {
+    id: 'sup_baxter_nuclear',
+    cnpj: '45.748.777/0001-99',
+    razaoSocial: 'Baxter Hospitalar LTDA',
+    nomeFantasia: 'Baxter Medicina Nuclear',
+    categoriaServico: 'Equipamentos e Dosimetria de Medicina Nuclear',
+    setorResponsavelId: 'sec_medicina_nuclear',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS24-030-00',
+    vigenciaFim: '2027-11-30'
+  },
+
+  // SESMT
+  {
+    id: 'sup_sesmt_01',
+    cnpj: '23.456.789/0001-11',
+    razaoSocial: 'MedSeg Medicina e Segurança do Trabalho LTDA',
+    nomeFantasia: 'MedSeg SESMT',
+    categoriaServico: 'Exames Ocupacionais e Laudos de Segurança (PPRA/PCMSO)',
+    setorResponsavelId: 'sec_sesmt',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS24-009-00',
+    vigenciaFim: '2026-10-15'
+  },
+
+  // Segurança Patrimonial
+  {
+    id: 'sup_dunamis',
+    cnpj: '08.999.888/0001-22',
+    razaoSocial: 'Dunamis Segurança Patrimonial Eireli',
+    nomeFantasia: 'Dunamis Segurança',
+    categoriaServico: 'Serviços de Vigilância e Segurança Armada/Desarmada',
+    setorResponsavelId: 'sec_seguranca',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS22-019-00',
+    vigenciaFim: '2027-04-30'
+  },
+
+  // Nutrição
+  {
+    id: 'sup_nutri',
+    cnpj: '55.666.777/0001-88',
+    razaoSocial: 'NutriCare Alimentação Hospitalar LTDA',
+    nomeFantasia: 'NutriCare Alimentação',
+    categoriaServico: 'Fornecimento de Refeições Hospitalares e Dietas',
+    setorResponsavelId: 'sec_nutricao',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS23-050-00',
+    vigenciaFim: '2026-08-31'
+  },
+
+  // Governança
+  {
+    id: 'sup_clean',
+    cnpj: '22.333.444/0001-55',
+    razaoSocial: 'CleanHospital Higienização LTDA',
+    nomeFantasia: 'CleanHospital',
+    categoriaServico: 'Higienização, Limpeza Hospitalar e Governança',
+    setorResponsavelId: 'sec_governanca',
+    contatoNome: '',
+    contatoEmail: '',
+    contatoTelefone: '',
+    numeroContrato: 'VNS22-015-00',
+    vigenciaFim: '2026-12-31'
+  },
   {
     id: 'sup_allpark',
     cnpj: '60.537.263/0001-66',
     razaoSocial: 'ALLPARK EMPREENDIMENTOS, PARTICIPAÇÕES E SERVIÇOS S/A',
-    nomeFantasia: 'Estapar Allpark Estacionamento',
-    categoriaServico: 'Mão de obra e serviços de Estacionamento Valet',
+    nomeFantasia: 'Estapar / Allpark Estacionamentos',
+    categoriaServico: 'Mão de Obra e Gestão de Estacionamento Valet',
     setorResponsavelId: 'sec_governanca',
     contatoNome: '',
     contatoEmail: '',
@@ -697,621 +458,110 @@ export const INITIAL_SUPPLIERS: Supplier[] = [
     numeroContrato: 'VNS-19-008-00',
     vigenciaFim: '2028-05-01'
   },
-  {
-    id: 'sup_bobson',
-    cnpj: '02.815.733/0001-00',
-    razaoSocial: 'BOBSON SÃO PAULO HIGIENE LTDA',
-    nomeFantasia: 'Bobson Odorizadores WCs',
-    categoriaServico: 'Locação de Odorizadores WCs',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede-21-075-19',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_cleaning_sol',
-    cnpj: '15.808.202/0001-99',
-    razaoSocial: 'Cleaning Solutions LTDA',
-    nomeFantasia: 'Cleaning Solutions Pisos',
-    categoriaServico: 'Manutenção e tratamento de piso hospitalar',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CLEANING-01',
-    vigenciaFim: '2028-08-15'
-  },
-  {
-    id: 'sup_radio_ibiza',
-    cnpj: '06.984.948/0001-05',
-    razaoSocial: 'GASPARIAN E SALAMÃO (Radio Ibiza)',
-    nomeFantasia: 'Radio Ibiza Ambientação',
-    categoriaServico: 'Serviços especializados de Licenciamento de estação de rádio',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-23-031-00',
-    vigenciaFim: '2025-01-02'
-  },
-  {
-    id: 'sup_hpx_lavanderia',
-    cnpj: '12.942.098/0001-85',
-    razaoSocial: 'HPX HIGIENIZAÇÃO TEXTIL LTDA',
-    nomeFantasia: 'HPX Lavanderia Hospitalar',
-    categoriaServico: 'Serviços de Lavanderia Hospitalar',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-21-049-00',
-    vigenciaFim: '2024-11-01'
-  },
-  {
-    id: 'sup_portinari',
-    cnpj: '09.032.026/0001-09',
-    razaoSocial: 'LAVANDERIA PORTINARI LTDA',
-    nomeFantasia: 'Lavanderia Portinari',
-    categoriaServico: 'Serviços de Lavanderia Enxoval',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-PORTINARI-01',
-    vigenciaFim: '2027-03-09'
-  },
-  {
-    id: 'sup_maria_marcia',
-    cnpj: '42.479.371/0001-48',
-    razaoSocial: 'MARIA MARCIA CONVENIENCE PRESENTES',
-    nomeFantasia: 'Maria Marcia Loja Conveniência',
-    categoriaServico: 'Locação de espaço para loja de conveniência/presentes',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-23-019-01',
-    vigenciaFim: '2025-07-28'
-  },
-  {
-    id: 'sup_multilixo',
-    cnpj: '01.382.443/0001-57',
-    razaoSocial: 'MULTILIXO REMOÇÕES DE LIXO S/S LTDA/FLACIPEL',
-    nomeFantasia: 'Multilixo Coleta de Resíduos',
-    categoriaServico: 'Remoção e coleta de resíduos (lixo hospitalar e reciclável)',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-22-047-01',
-    vigenciaFim: '2028-04-17'
-  },
-  {
-    id: 'sup_praxxis',
-    cnpj: '05.424.004/0001-10',
-    razaoSocial: 'PRAXXIS CONTROLE INTEGRADO DE PRAGAS LTDA',
-    nomeFantasia: 'Praxxis Dedetização',
-    categoriaServico: 'Controle Integrado de Pragas (dedetização/desinsetização)',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Oncostar-/19-030/00',
-    vigenciaFim: '2021-03-29'
-  },
-  {
-    id: 'sup_rb_facilities',
-    cnpj: '52.951.890/0001-10',
-    razaoSocial: 'RB FACILITIES SERVIÇOS LTDA',
-    nomeFantasia: 'RB Facilities (Mão de Obra/Ascensoristas)',
-    categoriaServico: 'Mão de Obra entrepostos, Ascensoristas e Bolsão Privativo',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VSN-23-059-00',
-    vigenciaFim: '2026-12-31'
-  },
-  {
-    id: 'sup_studio_d',
-    cnpj: '12.115.152/0001-19',
-    razaoSocial: 'STUDIO D ESSENCES COMERCIO E FABRICAÇÃO',
-    nomeFantasia: 'Studio D Essências Aromatizantes',
-    categoriaServico: 'Fornecimento/comercialização de essências aromatizantes',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS19-081-05',
-    vigenciaFim: '2028-03-01'
-  },
-  {
-    id: 'sup_top_service',
-    cnpj: '00.973.749/0014-30',
-    razaoSocial: 'Top Service Predial LTDA',
-    nomeFantasia: 'Top Service Limpeza Predial',
-    categoriaServico: 'Serviços de manutenção e limpeza predial hospitalar',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-24-023-00',
-    vigenciaFim: '2027-07-16'
-  },
-  {
-    id: 'sup_vertas',
-    cnpj: '68.112.747/0001-75',
-    razaoSocial: 'VERTAS COMERCIO DE RESIDUOS TECNOLOGICOS LTDA',
-    nomeFantasia: 'Vertas Lixo Eletrônico',
-    categoriaServico: 'Comércio/gestão de resíduos tecnológicos (descarte eletrônico)',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Holding/19-111/02',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_voice_tech',
-    cnpj: '68.112.747/0001-75',
-    razaoSocial: 'VOICE TECHNOLOGY COMERCIO EXTERIOR LTDA',
-    nomeFantasia: 'Voice Technology',
-    categoriaServico: 'Serviços de Tecnologia de Voz e Comunicação',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS-23-064-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_wesco',
-    cnpj: '07.045.160/0001-04',
-    razaoSocial: 'WESCO Gomes D\'Elia LTDA',
-    nomeFantasia: 'Wesco Higiene',
-    categoriaServico: 'Fornecimento/locação de equipamentos e produtos de higiene',
-    setorResponsavelId: 'sec_governanca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-WESCO-01',
-    vigenciaFim: '2025-10-02'
-  },
 
   // Laboratório
   {
-    id: 'sup_biomerieux',
-    cnpj: '33.040.635/0006-86',
-    razaoSocial: 'Biomérieux Brasil Indústria Ltda',
-    nomeFantasia: 'Biomérieux Diagnósticos',
-    categoriaServico: 'Comodato de equipamentos e licenciamento de software (REAL)',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-BIOMERIEUX-01',
-    vigenciaFim: '2026-12-08'
-  },
-  {
-    id: 'sup_controllab',
-    cnpj: '29.511.607/0001-18',
-    razaoSocial: 'Controllab Controle de Qualidade para laboratórios Ltda',
-    nomeFantasia: 'Controllab Qualidade',
-    categoriaServico: 'Controle de Qualidade Laboratorial e Ensaios de Proficiência',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CONTROLLAB-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_eco_diag',
-    cnpj: '23.011.000/0001-00',
-    razaoSocial: 'Eco Diagnóstica Ltda',
-    nomeFantasia: 'Eco Diagnóstica',
-    categoriaServico: 'Fornecimento de kits/reagentes (F-line e Biomol M-10) comodato',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'OncoStar23-011-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
     id: 'sup_medlab',
-    cnpj: '33.222.111/0001-55',
-    razaoSocial: 'MedLab Análises Clínicas & Patologia S/S',
+    cnpj: '33.444.555/0001-66',
+    razaoSocial: 'MedLab Diagnósticos Laboratoriais S/A',
     nomeFantasia: 'MedLab Diagnósticos',
-    categoriaServico: 'Exames Laboratoriais, Anatomia Patológica e Urgência',
+    categoriaServico: 'Exames de Patologia Clínica e Análises Laboratoriais',
     setorResponsavelId: 'sec_laboratorio',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'CT-2022/015',
-    vigenciaFim: '2028-03-15'
-  },
-  {
-    id: 'sup_ortho_clinical',
-    cnpj: '21.921.393/0002-27',
-    razaoSocial: 'Ortho Clinical Diagnostics LTDA',
-    nomeFantasia: 'Ortho Clinical Equipamentos',
-    categoriaServico: 'Locação de equipamentos de análises clínicas',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-ORTHO-01',
-    vigenciaFim: '2029-12-16'
-  },
-  {
-    id: 'sup_sysmex',
-    cnpj: '02.923.414/0001-18',
-    razaoSocial: 'Sysmex do Brasil Industria e Comercio LTDA',
-    nomeFantasia: 'Sysmex Diagnósticos',
-    categoriaServico: 'Locação de equipamentos e reagentes de hematologia (Sysmex)',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-SYSMEX-01',
-    vigenciaFim: '2027-10-31'
-  },
-  {
-    id: 'sup_vyttra',
-    cnpj: '00.904.728/0012-09',
-    razaoSocial: 'Vyttra Diagnósticos S.A',
-    nomeFantasia: 'Vyttra Diagnósticos',
-    categoriaServico: 'Locação e fornecimento de Kits de diagnóstico laboratorial',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-VYTTRA-01',
-    vigenciaFim: '2027-11-08'
-  },
-  {
-    id: 'sup_werfen',
-    cnpj: '02.004.662/0003-27',
-    razaoSocial: 'Werfen Medical Ltda',
-    nomeFantasia: 'Werfen Medical',
-    categoriaServico: 'Fornecimento de reagentes e locação de equipamentos laboratoriais',
-    setorResponsavelId: 'sec_laboratorio',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-WERFEN-01',
-    vigenciaFim: 'Indeterminado'
+    numeroContrato: 'VNS21-080-00',
+    vigenciaFim: '2027-09-30'
   },
 
-  // Medicina Nuclear
+  // Relacionamento Médico
   {
-    id: 'sup_cyclobras',
-    cnpj: '08.820.007/0001-61',
-    razaoSocial: 'Cyclobras Indústria, Comercio e Serviços Laboratoriais LTDA',
-    nomeFantasia: 'Cyclobras Radiofármacos',
-    categoriaServico: 'Fornecimento de doses de FDG-F18 e PSMA-F18',
-    setorResponsavelId: 'sec_medicina_nuclear',
+    id: 'sup_relmed_01',
+    cnpj: '77.888.999/0001-33',
+    razaoSocial: 'MedConnect Gestão Médica LTDA',
+    nomeFantasia: 'MedConnect Relacionamento Médico',
+    categoriaServico: 'Gestão de Corpo Clínico e Escala Médica Hospitalar',
+    setorResponsavelId: 'sec_rel_medico',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'CT-CYCLOBRAS-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_eckert',
-    cnpj: '21.423.605/0001-65',
-    razaoSocial: 'Eckert & Ziegler Transporte de Radiofármacos',
-    nomeFantasia: 'Eckert & Ziegler',
-    categoriaServico: 'Transporte de radiofármacos sob demanda',
-    setorResponsavelId: 'sec_medicina_nuclear',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-ECKERT-01',
-    vigenciaFim: 'Em Renovação'
-  },
-  {
-    id: 'sup_ibf',
-    cnpj: '14.864.868/0001-44',
-    razaoSocial: 'IBF - Indústria Brasileira de Farmoquimicos',
-    nomeFantasia: 'IBF Farmoquímicos',
-    categoriaServico: 'Fornecimento do produto FDG-18F para diagnóstico PET/CT',
-    setorResponsavelId: 'sec_medicina_nuclear',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-IBF-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_ipen',
-    cnpj: '00.402.552/0001-26',
-    razaoSocial: 'IPEN Instituto de Pesquisas Energéticas e Nucleares',
-    nomeFantasia: 'IPEN Radiofarmácia',
-    categoriaServico: 'Fornecimento de Geradores e Radiofármacos Hospitalares',
-    setorResponsavelId: 'sec_medicina_nuclear',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-IPEN-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_rph',
-    cnpj: '19.315.658/0001-10',
-    razaoSocial: 'RPH Radiofarmacia Centralizada LTDA',
-    nomeFantasia: 'RPH Radiofarmácia',
-    categoriaServico: 'Manipulação de Doses de Radiofármacos',
-    setorResponsavelId: 'sec_medicina_nuclear',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS/19-047/00',
-    vigenciaFim: 'Indeterminado'
-  },
-
-  // Nutrição
-  {
-    id: 'sup_melco',
-    cnpj: '10.721.756/0001-83',
-    razaoSocial: 'MELCO COMERCIO E INSTALACOES LTDA',
-    nomeFantasia: 'Melco Cozinhas Industriais',
-    categoriaServico: 'Manutenção em equipamentos de cozinha hospitalar',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS23-015-01',
-    vigenciaFim: '2026-01-06'
-  },
-  {
-    id: 'sup_nestle',
-    cnpj: '60.409.075/0540-82',
-    razaoSocial: 'Nestle Brasil Ltda',
-    nomeFantasia: 'Nestlé Nespresso Professional',
-    categoriaServico: 'Fornecimento de produtos e comodato de máquinas de café',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-NESTLE-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_prime_frio',
-    cnpj: '30.482.421/0001-67',
-    razaoSocial: 'Prime Frio Refrigeração LTDA',
-    nomeFantasia: 'Prime Frio Refrigeração',
-    categoriaServico: 'Manutenção preventiva e corretiva de refrigeração',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS22-011-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_roland_villard',
-    cnpj: '14.660.551/0001-96',
-    razaoSocial: 'Roland Villard Servicos de Gastronomia LTDA',
-    nomeFantasia: 'Roland Villard Gastronomia',
-    categoriaServico: 'Consultoria em gastronomia hospitalar e arte culinária',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-ROLAND-01',
-    vigenciaFim: '2027-11-27'
-  },
-  {
-    id: 'sup_sisnacmed',
-    cnpj: '10.444.624/0001-51',
-    razaoSocial: 'SISNACMED Soluções em Saúde LTDA',
-    nomeFantasia: 'SISNACMED Carros Burlodge',
-    categoriaServico: 'Manutenção Preventiva nos carros de refeição (Burlodge)',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS25-005-00',
-    vigenciaFim: '2027-01-23'
-  },
-  {
-    id: 'sup_nutri',
-    cnpj: '77.888.999/0001-44',
-    razaoSocial: 'NutriCare Alimentação Hospitalar LTDA',
-    nomeFantasia: 'NutriCare Alimentação',
-    categoriaServico: 'Fornecimento de Refeições Pacientes, Acompanhantes e Refeitório',
-    setorResponsavelId: 'sec_nutricao',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-2024/110',
-    vigenciaFim: '2026-10-31'
-  },
-
-  // Segurança Patrimonial
-  {
-    id: 'sup_dunamis',
-    cnpj: '04.365.440/0001-01',
-    razaoSocial: 'DUNAMIS SERVIÇOS EMPRESARIAIS TERCEIRIZADOS LTDA. ME',
-    nomeFantasia: 'Dunamis Vigilância Patrimonial',
-    categoriaServico: 'Vigilância Patrimonial e Segurança Armada/Desarmada',
-    setorResponsavelId: 'sec_seguranca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'OncoStarFarm22-001-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_engeradios',
-    cnpj: '45.656.883/0001-20',
-    razaoSocial: 'Engeradios Rio Comércio de Telecomunicações LTDA',
-    nomeFantasia: 'Engeradios Rádios',
-    categoriaServico: 'Locação/manutenção de rádios de comunicação para segurança',
-    setorResponsavelId: 'sec_seguranca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS19-103-03',
-    vigenciaFim: '2026-02-01'
-  },
-  {
-    id: 'sup_systempower',
-    cnpj: '07.880.795/0001-19',
-    razaoSocial: 'SYSTEMPOWER LTDA ME',
-    nomeFantasia: 'Systempower CFTV',
-    categoriaServico: 'Monitoramento e manutenção de Circuito Fechado de TV (CFTV)',
-    setorResponsavelId: 'sec_seguranca',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-SYSTEMPOWER-01',
-    vigenciaFim: 'Indeterminado'
-  },
-
-  // SESMT
-  {
-    id: 'sup_fermar_fire',
-    cnpj: '09.494.572/0001-49',
-    razaoSocial: 'FERMAR FIRE PROJETOS DE SEGURANÇA CONTRA INCÊNDIO LTDA',
-    nomeFantasia: 'Fermar Fire Segurança',
-    categoriaServico: 'Projetos e Adequação de Segurança contra Incêndio',
-    setorResponsavelId: 'sec_sesmt',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-FERMAR-01',
-    vigenciaFim: '2028-05-01'
+    numeroContrato: 'VNS23-012-00',
+    vigenciaFim: '2027-03-31'
   },
 
   // Equipe Multi
   {
     id: 'sup_vo2',
     cnpj: '39.615.127/0001-50',
-    razaoSocial: 'VO2 CARE Fisioterapia LTDA',
+    razaoSocial: 'VO2 Care Fisioterapia Hospitalar LTDA',
     nomeFantasia: 'VO2 Care Fisioterapia',
-    categoriaServico: 'Prestação de serviços especializados de Fisioterapia',
+    categoriaServico: 'Serviços de Fisioterapia Cardiorrespiratória e Motora',
     setorResponsavelId: 'sec_multi',
     contatoNome: '',
     contatoEmail: '',
     contatoTelefone: '',
-    numeroContrato: 'CT-2024/089',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_ceaf_fono',
-    cnpj: '33.440.921/0001-24',
-    razaoSocial: 'CEAF Fonoaudiologia LTDA',
-    nomeFantasia: 'CEAF Fonoaudiologia',
-    categoriaServico: 'Prestação de serviços especializados de Fonoaudiologia',
-    setorResponsavelId: 'sec_multi',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CEAF-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_psicologia_multi',
-    cnpj: '22.685.201/0001-02',
-    razaoSocial: 'Psicologia Especializada Hospitalar LTDA',
-    nomeFantasia: 'Psicologia Hospitalar',
-    categoriaServico: 'Prestação de serviços especializados de Psicologia',
-    setorResponsavelId: 'sec_multi',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-PSICO-01',
-    vigenciaFim: 'Indeterminado'
-  },
-
-  // Diretoria
-  {
-    id: 'sup_banco_sangue',
-    cnpj: '10.808.204/0001-07',
-    razaoSocial: 'Banco de sangue Hematologia e Hemoterapia LTDA',
-    nomeFantasia: 'Banco de Sangue Hemoterapia',
-    categoriaServico: 'Fornecimento de hemocomponentes e serviço de hematologia',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-BANCOSANGUE-01',
-    vigenciaFim: '2041-05-07'
-  },
-  {
-    id: 'sup_cappen',
-    cnpj: '08.746.768/0001-10',
-    razaoSocial: 'Cappen Comunicação e Tecnologia LTDA',
-    nomeFantasia: 'Cappen Web & Digital',
-    categoriaServico: 'Criação e desenvolvimento de website',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-CAPPEN-01',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_eritel',
-    cnpj: '60.322.484/0001-17',
-    razaoSocial: 'Eritel Telecomunicações LTDA',
-    nomeFantasia: 'Eritel Telecomunicações',
-    categoriaServico: 'Serviços de Infraestrutura de Telecomunicações',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS21-035-01',
-    vigenciaFim: '2026-04-22'
-  },
-  {
-    id: 'sup_fresenius',
-    cnpj: '56.094.410/0001-01',
-    razaoSocial: 'Fresenius Medical Care Brasil LTDA',
-    nomeFantasia: 'Fresenius Hemodiálise (TRS)',
-    categoriaServico: 'Terapia Renal Substitutiva (TRS) / Hemodiálise sob demanda',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'Rede20-092-00',
-    vigenciaFim: 'Indeterminado'
-  },
-  {
-    id: 'sup_nexxto',
-    cnpj: '12.982.578/0001-70',
-    razaoSocial: 'Nexxto Tecnologia LTDA',
-    nomeFantasia: 'Nexxto Sensores Temperatura',
-    categoriaServico: 'Sensores IoT de temperatura para farmácia e laboratório',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'VNS22-036-03',
-    vigenciaFim: '2026-03-20'
-  },
-  {
-    id: 'sup_senne_liquor',
-    cnpj: '54.529.250/0001-42',
-    razaoSocial: 'Senne Liquor Diagnósticos LTDA',
-    nomeFantasia: 'Senne Liquor Diagnósticos',
-    categoriaServico: 'Análise especializada de Líquido Cefalorraquidiano (LCR)',
-    setorResponsavelId: 'sec_diretoria',
-    contatoNome: '',
-    contatoEmail: '',
-    contatoTelefone: '',
-    numeroContrato: 'CT-SENNE-01',
-    vigenciaFim: 'Indeterminado'
+    numeroContrato: 'VNS23-019-00',
+    vigenciaFim: '2027-06-30'
   }
 ];
 
 export const INITIAL_EVALUATIONS: Evaluation[] = [
+  // 1. Manutenção - Acquasuly 2024 & 2026
+  {
+    id: 'eval_acquasuly_2024',
+    fornecedorId: 'sup_acquasuly',
+    setorId: 'sec_manutencao',
+    ano: 2024,
+    dataAvaliacao: '2024-11-20',
+    gestorAvaliador: 'Eduardo Gonçalves Dias',
+    emailAvaliador: 'eduardo.gdias@vilanovastar.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 5, leg_3: 5, leg_4: 5, leg_5: 5,
+      comp_1: 5, comp_2: 5, comp_3: 5, comp_4: 5, comp_5: 5,
+      qual_1: 5, qual_2: 5, qual_3: 5, qual_4: 5, qual_5: 5
+    },
+    observacoesLegais: 'Manutenção preventiva nos boilers realizada com 100% de conformidade.',
+    observacoesComportamentais: 'Equipe altamente capacitada e respeitosa.',
+    observacoesQualidade: 'Sem ocorrências no fornecimento de água quente.',
+    parecerGeral: 'Fornecedor de alta performance no contrato de manutenção de aquecedores.',
+    mediaLegais: 5.00,
+    mediaComportamentais: 5.00,
+    mediaQualidade: 5.00,
+    mediaGeral: 5.00,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: '2024-11-25',
+    nomeSignatario: 'Preposto Acquasuly',
+    cargoSignatario: 'Engenheiro Responsável'
+  },
+  {
+    id: 'eval_acquasuly_2026',
+    fornecedorId: 'sup_acquasuly',
+    setorId: 'sec_manutencao',
+    ano: 2026,
+    dataAvaliacao: '2026-06-15',
+    gestorAvaliador: 'Eduardo Gonçalves Dias',
+    emailAvaliador: 'eduardo.gdias@vilanovastar.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 5, leg_3: 5, leg_4: 4, leg_5: 5,
+      comp_1: 5, comp_2: 5, comp_3: 4, comp_4: 5, comp_5: 5,
+      qual_1: 5, qual_2: 4, qual_3: 5, qual_4: 5, qual_5: 4
+    },
+    observacoesLegais: 'Atendimento às chamadas de manutenção com agilidade.',
+    observacoesComportamentais: 'Uso rigoroso de EPIs.',
+    observacoesQualidade: 'Relatórios entregues no prazo.',
+    parecerGeral: 'Excelente desempenho no ciclo anual.',
+    mediaLegais: 4.80,
+    mediaComportamentais: 4.80,
+    mediaQualidade: 4.60,
+    mediaGeral: 4.73,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ENVIADO_FORNECEDOR'
+  },
+
+  // 2. Equipe Multi - VO2 Care 2026
   {
     id: 'eval_vo2_2026',
     fornecedorId: 'sup_vo2',
@@ -1323,10 +573,10 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     respostas: {
       leg_1: 5, leg_2: 5, leg_3: 4, leg_4: 4, leg_5: 5,
       comp_1: 5, comp_2: 4, comp_3: 5, comp_4: 5, comp_5: 4,
-      qual_1: 5, qual_2: 4, qual_3: 4, qual_4: 'NA', qual_5: 5
+      qual_1: 5, qual_2: 4, qual_3: 4, qual_4: 5, qual_5: 4.5
     },
-    observacoesLegais: 'Equipe altamente qualificada. Documentação dos fisioterapeutas 100% atualizada junto ao CREFITO.',
-    observacoesComportamentais: 'Excelente relacionamento com o corpo clínico e equipe multiprofissional.',
+    observacoesLegais: 'Equipe de fisioterapia totalmente habilitada com registros no CREFITO atualizados.',
+    observacoesComportamentais: 'Excelente atendimento humanizado aos pacientes da UTI e Unidades de Internação.',
     observacoesQualidade: 'Adesão total às diretrizes de desmame ventilatório da UTI.',
     parecerGeral: 'Fornecedor prestador de serviço de excelência no ciclo anual. Recomenda-se renovação contratual.',
     mediaLegais: 4.60,
@@ -1341,6 +591,8 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     cargoSignatario: 'Diretor de Operações VO2 Care',
     parecerFornecedor: 'Agradecemos o reconhecimento da equipe hospitalar no ciclo anual.'
   },
+
+  // 3. Engenharia Clínica - TechMed 2026
   {
     id: 'eval_tech_2026',
     fornecedorId: 'sup_techmed',
@@ -1369,6 +621,8 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     nomeSignatario: 'Eng. Bruno Silveira',
     cargoSignatario: 'Engenheiro Chefe TechMed'
   },
+
+  // 4. Governança - CleanHospital 2026
   {
     id: 'eval_clean_2026',
     fornecedorId: 'sup_clean',
@@ -1380,7 +634,7 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     respostas: {
       leg_1: 4, leg_2: 4, leg_3: 3, leg_4: 2, leg_5: 3,
       comp_1: 4, comp_2: 3, comp_3: 3, comp_4: 4, comp_5: 3,
-      qual_1: 4, qual_2: 3, qual_3: 3, qual_4: 'NA', qual_5: 3
+      qual_1: 4, qual_2: 3, qual_3: 3, qual_4: 4, qual_5: 3
     },
     observacoesLegais: 'Identificamos rotatividade de funcionários sem comunicação prévia.',
     observacoesComportamentais: 'Atrasos no atendimento a chamados de limpeza terminal de leitos.',
@@ -1394,6 +648,8 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     necessitaPlanoAcao: true,
     statusAssinatura: 'ENVIADO_FORNECEDOR'
   },
+
+  // 5. Laboratório - MedLab 2026
   {
     id: 'eval_medlab_2026',
     fornecedorId: 'sup_medlab',
@@ -1422,6 +678,8 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     nomeSignatario: 'Dra. Helena Martins',
     cargoSignatario: 'Diretora Técnica MedLab'
   },
+
+  // 6. Nutrição - NutriCare 2026
   {
     id: 'eval_nutri_2026',
     fornecedorId: 'sup_nutri',
@@ -1446,6 +704,118 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     statusMeta: 'ABAIXO_DA_META',
     necessitaPlanoAcao: true,
     statusAssinatura: 'PENDENTE_ENVIO'
+  },
+
+  // 7. Segurança Patrimonial - Dunamis 2026
+  {
+    id: 'eval_dunamis_2026',
+    fornecedorId: 'sup_dunamis',
+    setorId: 'sec_seguranca',
+    ano: 2026,
+    dataAvaliacao: '2026-06-14',
+    gestorAvaliador: 'Alex Henrique Leite Dantes',
+    emailAvaliador: 'alex.dantes@vilanovastar.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 5, leg_3: 5, leg_4: 5, leg_5: 5,
+      comp_1: 5, comp_2: 5, comp_3: 4, comp_4: 5, comp_5: 5,
+      qual_1: 5, qual_2: 5, qual_3: 4, qual_4: 5, qual_5: 5
+    },
+    observacoesLegais: 'Vigilantes com reciclagens e certificados da Polícia Federal em dia.',
+    observacoesComportamentais: 'Postura ostensiva preventiva exemplar nas portarias do hospital.',
+    observacoesQualidade: 'Livros de ocorrência diariamente inspecionados sem inconformidades.',
+    parecerGeral: 'Serviço de vigilância com alto padrão de segurança patrimonial no ciclo anual.',
+    mediaLegais: 5.00,
+    mediaComportamentais: 4.80,
+    mediaQualidade: 4.80,
+    mediaGeral: 4.87,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: '2026-06-18'
+  },
+
+  // 8. SESMT - MedSeg 2026
+  {
+    id: 'eval_sesmt_2026',
+    fornecedorId: 'sup_sesmt_01',
+    setorId: 'sec_sesmt',
+    ano: 2026,
+    dataAvaliacao: '2026-06-11',
+    gestorAvaliador: 'Vivian Paula Da Cunha Silva',
+    emailAvaliador: 'vivian.cunha@vilanovastar.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 5, leg_3: 4, leg_4: 5, leg_5: 5,
+      comp_1: 5, comp_2: 4, comp_3: 5, comp_4: 4, comp_5: 5,
+      qual_1: 4, qual_2: 5, qual_3: 5, qual_4: 4, qual_5: 5
+    },
+    observacoesLegais: 'Exames periódicos de medicina do trabalho 100% atualizados.',
+    observacoesComportamentais: 'Ótima integração com as equipes de saúde ocupacional.',
+    observacoesQualidade: 'Laudos de PPRA/PCMSO entregues dentro do cronograma.',
+    parecerGeral: 'Desempenho aprovado com nota destacada.',
+    mediaLegais: 4.80,
+    mediaComportamentais: 4.60,
+    mediaQualidade: 4.60,
+    mediaGeral: 4.67,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: '2026-06-15'
+  },
+
+  // 9. Medicina Nuclear - Baxter 2026
+  {
+    id: 'eval_mednuclear_2026',
+    fornecedorId: 'sup_baxter_nuclear',
+    setorId: 'sec_medicina_nuclear',
+    ano: 2026,
+    dataAvaliacao: '2026-06-16',
+    gestorAvaliador: 'Karina G Moutinho C Vasconcelos',
+    emailAvaliador: 'karina.moutinho@oncologiador.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 5, leg_3: 5, leg_4: 5, leg_5: 5,
+      comp_1: 5, comp_2: 5, comp_3: 5, comp_4: 5, comp_5: 5,
+      qual_1: 5, qual_2: 5, qual_3: 5, qual_4: 5, qual_5: 5
+    },
+    observacoesLegais: 'Radiofármacos e calibrações de tomógrafos PET-CT em dia.',
+    observacoesComportamentais: 'Físicos médicos e técnicos extremamente qualificados.',
+    observacoesQualidade: 'Controle de qualidade de dosimetria individual impecável.',
+    parecerGeral: 'Fornecedor padrão Ouro de medicina nuclear.',
+    mediaLegais: 5.00,
+    mediaComportamentais: 5.00,
+    mediaQualidade: 5.00,
+    mediaGeral: 5.00,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: '2026-06-20'
+  },
+
+  // 10. Relacionamento Médico - MedConnect 2026
+  {
+    id: 'eval_relmed_2026',
+    fornecedorId: 'sup_relmed_01',
+    setorId: 'sec_rel_medico',
+    ano: 2026,
+    dataAvaliacao: '2026-06-22',
+    gestorAvaliador: 'Nicole Longo Fecarotta',
+    emailAvaliador: 'nicole.longo@vilanovastar.com.br',
+    respostas: {
+      leg_1: 5, leg_2: 4, leg_3: 5, leg_4: 5, leg_5: 4,
+      comp_1: 5, comp_2: 5, comp_3: 4, comp_4: 5, comp_5: 5,
+      qual_1: 5, qual_2: 4, qual_3: 5, qual_4: 5, qual_5: 4
+    },
+    observacoesLegais: 'Suporte médico aos plantões e escalonamento sem interrupções.',
+    observacoesComportamentais: 'Atendimento aos médicos cadastrados com extrema eficiência.',
+    observacoesQualidade: 'Relatórios de satisfação médica dentro das métricas.',
+    parecerGeral: 'Avaliação excelente no período.',
+    mediaLegais: 4.60,
+    mediaComportamentais: 4.80,
+    mediaQualidade: 4.60,
+    mediaGeral: 4.67,
+    statusMeta: 'DENTRO_DA_META',
+    necessitaPlanoAcao: false,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: '2026-06-25'
   }
 ];
 

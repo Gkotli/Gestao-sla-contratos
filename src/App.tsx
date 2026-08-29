@@ -276,9 +276,10 @@ export default function App() {
         {activeTab === 'eval-list' && (
           <EvaluationList
             evaluations={scopedEvaluations}
-            suppliers={scopedSuppliers}
-            sectors={scopedSectors}
+            suppliers={suppliers}
+            sectors={sectors}
             actionPlans={scopedActionPlans}
+            currentUser={currentUser}
             onNewEvaluation={() => handleStartNewEvaluation()}
             onEditEvaluation={handleEditEvaluation}
             onViewReport={(evalId) => setReportModalEvalId(evalId)}

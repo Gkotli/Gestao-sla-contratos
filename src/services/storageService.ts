@@ -2,12 +2,12 @@ import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUPPLIERS, INITIAL_USERS } from './mockData';
 
 const KEYS = {
-  USERS: 'sla_hospital_users_v5',
-  CURRENT_USER: 'sla_hospital_current_user_v5',
-  SECTORS: 'sla_hospital_sectors_v5',
-  SUPPLIERS: 'sla_hospital_suppliers_v5',
-  EVALUATIONS: 'sla_hospital_evaluations_v5',
-  ACTION_PLANS: 'sla_hospital_action_plans_v5'
+  USERS: 'sla_hospital_users_v6',
+  CURRENT_USER: 'sla_hospital_current_user_v6',
+  SECTORS: 'sla_hospital_sectors_v6',
+  SUPPLIERS: 'sla_hospital_suppliers_v6',
+  EVALUATIONS: 'sla_hospital_evaluations_v6',
+  ACTION_PLANS: 'sla_hospital_action_plans_v6'
 };
 
 export class StorageService {
