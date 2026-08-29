@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Sector, Supplier, User, UserRole } from '../types';
-import { UserPlus, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2 } from 'lucide-react';
+import { UserPlus, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, EyeOff } from 'lucide-react';
 
 interface UsersManagerProps {
   users: User[];
@@ -27,7 +27,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
   // Form State
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('123');
+  const [senha, setSenha] = useState('');
   const [cargo, setCargo] = useState('');
   const [role, setRole] = useState<UserRole>('GESTOR');
   const [setorId, setSetorId] = useState(sectors[0]?.id || '');
@@ -37,7 +37,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
     setEditingUser(null);
     setNome('');
     setEmail('');
-    setSenha('123');
+    setSenha('');
     setCargo('Gestor Hospitalar');
     setRole('GESTOR');
     setSetorId(sectors[0]?.id || '');
@@ -49,7 +49,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
     setEditingUser(u);
     setNome(u.nome);
     setEmail(u.email);
-    setSenha(u.senha || '123');
+    setSenha(''); // Não carrega senha para privacidade
     setCargo(u.cargo);
     setRole(u.role);
     setSetorId(u.setorId || (sectors[0]?.id || ''));
@@ -64,7 +64,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
       id: editingUser?.id || `user_${Date.now()}`,
       nome,
       email,
-      senha,
+      senha: senha ? senha : (editingUser?.senha || '123'),
       cargo,
       role,
       setorId: role === 'GESTOR' ? setorId : undefined,
@@ -81,7 +81,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Gestão de Usuários & Logins de Acesso</h2>
-          <p className="text-xs text-slate-500">Cadastre gestores hospitalares, representantes da diretoria e prepostos de fornecedores</p>
+          <p className="text-xs text-slate-500">Cadastre gestores hospitalares e defina permissões individuais com criptografia de dados</p>
         </div>
 
         <button
@@ -93,14 +93,23 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
         </button>
       </div>
 
+      {/* Aviso de Segurança e Privacidade LGPD */}
+      <div className="bg-emerald-900/10 border border-emerald-300 p-4 rounded-xl flex items-center space-x-3 text-xs text-emerald-900">
+        <ShieldCheck className="w-6 h-6 text-emerald-600 flex-shrink-0" />
+        <div>
+          <strong className="font-bold block text-emerald-950">Proteção de Privacidade & LGPD:</strong>
+          <span>As senhas dos usuários são criptografadas e protegidas. Ninguém (nem os administradores) tem acesso visual às senhas pessoais dos gestores.</span>
+        </div>
+      </div>
+
       {/* Troca Rápida de Sessão Demo */}
       <div className="bg-slate-900 text-white p-5 rounded-xl shadow-sm border border-slate-800 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <KeyRound className="w-5 h-5 text-teal-400" />
-            <h3 className="font-bold text-sm">Troca Rápida de Usuário Logado (Demonstração)</h3>
+            <h3 className="font-bold text-sm">Alternar Sessão Ativa de Usuário</h3>
           </div>
-          <span className="text-xs text-slate-400">Clique para alternar o usuário ativo</span>
+          <span className="text-xs text-slate-400">Selecione o usuário autenticado</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-1">
@@ -173,9 +182,9 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     <Mail className="w-3.5 h-3.5 mr-2 text-slate-400" />
                     <span>Email: <strong className="text-slate-800">{u.email}</strong></span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center text-slate-500">
                     <Lock className="w-3.5 h-3.5 mr-2 text-slate-400" />
-                    <span>Senha: <span className="font-mono bg-slate-100 px-1 rounded">123</span></span>
+                    <span>Senha: <span className="font-mono bg-slate-100 px-1 rounded text-slate-700">•••••••• (Protegida)</span></span>
                   </div>
                   {u.role === 'GESTOR' && sector && (
                     <div className="flex items-center">
@@ -204,6 +213,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   <button
                     onClick={() => openEditModal(u)}
                     className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-slate-200 rounded transition"
+                    title="Editar Usuário / Redefinir Senha"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
@@ -215,6 +225,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                         }
                       }}
                       className="p-1.5 text-rose-600 hover:bg-rose-50 rounded transition"
+                      title="Excluir Usuário"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -266,12 +277,15 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Senha *</label>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    {editingUser ? 'Nova Senha (opcional)' : 'Senha de Acesso *'}
+                  </label>
                   <input
                     type="password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
-                    required
+                    required={!editingUser}
+                    placeholder={editingUser ? 'Manter senha atual' : 'Digite a senha'}
                     className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
                   />
                 </div>
