@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Evaluation, Sector, Supplier, User } from '../types';
 import { ArchetypesService } from '../services/archetypesService';
+import { safeFormatScore, safeNumber } from '../utils/formatters';
 import { 
   Building2, 
   Calendar, 
@@ -138,37 +139,50 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     }));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent, openActionPlanModalDirectly: boolean = false) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     if (!selectedSupplier) {
       alert('Por favor, selecione um fornecedor válido.');
       return;
     }
 
-    const newEval: Evaluation = {
-      id: initialEvaluation?.id || `eval_${Date.now()}`,
-      fornecedorId: selectedSupplier.id,
-      setorId: selectedSupplier.setorResponsavelId,
-      ano: selectedYear,
-      dataAvaliacao: new Date().toISOString().split('T')[0],
-      gestorAvaliador: currentUser?.nome || selectedSector?.gestorResponsavel || 'Gestor Responsável',
-      emailAvaliador: currentUser?.email || selectedSector?.emailGestor || 'gestor@vilanovastar.com.br',
-      respostas,
-      observacoesLegais,
-      observacoesComportamentais,
-      observacoesQualidade,
-      parecerGeral: parecerGeral || `Avaliação Anual ${selectedYear} referente ao contrato ${selectedSupplier.numeroContrato}. Média Geral: ${mediaGeral.toFixed(2)}.`,
-      mediaLegais,
-      mediaComportamentais,
-      mediaQualidade,
-      mediaGeral,
-      statusMeta,
-      necessitaPlanoAcao,
-      statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO'
-    };
+    setIsSubmitting(true);
+    try {
+      const formattedMediaGeral = safeFormatScore(mediaGeral);
 
-    onSave(newEval, openActionPlanModalDirectly);
+      const newEval: Evaluation = {
+        id: initialEvaluation?.id || `eval_${Date.now()}`,
+        fornecedorId: selectedSupplier.id,
+        setorId: selectedSupplier.setorResponsavelId,
+        ano: selectedYear,
+        dataAvaliacao: new Date().toISOString().split('T')[0],
+        gestorAvaliador: currentUser?.nome || selectedSector?.gestorResponsavel || 'Gestor Responsável',
+        emailAvaliador: currentUser?.email || selectedSector?.emailGestor || 'gestor@vilanovastar.com.br',
+        respostas: respostas || {},
+        observacoesLegais: observacoesLegais || '',
+        observacoesComportamentais: observacoesComportamentais || '',
+        observacoesQualidade: observacoesQualidade || '',
+        parecerGeral: parecerGeral || `Avaliação Anual ${selectedYear} referente ao contrato ${selectedSupplier.numeroContrato}. Média Geral: ${formattedMediaGeral}.`,
+        mediaLegais: safeNumber(mediaLegais),
+        mediaComportamentais: safeNumber(mediaComportamentais),
+        mediaQualidade: safeNumber(mediaQualidade),
+        mediaGeral: safeNumber(mediaGeral),
+        statusMeta: statusMeta || 'DENTRO_DA_META',
+        necessitaPlanoAcao: Boolean(necessitaPlanoAcao),
+        statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO'
+      };
+
+      onSave(newEval, openActionPlanModalDirectly);
+    } catch (err) {
+      console.error('Erro ao concluir avaliação:', err);
+      alert('Ocorreu um erro ao salvar a avaliação. Por favor, tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const archetypeLabelMap: Record<string, string> = {

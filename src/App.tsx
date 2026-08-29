@@ -11,6 +11,7 @@ import { UsersManager } from './components/UsersManager';
 import { EvaluationReportModal } from './components/EvaluationReportModal';
 import { SupplierSignatureModal } from './components/SupplierSignatureModal';
 import { LoginPage } from './components/LoginPage';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   // Navigation State
@@ -228,7 +229,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans app-root-container">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-slate-100 flex flex-col font-sans app-root-container">
       {/* Header institucional e navegação */}
       <Header
         activeTab={activeTab}
@@ -353,5 +355,6 @@ export default function App() {
         <p>© 2026 Rede D'Or - Hospital Vila Nova Star. Sistema Oficial de Gestão de Contratos e SLA.</p>
       </footer>
     </div>
+    </ErrorBoundary>
   );
 }
