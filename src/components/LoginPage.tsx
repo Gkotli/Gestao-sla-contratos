@@ -142,7 +142,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
             </div>
 
             <div className="grid grid-cols-1 gap-2 text-xs">
-              {users.map((u) => (
+              {users
+                .filter(u => u.id === 'usr_gabriel' || u.id === 'usr_vo2_preposto' || u.role === 'DIRETORIA' && u.email.includes('gabriel'))
+                .slice(0, 2)
+                .map((u) => (
                 <button
                   key={u.id}
                   type="button"
