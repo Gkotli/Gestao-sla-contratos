@@ -40,16 +40,12 @@ export class StorageService {
 
   static getCurrentUser(): User | null {
     const data = localStorage.getItem(KEYS.CURRENT_USER);
-    if (!data) {
-      // Default to Diretoria if none logged in
-      const users = this.getUsers();
-      const defaultUser = users.find(u => u.role === 'DIRETORIA') || users[0] || null;
-      if (defaultUser) {
-        this.setCurrentUser(defaultUser);
-      }
-      return defaultUser;
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
     }
-    return JSON.parse(data);
   }
 
   static setCurrentUser(user: User | null): void {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier, User } from './types';
 import { StorageService } from './services/storageService';
+import { LoginPage } from './components/LoginPage';
 import { Header } from './components/Header';
 import { ExecutiveDashboard } from './components/ExecutiveDashboard';
 import { EvaluationForm } from './components/EvaluationForm';
@@ -38,11 +39,31 @@ export function App() {
   const loadData = () => {
     const loadedUsers = StorageService.getUsers();
     setUsers(loadedUsers);
-    setCurrentUser(StorageService.getCurrentUser());
+    const userInSession = StorageService.getCurrentUser();
+    setCurrentUser(userInSession);
     setSectors(StorageService.getSectors());
     setSuppliers(StorageService.getSuppliers());
     setEvaluations(StorageService.getEvaluations());
     setActionPlans(StorageService.getActionPlans());
+
+    if (userInSession?.role === 'FORNECEDOR') {
+      setActiveTab('eval-list');
+    }
+  };
+
+  const handleLoginSuccess = (user: User) => {
+    setCurrentUser(user);
+    StorageService.setCurrentUser(user);
+    if (user.role === 'FORNECEDOR') {
+      setActiveTab('eval-list');
+    } else {
+      setActiveTab('dashboard');
+    }
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    StorageService.setCurrentUser(null);
   };
 
   const handleSelectUser = (user: User) => {
@@ -165,6 +186,11 @@ export function App() {
     return actionPlans.filter(p => p.status === 'PENDENTE' || p.status === 'EM_ANDAMENTO' || p.status === 'ATRASADO').length;
   }, [actionPlans]);
 
+  // Bloqueio de Acesso — Exibe Tela de Login se deslogado
+  if (!currentUser) {
+    return <LoginPage users={users} onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans">
       {/* Header institucional e navegação */}
@@ -182,11 +208,12 @@ export function App() {
         currentUser={currentUser}
         users={users}
         onSelectUser={handleSelectUser}
+        onLogout={handleLogout}
       />
 
       {/* Conteúdo Principal */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'dashboard' && (
+        {activeTab === 'dashboard' && currentUser.role !== 'FORNECEDOR' && (
           <ExecutiveDashboard
             evaluations={evaluations}
             suppliers={suppliers}
@@ -198,7 +225,7 @@ export function App() {
           />
         )}
 
-        {activeTab === 'new-eval' && (
+        {activeTab === 'new-eval' && currentUser.role !== 'FORNECEDOR' && (
           <EvaluationForm
             suppliers={suppliers}
             sectors={sectors}
@@ -212,7 +239,13 @@ export function App() {
 
         {activeTab === 'eval-list' && (
           <EvaluationList
-            evaluations={evaluations}
+            evaluations={
+              currentUser.role === 'FORNECEDOR' && currentUser.fornecedorId
+                ? evaluations.filter(e => e.fornecedorId === currentUser.fornecedorId)
+                : currentUser.role === 'GESTOR' && currentUser.setorId
+                ? evaluations.filter(e => e.setorId === currentUser.setorId)
+                : evaluations
+            }
             suppliers={suppliers}
             sectors={sectors}
             actionPlans={actionPlans}
@@ -228,7 +261,7 @@ export function App() {
           />
         )}
 
-        {activeTab === 'action-plans' && (
+        {activeTab === 'action-plans' && currentUser.role !== 'FORNECEDOR' && (
           <ActionPlans
             actionPlans={actionPlans}
             evaluations={evaluations}
@@ -240,7 +273,7 @@ export function App() {
           />
         )}
 
-        {activeTab === 'suppliers' && (
+        {activeTab === 'suppliers' && currentUser.role === 'DIRETORIA' && (
           <SuppliersManager
             suppliers={suppliers}
             sectors={sectors}
@@ -250,7 +283,7 @@ export function App() {
           />
         )}
 
-        {activeTab === 'users' && (
+        {activeTab === 'users' && currentUser.role === 'DIRETORIA' && (
           <UsersManager
             users={users}
             sectors={sectors}
@@ -291,7 +324,7 @@ export function App() {
             © 2026 <strong>Gestão de SLA e Avaliação de Contratos Hospitalares</strong> — Diretoria Operacional
           </span>
           <span className="text-slate-400">
-            Usuário Ativo: <strong>{currentUser?.nome || 'N/A'}</strong> ({currentUser?.role})
+            Usuário Autenticado: <strong>{currentUser?.nome || 'N/A'}</strong> ({currentUser?.role})
           </span>
         </div>
       </footer>
