@@ -158,7 +158,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                   const supplier = suppliers?.find(s => s.id === ev.fornecedorId);
                   const sector = sectors?.find(s => s.id === ev.setorId);
                   const mediaGeralVal = typeof ev.mediaGeral === 'number' ? ev.mediaGeral : parseFloat(String(ev.mediaGeral || 0));
-                  const metaDetails = getMetaBadgeDetails(mediaGeralVal);
+                  const metaDetails = getMetaBadgeDetails(ev.statusMeta || mediaGeralVal, mediaGeralVal);
 
                   const mediaLegaisFormatted = safeFormatScore(ev.mediaLegais);
                   const mediaComportamentaisFormatted = safeFormatScore(ev.mediaComportamentais);
@@ -203,8 +203,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                       </td>
 
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails.bgClass} ${metaDetails.textClass} border ${metaDetails.borderClass}`}>
-                          {metaDetails.label} ({mediaGeralFormatted})
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-slate-800'} border ${metaDetails?.borderClass || 'border-slate-300'}`}>
+                          {metaDetails?.label || 'Avaliado'} ({mediaGeralFormatted})
                         </span>
                       </td>
 
