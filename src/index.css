@@ -21,76 +21,86 @@
   background: #94a3b8;
 }
 
-/* REGRAS RÍGIDAS DE IMPRESSÃO A4 EM 1 ÚNICA PÁGINA (PAGINAÇÃO ÚNICA & COMPACTA) */
+/* ==========================================================================
+   ESTRUTURA DEDICADA DE IMPRESSÃO / PDF (A4 RETRATO MULTIPÁGINAS)
+   ========================================================================== */
 @media print {
+  /* Configuração do Papel A4 com Margens Profissionais */
   @page {
     size: A4 portrait;
-    margin: 6mm 8mm 6mm 8mm; /* Margens estreitas para caber em 1 página */
+    margin: 10mm 12mm 12mm 12mm;
   }
 
+  /* Oculta TUDO no body por padrão */
   body {
-    background-color: #ffffff !important;
+    background: #ffffff !important;
     color: #0f172a !important;
-    font-size: 10px !important;
-    line-height: 1.2 !important;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 11px !important;
+    line-height: 1.4 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Oculta toda a interface do site na impressão */
+  /* Esconde todos os elementos do sistema da tela normal */
+  body * {
+    visibility: hidden !important;
+  }
+
   .no-print,
   header,
-  nav,
+  main,
   footer,
-  .fixed.inset-0.bg-slate-900\/60,
-  button {
+  nav {
     display: none !important;
   }
 
-  /* O container do laudo ocupa a tela inteira sem barras nem rolagens */
-  .printable-laudo-modal {
-    position: static !important;
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: visible !important;
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
+  /* Torna VISÍVEL EXCLUSIVAMENTE o elemento #printable-report e seus filhos */
+  #printable-report,
+  #printable-report * {
+    visibility: visible !important;
   }
 
-  .printable-laudo-container {
-    border: none !important;
-    box-shadow: none !important;
+  /* Posiciona o relatório no topo da página de impressão A4 */
+  #printable-report {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
     width: 100% !important;
-    max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
     overflow: visible !important;
   }
 
-  /* Oculta sombras e bordas pesadas */
-  .shadow-xl, .shadow-lg, .shadow-md, .shadow-2xl {
-    box-shadow: none !important;
-  }
-
-  /* Evita quebras de página no meio de seções importantes */
-  .printable-section {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-  }
-
-  /* Tabela de perguntas ultra compacta na impressão */
-  table {
-    font-size: 9 font-medium !important;
-    border-collapse: collapse !important;
+  /* Repetição do cabeçalho da tabela caso a tabela quebre para a página 2 */
+  #printable-report table {
     width: 100% !important;
+    border-collapse: collapse !important;
   }
 
-  th, td {
-    padding: 2px 4px !important;
-    font-size: 9px !important;
-    line-height: 1.15 !important;
+  #printable-report thead {
+    display: table-header-group !important;
+  }
+
+  #printable-report tbody {
+    display: table-row-group !important;
+  }
+
+  /* Evita cortar linhas da tabela ao meio */
+  #printable-report tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Seções individuais evitam quebra interna (sem travar a tabela inteira) */
+  .printable-avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }

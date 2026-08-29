@@ -211,8 +211,8 @@ export function App() {
         onLogout={handleLogout}
       />
 
-      {/* Conteúdo Principal */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Conteúdo Principal (Oculto na Impressão no-print) */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print">
         {activeTab === 'dashboard' && currentUser.role !== 'FORNECEDOR' && (
           <ExecutiveDashboard
             evaluations={evaluations}
