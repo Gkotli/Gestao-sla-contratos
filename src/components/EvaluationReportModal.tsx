@@ -21,6 +21,28 @@ interface EvaluationReportModalProps {
   onClose: () => void;
 }
 
+// Dicionário de texto para todas as perguntas padrão (15 itens) e variações de arquétipos
+const MASTER_QUESTION_TEXTS: Record<string, { pergunta: string; grupo: 'LEGAIS' | 'COMPORTAMENTAIS' | 'QUALIDADE' }> = {
+  // Padrão Completo de 15 Perguntas
+  leg_1: { pergunta: 'O fornecedor dispõe de profissionais habilitados, capacitados, treinados e tecnicamente aptos para atender à demanda?', grupo: 'LEGAIS' },
+  leg_2: { pergunta: 'O fornecedor cumpre as legislações, normas de vigilância sanitária (ANVISA), trabalhistas e fiscalizatórias aplicáveis?', grupo: 'LEGAIS' },
+  leg_3: { pergunta: 'Os profissionais cumprem normas internas, horários, crachá, segurança e demais obrigações institucionais do hospital?', grupo: 'LEGAIS' },
+  leg_4: { pergunta: 'Nos casos de ausência, faltas ou desligamento de profissionais, existe substituição adequada e tempestiva?', grupo: 'LEGAIS' },
+  leg_5: { pergunta: 'Os colaboradores utilizam obrigatoriamente todos os Equipamentos de Proteção Individual (EPIs) recomendados?', grupo: 'LEGAIS' },
+
+  comp_1: { pergunta: 'A equipe mantém atendimento cortês, com ética, urbanidade e presteza aos pacientes, acompanhantes e corpo clínico?', grupo: 'COMPORTAMENTAIS' },
+  comp_2: { pergunta: 'A apresentação pessoal dos colaboradores está adequada (uso correto de crachá de identificação e uniforme/jaleco)?', grupo: 'COMPORTAMENTAIS' },
+  comp_3: { pergunta: 'Os prestadores de serviço cumprem rigorosamente a política institucional de adornos zero em áreas assistenciais?', grupo: 'COMPORTAMENTAIS' },
+  comp_4: { pergunta: 'Existe comunicação clara, ágil e eficiente entre a supervisão da contratada e a gestão do hospital?', grupo: 'COMPORTAMENTAIS' },
+  comp_5: { pergunta: 'Os colaboradores da contratada contribuem ativamente para a higiene, organização e segurança das áreas de atuação?', grupo: 'COMPORTAMENTAIS' },
+
+  qual_1: { pergunta: 'Pesquisa de opinião: o nível de satisfação dos usuários e pacientes pelo serviço prestado está dentro da meta estipulada?', grupo: 'QUALIDADE' },
+  qual_2: { pergunta: 'Os colaboradores participam dos treinamentos obrigatórios (integração, SBV, Metas Internacionais de Segurança)?', grupo: 'QUALIDADE' },
+  qual_3: { pergunta: 'Os indicadores contratuais e relatórios operacionais são alimentados e entregues rigorosamente no prazo?', grupo: 'QUALIDADE' },
+  qual_4: { pergunta: 'O gestor do fornecedor participa das reuniões de alinhamento mensal e análise crítica de desempenho?', grupo: 'QUALIDADE' },
+  qual_5: { pergunta: 'As tratativas de não conformidades e planos de ação preventivos/corretivos são executados nos prazos firmados?', grupo: 'QUALIDADE' }
+};
+
 export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   evaluation,
   supplier,
@@ -32,21 +54,47 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
     window.print();
   };
 
-  // Detect Archetype for criteria labels
+  // Detect Archetype for fallback question texts if needed
   const detectedArchetype = ArchetypesService.detectArchetype(
     supplier?.setorResponsavelId || evaluation.setorId,
     supplier?.categoriaServico || ''
   );
 
-  const legalCriteria = ArchetypesService.getLegalCriteria(detectedArchetype);
-  const { behavioral: behavioralCriteria, quality: qualityCriteria } = ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
+  const archetypeLegal = ArchetypesService.getLegalCriteria(detectedArchetype);
+  const { behavioral: archetypeBehavioral, quality: archetypeQuality } = ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
 
-  // Combine criteria for table listing
-  const allCriteria = [
-    ...legalCriteria.map(c => ({ ...c, grupo: 'LEGAIS' })),
-    ...behavioralCriteria.map(c => ({ ...c, grupo: 'COMPORTAMENTAIS' })),
-    ...qualityCriteria.map(c => ({ ...c, grupo: 'QUALIDADE' }))
-  ];
+  // Mapeia TODAS as respostas que existem no objeto da avaliação salva (sem cortar nenhuma das 15 perguntas)
+  const responseKeys = Object.keys(evaluation.respostas);
+
+  const allCriteria = responseKeys.map(key => {
+    // Busca no dicionário mestre de 15 perguntas
+    if (MASTER_QUESTION_TEXTS[key]) {
+      return {
+        id: key,
+        pergunta: MASTER_QUESTION_TEXTS[key].pergunta,
+        grupo: MASTER_QUESTION_TEXTS[key].grupo
+      };
+    }
+
+    // Busca nas definições do arquétipo
+    const archMatch = [...archetypeLegal, ...archetypeBehavioral, ...archetypeQuality].find(c => c.id === key);
+    if (archMatch) {
+      return {
+        id: key,
+        pergunta: archMatch.pergunta,
+        grupo: archMatch.bloco === 'LEGAL' ? 'LEGAIS' : archMatch.bloco === 'COMPORTAMENTAL' ? 'COMPORTAMENTAIS' : 'QUALIDADE'
+      };
+    }
+
+    // Fallback genérico para manter a integridade total do dado
+    const isComp = key.startsWith('comp');
+    const isQual = key.startsWith('qual');
+    return {
+      id: key,
+      pergunta: `Critério de avaliação registrado (${key})`,
+      grupo: isComp ? 'COMPORTAMENTAIS' : isQual ? 'QUALIDADE' : 'LEGAIS'
+    };
+  });
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto printable-laudo-modal font-sans">
@@ -56,7 +104,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           <div className="flex items-center space-x-2">
             <FileCheck2 className="w-5 h-5 text-teal-400" />
             <h3 className="font-bold text-sm text-white">
-              Laudo Oficial de Avaliação Anual — Impressão A4 de Página Única
+              Laudo Oficial de Avaliação Anual — Documento Completo ({allCriteria.length} Perguntas)
             </h3>
           </div>
 
@@ -79,7 +127,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
         </div>
 
-        {/* --- CONTEÚDO IMPRESSO DO LAUDO OFICIAL (COMPACTO EM 1 PÁGINA A4) --- */}
+        {/* --- CONTEÚDO IMPRESSO DO LAUDO OFICIAL (TODAS AS 15 PERGUNTAS COMPACTAS EM A4) --- */}
         <div className="p-4 sm:p-6 space-y-3 text-slate-900 bg-white print:p-0 print:space-y-2">
           
           {/* 1. Cabeçalho Oficial com Logo da Rede D'Or */}
@@ -199,10 +247,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </div>
           </div>
 
-          {/* 5. Tabela Detalhada de Perguntas e Notas Atribuídas (Compacta) */}
+          {/* 5. Tabela Detalhada de Perguntas e Notas Atribuídas (Exibe TODAS as 15 perguntas) */}
           <div className="space-y-1 printable-section">
             <h4 className="font-bold text-xs text-slate-900 uppercase border-b border-slate-300 pb-0.5 print:text-[9px]">
-              DETALHAMENTO DE NOTAS POR PERGUNTA AVALIADA
+              DETALHAMENTO DE NOTAS POR PERGUNTA AVALIADA ({allCriteria.length} ITENS)
             </h4>
 
             <div className="overflow-x-auto">
