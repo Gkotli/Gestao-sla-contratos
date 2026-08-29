@@ -62,7 +62,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
         </div>
 
         <h2 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          SLA & Avaliação de Contratos
+          Gestão de SLA & Avaliação de Contratos
         </h2>
         <p className="mt-1 text-center text-xs text-slate-400">
           REDE D'OR — Diretoria Operacional
@@ -129,7 +129,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
               type="submit"
               className="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg shadow-teal-900/30 transition-all transform hover:-translate-y-0.5"
             >
-              Acessar Sistema
+              Entrar no Sistema
               <ArrowRight className="w-4 h-4 ml-2" />
             </button>
           </form>
@@ -138,7 +138,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
           <div className="border-t border-slate-800 pt-5 space-y-3">
             <div className="flex items-center space-x-2 text-slate-400 text-xs font-semibold">
               <KeyRound className="w-4 h-4 text-teal-400" />
-              <span>Selecione a Conta Autorizada:</span>
+              <span>Selecione a Conta Autorizada para Acesso Rápido:</span>
             </div>
 
             <div className="grid grid-cols-1 gap-2 text-xs">
@@ -159,7 +159,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
                         u.role === 'GESTOR' ? 'bg-teal-900/80 text-teal-200 border border-teal-700' :
                         'bg-amber-900/80 text-amber-200 border border-amber-700'
                       }`}>
-                        {u.role}
+                        {u.role === 'DIRETORIA' ? 'DIRETORIA' : u.role === 'GESTOR' ? 'GESTOR' : 'FORNECEDOR'}
                       </span>
                       <strong className="text-white group-hover:text-teal-300 transition text-xs font-semibold">{u.nome}</strong>
                     </div>
@@ -205,7 +205,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
                   onClick={() => setIsForgotModalOpen(false)}
                   className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg transition"
                 >
-                  Voltar para o Login
+                  Voltar para a Tela de Acesso
                 </button>
               </div>
             ) : (

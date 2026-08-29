@@ -37,8 +37,8 @@ export const Header: React.FC<HeaderProps> = ({
   const isGestor = currentUser?.role === 'GESTOR' || isDiretoria;
 
   return (
-    <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print">
-      {/* Top bar institucional com a Logo Oficial da Rede D'Or */}
+    <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print font-sans">
+      {/* Barra superior institucional com a Logo Oficial da Rede D'Or */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-slate-400 text-xs font-medium">| Avaliação Anual de Contratos</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                Gestão de SLA e Qualidade de Contratos
+                Gestão de Nível de Serviço e Avaliação de Contratos
               </h1>
             </div>
           </div>
@@ -75,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
                       currentUser.role === 'GESTOR' ? 'bg-teal-900 text-teal-200 border border-teal-700' :
                       'bg-amber-900 text-amber-200 border border-amber-700'
                     }`}>
-                      {currentUser.role}
+                      {currentUser.role === 'DIRETORIA' ? 'DIRETORIA' : currentUser.role === 'GESTOR' ? 'GESTOR' : 'FORNECEDOR'}
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-400 block">{currentUser.cargo}</span>
@@ -83,10 +83,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {/* Botão Sair / Logout */}
+            {/* Botão Sair */}
             <button
               onClick={onLogout}
-              title="Sair da Conta (Logout)"
+              title="Encerrar sessão de acesso"
               className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-rose-300 bg-rose-950/60 hover:bg-rose-900 hover:text-white rounded-lg border border-rose-800/80 transition"
             >
               <LogOut className="w-3.5 h-3.5 mr-1.5" />
@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
             {isDiretoria && (
               <button
                 onClick={onResetData}
-                title="Restaurar dados demonstrativos originais"
+                title="Restaurar dados originais do sistema"
                 className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700 transition"
               >
                 <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
@@ -107,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Navigation tabs bar com controle de permissão por perfil */}
+      {/* Navegação por abas 100% em Português */}
       <div className="bg-slate-950 border-t border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 scrollbar-none">
@@ -121,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Dashboard Diretoria
+                Painel da Diretoria
               </button>
             )}
 
