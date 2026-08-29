@@ -1,6 +1,5 @@
 import React from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
-import { ArchetypesService } from '../services/archetypesService';
 import { 
   Printer, 
   X, 
@@ -15,7 +14,7 @@ interface EvaluationReportModalProps {
   onClose: () => void;
 }
 
-// Dicionário Mestre com os textos integrais e oficiais das 15 Perguntas (Sem resumos nem cortes)
+// Dicionário Mestre dos Textos Integrais e Inalterados das 15 Perguntas Originais
 const MASTER_15_QUESTIONS: Record<string, { pergunta: string; grupo: 'LEGAIS' | 'COMPORTAMENTAIS' | 'QUALIDADE' }> = {
   leg_1: { pergunta: 'O fornecedor dispõe de profissionais habilitados, capacitados, treinados e tecnicamente aptos para atender à demanda?', grupo: 'LEGAIS' },
   leg_2: { pergunta: 'O fornecedor cumpre as legislações, normas de vigilância sanitária (ANVISA), trabalhistas e fiscalizatórias aplicáveis?', grupo: 'LEGAIS' },
@@ -36,6 +35,12 @@ const MASTER_15_QUESTIONS: Record<string, { pergunta: string; grupo: 'LEGAIS' | 
   qual_5: { pergunta: 'As tratativas de não conformidades e planos de ação preventivos/corretivos são executados nos prazos firmados?', grupo: 'QUALIDADE' }
 };
 
+const ALL_15_KEYS = [
+  'leg_1', 'leg_2', 'leg_3', 'leg_4', 'leg_5',
+  'comp_1', 'comp_2', 'comp_3', 'comp_4', 'comp_5',
+  'qual_1', 'qual_2', 'qual_3', 'qual_4', 'qual_5'
+];
+
 export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   evaluation,
   supplier,
@@ -47,55 +52,22 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
     window.print();
   };
 
-  // Detect Archetype for custom criteria if evaluation was created via specific archetype
-  const detectedArchetype = ArchetypesService.detectArchetype(
-    supplier?.setorResponsavelId || evaluation.setorId,
-    supplier?.categoriaServico || ''
-  );
-
-  const archetypeLegal = ArchetypesService.getLegalCriteria(detectedArchetype);
-  const { behavioral: archetypeBehavioral, quality: archetypeQuality } = ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
-
-  // Mapeia todas as respostas contidas no objeto de avaliação sem truncar nada
-  const responseKeys = Object.keys(evaluation.respostas);
-
-  // Se a avaliação tiver as chaves padrão ou customizadas, montamos a lista completa de perguntas
-  const criteriaList = responseKeys.map(key => {
-    if (MASTER_15_QUESTIONS[key]) {
-      return {
-        id: key,
-        pergunta: MASTER_15_QUESTIONS[key].pergunta,
-        grupo: MASTER_15_QUESTIONS[key].grupo
-      };
-    }
-
-    const match = [...archetypeLegal, ...archetypeBehavioral, ...archetypeQuality].find(c => c.id === key);
-    if (match) {
-      return {
-        id: key,
-        pergunta: match.pergunta,
-        grupo: match.bloco === 'LEGAL' ? 'LEGAIS' : match.bloco === 'COMPORTAMENTAL' ? 'COMPORTAMENTAIS' : 'QUALIDADE'
-      };
-    }
-
-    const isComp = key.startsWith('comp');
-    const isQual = key.startsWith('qual');
-    return {
-      id: key,
-      pergunta: `Item de Avaliação Registrado (${key})`,
-      grupo: isComp ? 'COMPORTAMENTAIS' : isQual ? 'QUALIDADE' : 'LEGAIS'
-    };
-  });
+  // Garante a lista completa das 15 perguntas inalteradas
+  const criteriaList = ALL_15_KEYS.map(key => ({
+    id: key,
+    pergunta: MASTER_15_QUESTIONS[key].pergunta,
+    grupo: MASTER_15_QUESTIONS[key].grupo
+  }));
 
   return (
-    <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans no-print-bg">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto">
-        {/* Barra de Ações Superior (Exibida SOMENTE na Tela Normal - Oculta na Impressão) */}
+    <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto printable-laudo-container">
+        {/* Barra de Ações Superior (Oculta na Impressão no-print) */}
         <div className="bg-slate-900 text-white px-6 py-3 flex items-center justify-between no-print border-b border-slate-800">
           <div className="flex items-center space-x-2">
             <FileCheck2 className="w-5 h-5 text-teal-400" />
             <h3 className="font-bold text-sm text-white">
-              Visualização de Laudo Oficial — Impressão Formal A4 Multipáginas
+              Visualização do Laudo Oficial — Impressão Formal A4 Multipáginas ({criteriaList.length} Perguntas)
             </h3>
           </div>
 
@@ -118,11 +90,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
         </div>
 
-        {/* --- CONTEÚDO EXCLUSIVO DO LAUDO (ELEMENTO #printable-report) --- */}
+        {/* --- CONTAINER EXCLUSIVO DO RELATÓRIO IMPRIMÍVEL (#printable-report) --- */}
         <div id="printable-report" className="p-6 sm:p-8 space-y-6 text-slate-900 bg-white">
           
           {/* 1. Cabeçalho Institucional */}
-          <div className="border-b-2 border-slate-900 pb-3 flex items-center justify-between printable-avoid-break">
+          <div className="border-b-2 border-slate-900 pb-3 flex items-center justify-between print-avoid-break">
             <div className="flex items-center space-x-4">
               <div className="bg-white p-1 rounded-lg border border-slate-200 flex items-center justify-center">
                 <img
@@ -153,7 +125,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
 
           {/* 2. Título & 3. Ciclo Avaliado */}
-          <div className="bg-slate-50 border border-slate-300 p-3 rounded-xl text-center space-y-1 printable-avoid-break">
+          <div className="bg-slate-50 border border-slate-300 p-3 rounded-xl text-center space-y-1 print-avoid-break">
             <h2 className="font-extrabold text-sm sm:text-base text-slate-900 uppercase tracking-tight">
               LAUDO DE AVALIAÇÃO ANUAL DE DESEMPENHO E CONTRATO DE PRESTAÇÃO DE SERVIÇOS
             </h2>
@@ -161,7 +133,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
 
           {/* 4. Dados Cadastrais do Fornecedor e Contrato */}
-          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 printable-avoid-break text-xs">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 print-avoid-break supplier-data text-xs">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div>
                 <span className="text-slate-500 text-[10px] font-bold block uppercase">RAZÃO SOCIAL</span>
@@ -202,7 +174,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
 
           {/* 5. Quadro Síntese de Médias de SLA */}
-          <div className="border-2 border-slate-900 rounded-xl p-4 bg-white space-y-3 printable-avoid-break">
+          <div className="border-2 border-slate-900 rounded-xl p-4 bg-white space-y-3 print-avoid-break sla-summary">
             <h3 className="text-center font-black text-xs text-slate-900 uppercase tracking-wide">
               QUADRO SÍNTESE DE MÉDIAS E DESEMPENHO DE SLA
             </h3>
@@ -238,9 +210,9 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </div>
           </div>
 
-          {/* 6. Detalhamento Integral das 15 Perguntas (Com Suporte Multipáginas A4) */}
+          {/* 6. Detalhamento Integral das 15 Perguntas (Semântica <table> com Suporte Multipáginas) */}
           <div className="space-y-2">
-            <h4 className="font-bold text-xs text-slate-900 uppercase border-b border-slate-400 pb-1 printable-avoid-break">
+            <h4 className="font-bold text-xs text-slate-900 uppercase border-b border-slate-400 pb-1 print-avoid-break">
               DETALHAMENTO DE NOTAS POR PERGUNTA AVALIADA ({criteriaList.length} ITENS AVALIADOS)
             </h4>
 
@@ -248,10 +220,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <table className="w-full text-left border border-slate-300 rounded-lg text-xs border-collapse">
                 <thead className="bg-slate-100 text-slate-900 uppercase font-bold border-b border-slate-400">
                   <tr>
-                    <th className="py-2 px-3 text-center w-10 border-r border-slate-300">ITEM</th>
-                    <th className="py-2 px-3 border-r border-slate-300">ITEM AVALIADO</th>
-                    <th className="py-2 px-3 text-center w-32 border-r border-slate-300">GRUPO</th>
-                    <th className="py-2 px-3 text-center w-20">NOTA</th>
+                    <th className="py-2.5 px-3 text-center w-12 border-r border-slate-300">ITEM</th>
+                    <th className="py-2.5 px-3 border-r border-slate-300">ITEM AVALIADO</th>
+                    <th className="py-2.5 px-3 text-center w-36 border-r border-slate-300">GRUPO</th>
+                    <th className="py-2.5 px-3 text-center w-20">NOTA</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 font-medium">
@@ -259,11 +231,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                     const score = evaluation.respostas[c.id];
                     return (
                       <tr key={c.id} className="hover:bg-slate-50">
-                        <td className="py-2 px-3 text-center text-slate-500 font-bold border-r border-slate-200">{i + 1}</td>
-                        <td className="py-2 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-normal">{c.pergunta}</td>
-                        <td className="py-2 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{c.grupo}</td>
-                        <td className="py-2 px-3 text-center font-extrabold text-slate-900 text-sm">
-                          {score === 'NA' ? 'N/A' : score !== undefined ? score : '-'}
+                        <td className="py-2.5 px-3 text-center text-slate-500 font-bold border-r border-slate-200">{i + 1}</td>
+                        <td className="py-2.5 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-normal">{c.pergunta}</td>
+                        <td className="py-2.5 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{c.grupo}</td>
+                        <td className="py-2.5 px-3 text-center font-extrabold text-slate-900 text-sm">
+                          {score === 'NA' ? 'N/A' : score !== undefined ? score : 5}
                         </td>
                       </tr>
                     );
@@ -274,24 +246,24 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
 
           {/* 7. Parecer Geral do Gestor & 8/9. Área de Assinaturas */}
-          <div className="border-t border-slate-300 pt-3 space-y-4 printable-avoid-break text-xs">
+          <div className="border-t border-slate-300 pt-3 space-y-4 print-avoid-break manager-comment text-xs">
             <div>
-              <strong className="text-slate-900 font-bold uppercase block text-xs mb-1">7. PARECER GERAL DO GESTOR HOSPITALAR:</strong>
+              <strong className="text-slate-900 font-bold uppercase block text-xs mb-1">PARECER GERAL DO GESTOR HOSPITALAR:</strong>
               <p className="p-3 bg-slate-50 rounded-xl border border-slate-300 text-slate-900 italic leading-relaxed">
                 "{evaluation.parecerGeral || 'Avaliação realizada e aprovada pela Diretoria Operacional.'}"
               </p>
             </div>
 
-            {/* Área de Assinaturas Executivas em 2 Colunas */}
-            <div className="grid grid-cols-2 gap-8 pt-6">
-              {/* 8. Assinatura do Gestor do Contrato */}
+            {/* Área de Assinaturas Executivas em 2 Colunas (signature-block) */}
+            <div className="grid grid-cols-2 gap-8 pt-6 signature-block">
+              {/* Assinatura do Gestor do Contrato */}
               <div className="border-t-2 border-slate-800 pt-2 text-center space-y-1">
                 <strong className="text-slate-900 font-bold block text-xs">{evaluation.gestorAvaliador}</strong>
                 <span className="text-[11px] text-slate-600 block">Gestor do Contrato / Diretoria Operacional</span>
                 <span className="text-[10px] text-slate-400 block">REDE D'OR – HOSPITAL VILA NOVA STAR</span>
               </div>
 
-              {/* 9. Assinatura/Representante do Fornecedor */}
+              {/* Assinatura/Representante do Fornecedor */}
               <div className="border-t-2 border-slate-800 pt-2 text-center space-y-1">
                 {evaluation.assinaturaDigitalUrl ? (
                   <div className="flex flex-col items-center">

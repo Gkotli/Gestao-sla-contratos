@@ -22,84 +22,129 @@
 }
 
 /* ==========================================================================
-   ESTRUTURA DEDICADA DE IMPRESSÃO / PDF (A4 RETRATO MULTIPÁGINAS)
+   ARQUITETURA DE IMPRESSÃO NATIVA A4 MULTIPÁGINAS (SEM COMPRESSÃO NEM CORTE)
    ========================================================================== */
 @media print {
-  /* Configuração do Papel A4 com Margens Profissionais */
+  /* Configuração de Página A4 Retrato */
   @page {
     size: A4 portrait;
     margin: 10mm 12mm 12mm 12mm;
   }
 
-  /* Oculta TUDO no body por padrão */
+  /* Reset completo de html e body para desativar rolagem/corte e permitir quebra natural */
+  html,
   body {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #0f172a !important;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-    font-size: 11px !important;
-    line-height: 1.4 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
 
-  /* Esconde todos os elementos do sistema da tela normal */
-  body * {
-    visibility: hidden !important;
-  }
-
+  /* Oculta todos os componentes de interface da aplicação normal */
   .no-print,
+  nav,
+  aside,
   header,
-  main,
   footer,
-  nav {
+  main,
+  .app-root-container,
+  .app-main-content,
+  .filters,
+  .history-section,
+  .actions {
     display: none !important;
   }
 
-  /* Torna VISÍVEL EXCLUSIVAMENTE o elemento #printable-report e seus filhos */
-  #printable-report,
-  #printable-report * {
-    visibility: visible !important;
-  }
-
-  /* Posiciona o relatório no topo da página de impressão A4 */
-  #printable-report {
+  /* Reset de todos os elementos ancestrais do relatório para fluxo normal do documento */
+  #root,
+  .printable-laudo-modal,
+  .printable-laudo-container {
     display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
+    position: static !important;
     width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+    zoom: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
-    background: #ffffff !important;
-    box-shadow: none !important;
     border: none !important;
-    overflow: visible !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
   }
 
-  /* Repetição do cabeçalho da tabela caso a tabela quebre para a página 2 */
-  #printable-report table {
+  /* Container Exclusivo do Relatório Imprimível */
+  #printable-report {
+    display: block !important;
+    position: static !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow: visible !important;
+
+    transform: none !important;
+    zoom: 1 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  /* Estrutura de Tabela Semântica com Suporte a Múltiplas Páginas */
+  table {
     width: 100% !important;
     border-collapse: collapse !important;
+
+    break-inside: auto !important;
+    page-break-inside: auto !important;
   }
 
-  #printable-report thead {
+  /* Repetição do cabeçalho da tabela no topo das páginas seguintes */
+  thead {
     display: table-header-group !important;
   }
 
-  #printable-report tbody {
+  tbody {
     display: table-row-group !important;
   }
 
-  /* Evita cortar linhas da tabela ao meio */
-  #printable-report tr {
+  /* Evita que cada linha individual da tabela seja dividida ao meio */
+  tr {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
-  /* Seções individuais evitam quebra interna (sem travar a tabela inteira) */
-  .printable-avoid-break {
+  th,
+  td {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Evita quebras internas indesejadas em blocos fechados */
+  .print-avoid-break,
+  .supplier-data,
+  .sla-summary,
+  .manager-comment,
+  .signature-block {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
