@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { Building2, Lock, Mail, ArrowRight, KeyRound, AlertCircle } from 'lucide-react';
+import { Building2, Lock, Mail, ArrowRight, KeyRound, AlertCircle, HelpCircle, CheckCircle2 } from 'lucide-react';
 
 interface LoginPageProps {
   users: User[];
@@ -11,6 +11,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Modal de Esqueci minha senha
+  const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotSuccessMsg, setForgotSuccessMsg] = useState('');
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +36,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
     setEmail(user.email);
     setSenha(user.senha || '123');
     onLoginSuccess(user);
+  };
+
+  const handleForgotSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotSuccessMsg(
+      `Solicitação enviada com sucesso! A Diretoria Operacional foi notificada para redefinir a senha do e-mail ${forgotEmail}.`
+    );
   };
 
   return (
@@ -81,9 +93,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Senha de Acesso *
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold text-slate-300">
+                  Senha de Acesso *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForgotSuccessMsg('');
+                    setIsForgotModalOpen(true);
+                  }}
+                  className="text-[11px] font-semibold text-teal-400 hover:text-teal-300 transition"
+                >
+                  Esqueci minha senha
+                </button>
+              </div>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                 <input
@@ -106,7 +130,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
             </button>
           </form>
 
-          {/* Seleção de Contas Autorizadas (Sem exibição de senha) */}
+          {/* Seleção de Contas Autorizadas */}
           <div className="border-t border-slate-800 pt-5 space-y-3">
             <div className="flex items-center space-x-2 text-slate-400 text-xs font-semibold">
               <KeyRound className="w-4 h-4 text-teal-400" />
@@ -145,6 +169,76 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
           © 2026 Hospital Operacional de Excelência — Acesso Restrito e Auditado
         </p>
       </div>
+
+      {/* Modal de Esqueci Minha Senha */}
+      {isForgotModalOpen && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl border border-slate-800 p-6 space-y-4 text-xs text-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <HelpCircle className="w-5 h-5 text-teal-400" />
+                <h3 className="font-bold text-sm text-white">Recuperação de Senha</h3>
+              </div>
+              <button
+                onClick={() => setIsForgotModalOpen(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {forgotSuccessMsg ? (
+              <div className="p-4 bg-emerald-950/80 border border-emerald-800 text-emerald-200 rounded-xl space-y-2">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <strong className="font-bold">Solicitação Registrada</strong>
+                </div>
+                <p className="text-xs leading-relaxed">{forgotSuccessMsg}</p>
+                <button
+                  onClick={() => setIsForgotModalOpen(false)}
+                  className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-lg transition"
+                >
+                  Voltar para o Login
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotSubmit} className="space-y-4">
+                <p className="text-slate-400 leading-relaxed">
+                  Digite seu e-mail corporativo. A Diretoria Operacional receberá a notificação para redefinir sua senha no painel de administração.
+                </p>
+
+                <div>
+                  <label className="block font-semibold text-slate-300 mb-1">E-mail Cadastrado *</label>
+                  <input
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    required
+                    placeholder="seu.nome@hospital.com.br"
+                    className="w-full bg-slate-950 border border-slate-700 text-white text-xs rounded-xl p-2.5 focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotModalOpen(false)}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold rounded-lg shadow"
+                  >
+                    Solicitar Redefinição
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
