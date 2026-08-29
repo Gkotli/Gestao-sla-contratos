@@ -52,8 +52,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="flex justify-center">
-          <div className="bg-gradient-to-br from-hospital-500 to-teal-600 p-4 rounded-2xl shadow-xl shadow-teal-900/40 border border-teal-400/30">
-            <Building2 className="w-10 h-10 text-white" />
+          <div className="bg-white p-3 rounded-2xl shadow-xl shadow-teal-900/40 border border-slate-200">
+            <img
+              src="/logo-rede-dor.webp"
+              alt="Logo Rede D'Or"
+              className="h-12 sm:h-14 w-auto object-contain"
+            />
           </div>
         </div>
 
@@ -61,7 +65,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
           SLA & Avaliação de Contratos
         </h2>
         <p className="mt-1 text-center text-xs text-slate-400">
-          Diretoria Operacional — Sistema Restrito de Avaliação Anual
+          REDE D'OR — Diretoria Operacional
         </p>
       </div>
 

@@ -53,15 +53,19 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
         {/* Documento do Laudo Oficial (ESTILO DOCUMENTO IMPRESSO/PDF) */}
         <div className="p-6 sm:p-8 overflow-y-auto space-y-5 text-slate-900 bg-white print:p-0 print:overflow-visible print:space-y-4">
           
-          {/* Cabeçalho Hospitalar Oficial */}
+          {/* Cabeçalho Hospitalar Oficial com a Logo da Rede D'Or */}
           <div className="border-b-2 border-slate-900 pb-3 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-slate-900 text-white p-2.5 rounded-xl print:p-1.5 print:bg-slate-900">
-                <Building2 className="w-7 h-7 print:w-6 print:h-6" />
+              <div className="bg-white p-2 rounded-xl border border-slate-200 shadow-sm print:p-1">
+                <img
+                  src="/logo-rede-dor.webp"
+                  alt="Logo Rede D'Or"
+                  className="h-10 sm:h-12 w-auto object-contain print:h-10"
+                />
               </div>
               <div>
                 <h1 className="text-base sm:text-lg font-extrabold text-slate-900 uppercase tracking-wide">
-                  HOSPITAL OPERACIONAL DE EXCELÊNCIA
+                  REDE D'OR — HOSPITAL VILA NOVA STAR
                 </h1>
                 <p className="text-xs text-slate-600 font-medium">
                   DIRETORIA OPERACIONAL | GESTÃO DE CONTRATOS E SLA

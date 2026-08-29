@@ -1,7 +1,6 @@
 import React from 'react';
 import { User } from '../types';
 import { 
-  Building2, 
   BarChart3, 
   FileCheck2, 
   ClipboardList, 
@@ -39,22 +38,26 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print">
-      {/* Top bar institucional */}
+      {/* Top bar institucional com a Logo Oficial da Rede D'Or */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-4">
-            <div className="bg-gradient-to-br from-hospital-500 to-teal-600 p-3 rounded-xl shadow-md">
-              <Building2 className="w-8 h-8 text-white" />
+            <div className="bg-white p-2 rounded-xl shadow-md border border-slate-200 flex items-center justify-center">
+              <img 
+                src="/logo-rede-dor.webp" 
+                alt="Logo Rede D'Or" 
+                className="h-9 sm:h-10 w-auto object-contain"
+              />
             </div>
             <div>
               <div className="flex items-center space-x-2">
                 <span className="bg-hospital-500/20 text-hospital-100 text-xs font-semibold px-2.5 py-0.5 rounded border border-hospital-400/30">
                   DIRETORIA OPERACIONAL
                 </span>
-                <span className="text-slate-400 text-xs font-medium">| Sistema de Avaliação Anual de Contratos</span>
+                <span className="text-slate-400 text-xs font-medium">| Avaliação Anual de Contratos</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                Gestão de SLA e Avaliação de Contratos
+                Gestão de SLA e Qualidade de Contratos
               </h1>
             </div>
           </div>
