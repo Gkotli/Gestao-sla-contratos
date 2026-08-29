@@ -2,12 +2,12 @@ import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUPPLIERS, INITIAL_USERS } from './mockData';
 
 const KEYS = {
-  USERS: 'sla_hospital_users_v2',
-  CURRENT_USER: 'sla_hospital_current_user_v2',
-  SECTORS: 'sla_hospital_sectors_v2',
-  SUPPLIERS: 'sla_hospital_suppliers_v2',
-  EVALUATIONS: 'sla_hospital_evaluations_v2',
-  ACTION_PLANS: 'sla_hospital_action_plans_v2'
+  USERS: 'sla_hospital_users_v6',
+  CURRENT_USER: 'sla_hospital_current_user_v6',
+  SECTORS: 'sla_hospital_sectors_v6',
+  SUPPLIERS: 'sla_hospital_suppliers_v6',
+  EVALUATIONS: 'sla_hospital_evaluations_v6',
+  ACTION_PLANS: 'sla_hospital_action_plans_v6'
 };
 
 export class StorageService {
@@ -40,16 +40,12 @@ export class StorageService {
 
   static getCurrentUser(): User | null {
     const data = localStorage.getItem(KEYS.CURRENT_USER);
-    if (!data) {
-      // Default to Diretoria if none logged in
-      const users = this.getUsers();
-      const defaultUser = users.find(u => u.role === 'DIRETORIA') || users[0] || null;
-      if (defaultUser) {
-        this.setCurrentUser(defaultUser);
-      }
-      return defaultUser;
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
     }
-    return JSON.parse(data);
   }
 
   static setCurrentUser(user: User | null): void {
@@ -117,12 +113,6 @@ export class StorageService {
     return evaluations;
   }
 
-  static deleteEvaluation(evaluationId: string): Evaluation[] {
-    const evaluations = this.getEvaluations().filter(e => e.id !== evaluationId);
-    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
-    return evaluations;
-  }
-
   static getActionPlans(): ActionPlan[] {
     const data = localStorage.getItem(KEYS.ACTION_PLANS);
     if (!data) {
@@ -144,18 +134,11 @@ export class StorageService {
     return plans;
   }
 
-  static deleteActionPlan(planId: string): ActionPlan[] {
-    const plans = this.getActionPlans().filter(p => p.id !== planId);
-    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(plans));
-    return plans;
-  }
-
-  static resetToDefault(): void {
-    localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
-    localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(INITIAL_USERS[0]));
+  static resetAllData(): void {
     localStorage.setItem(KEYS.SECTORS, JSON.stringify(INITIAL_SECTORS));
     localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(INITIAL_SUPPLIERS));
     localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(INITIAL_EVALUATIONS));
     localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(INITIAL_ACTION_PLANS));
+    localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
   }
 }

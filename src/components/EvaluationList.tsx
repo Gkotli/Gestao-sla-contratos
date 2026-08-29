@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
+import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { getMetaBadgeDetails } from '../services/evaluationCalculation';
 import { 
   Search, 
@@ -17,6 +17,7 @@ interface EvaluationListProps {
   suppliers: Supplier[];
   sectors: Sector[];
   actionPlans: ActionPlan[];
+  currentUser: User | null;
   onNewEvaluation: () => void;
   onEditEvaluation: (evaluation: Evaluation) => void;
   onViewReport: (evalId: string) => void;
@@ -30,6 +31,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   suppliers,
   sectors,
   actionPlans,
+  currentUser,
   onNewEvaluation,
   onEditEvaluation,
   onViewReport,
@@ -41,6 +43,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   const [selectedAno, setSelectedAno] = useState('ALL');
   const [selectedSector, setSelectedSector] = useState('ALL');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
+
+  const isFornecedor = currentUser?.role === 'FORNECEDOR';
 
   const filteredEvaluations = useMemo(() => {
     return evaluations.filter(ev => {
@@ -66,19 +70,24 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Histórico de Avaliações Anuais de Contratos</h2>
-          <p className="text-xs text-slate-500">Acompanhamento consolidado de todos os fornecedores no ciclo anual</p>
+          <p className="text-xs text-slate-500">
+            {isFornecedor ? 'Avaliações do seu contrato no ciclo hospitalar' : 'Acompanhamento consolidado de todos os fornecedores no ciclo anual'}
+          </p>
         </div>
 
-        <button
-          onClick={onNewEvaluation}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-lg shadow transition self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Nova Avaliação Anual
-        </button>
+        {/* Botão de Nova Avaliação exibido APENAS para Gestores e Diretoria (Oculto para Fornecedor) */}
+        {!isFornecedor && (
+          <button
+            onClick={onNewEvaluation}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-lg shadow transition self-start sm:self-auto cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Avaliação Anual
+          </button>
+        )}
       </div>
 
-      {/* Bar de Pesquisa e Filtros */}
+      {/* Barra de Pesquisa e Filtros */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           {/* Busca por texto */}
@@ -146,57 +155,51 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                 filteredEvaluations.map((ev) => {
                   const supplier = suppliers.find(s => s.id === ev.fornecedorId);
                   const sector = sectors.find(s => s.id === ev.setorId);
-                  const badge = getMetaBadgeDetails(ev.statusMeta, ev.mediaGeral);
-                  const actionPlan = actionPlans.find(p => p.evaluationId === ev.id);
+                  const metaDetails = getMetaBadgeDetails(ev.mediaGeral);
 
                   return (
                     <tr key={ev.id} className="hover:bg-slate-50 transition">
-                      {/* Fornecedor */}
                       <td className="py-3 px-4">
-                        <div className="font-bold text-slate-900 text-sm">{supplier?.nomeFantasia || 'N/A'}</div>
-                        <div className="text-slate-500 font-mono text-[11px]">{supplier?.cnpj}</div>
+                        <strong className="text-slate-900 block font-bold text-sm">
+                          {supplier?.nomeFantasia || 'Fornecedor Desconhecido'}
+                        </strong>
+                        <span className="text-[11px] text-slate-500 block">
+                          {supplier?.razaoSocial} | {supplier?.cnpj}
+                        </span>
                       </td>
 
-                      {/* Setor */}
                       <td className="py-3 px-4 font-medium text-slate-700">
-                        {sector?.nome || 'N/A'}
+                        {sector?.nome || 'Setor Responsável'}
                       </td>
 
-                      {/* Período */}
-                      <td className="py-3 px-4">
-                        <span className="font-bold text-slate-800">{ev.ano}</span>
+                      <td className="py-3 px-4 font-bold text-slate-900">
+                        {ev.ano}
                       </td>
 
-                      {/* Médias dos Grupos */}
-                      <td className="py-3 px-4 text-center font-medium text-slate-700">{ev.mediaLegais.toFixed(2)}</td>
-                      <td className="py-3 px-4 text-center font-medium text-slate-700">{ev.mediaComportamentais.toFixed(2)}</td>
-                      <td className="py-3 px-4 text-center font-medium text-slate-700">{ev.mediaQualidade.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                        {ev.mediaLegais.toFixed(2)}
+                      </td>
 
-                      {/* Média Geral com destaque */}
+                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                        {ev.mediaComportamentais.toFixed(2)}
+                      </td>
+
+                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                        {ev.mediaQualidade.toFixed(2)}
+                      </td>
+
                       <td className="py-3 px-4 text-center">
-                        <span className={`text-sm font-extrabold px-2.5 py-1 rounded-md ${badge.colorClass}`}>
+                        <span className="text-sm font-black text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
                           {ev.mediaGeral.toFixed(2)}
                         </span>
                       </td>
 
-                      {/* Status da Meta */}
                       <td className="py-3 px-4">
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badge.colorClass}`}>
-                          {badge.label}
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails.bgClass} ${metaDetails.textClass} border ${metaDetails.borderClass}`}>
+                          {metaDetails.label} ({ev.mediaGeral.toFixed(2)})
                         </span>
-                        {ev.necessitaPlanoAcao && !actionPlan && (
-                          <span className="block text-[10px] text-rose-600 font-bold mt-1">
-                            ⚠️ Requer Plano Ação
-                          </span>
-                        )}
-                        {actionPlan && (
-                          <span className="block text-[10px] text-amber-700 font-medium mt-1">
-                            ✓ Plano ({actionPlan.status})
-                          </span>
-                        )}
                       </td>
 
-                      {/* Status Assinatura/Ciência */}
                       <td className="py-3 px-4">
                         {ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
                           <span className="inline-flex items-center text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-semibold">
@@ -219,7 +222,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {/* Visualizar / PDF */}
                           <button
                             onClick={() => onViewReport(ev.id)}
-                            className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition"
+                            className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition cursor-pointer"
                             title="Gerar Laudo PDF / Imprimir"
                           >
                             <Printer className="w-4 h-4" />
@@ -228,44 +231,48 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {/* Assinatura / Ciência */}
                           <button
                             onClick={() => onOpenSignatureModal(ev)}
-                            className="p-1.5 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded transition"
+                            className="p-1.5 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded transition cursor-pointer"
                             title="Registrar Assinatura / Ciência do Fornecedor"
                           >
                             <PenTool className="w-4 h-4" />
                           </button>
 
                           {/* Plano de Ação se nota < 4.0 */}
-                          {ev.mediaGeral < 4.0 && (
+                          {!isFornecedor && ev.mediaGeral < 4.0 && (
                             <button
                               onClick={() => onOpenActionPlanModal(ev)}
-                              className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition"
+                              className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition cursor-pointer"
                               title="Configurar Plano de Ação (5W2H)"
                             >
                               <AlertTriangle className="w-4 h-4" />
                             </button>
                           )}
 
-                          {/* Editar */}
-                          <button
-                            onClick={() => onEditEvaluation(ev)}
-                            className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition"
-                            title="Editar Avaliação"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
+                          {/* Editar (Apenas para Gestor/Diretoria) */}
+                          {!isFornecedor && (
+                            <button
+                              onClick={() => onEditEvaluation(ev)}
+                              className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition cursor-pointer"
+                              title="Editar Avaliação"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
 
-                          {/* Excluir */}
-                          <button
-                            onClick={() => {
-                              if (confirm('Deseja realmente remover esta avaliação anual?')) {
-                                onDeleteEvaluation(ev.id);
-                              }
-                            }}
-                            className="p-1.5 text-rose-500 hover:bg-rose-50 rounded transition"
-                            title="Excluir Avaliação"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {/* Excluir (Apenas para Gestor/Diretoria) */}
+                          {!isFornecedor && (
+                            <button
+                              onClick={() => {
+                                if (confirm('Deseja realmente remover esta avaliação anual?')) {
+                                  onDeleteEvaluation(ev.id);
+                                }
+                              }}
+                              className="p-1.5 text-rose-500 hover:bg-rose-50 rounded transition cursor-pointer"
+                              title="Excluir Avaliação"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -1,6 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
 import { 
+  Building2, 
+  TrendingUp, 
+  Award, 
+  AlertTriangle, 
+  CheckCircle2, 
+  FileSpreadsheet, 
+  Filter, 
+  Calendar,
+  Layers,
+  ArrowUpRight,
+  ClipboardList
+} from 'lucide-react';
+import { 
   BarChart, 
   Bar, 
   XAxis, 
@@ -8,29 +21,18 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer, 
+  Cell, 
   ReferenceLine,
   PieChart,
-  Pie,
-  Cell
+  Pie
 } from 'recharts';
-import { 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle2, 
-  XCircle, 
-  Filter, 
-  Award,
-  PenTool,
-  Eye
-} from 'lucide-react';
-import { getMetaBadgeDetails } from '../services/evaluationCalculation';
 
 interface ExecutiveDashboardProps {
   evaluations: Evaluation[];
   suppliers: Supplier[];
   sectors: Sector[];
   actionPlans: ActionPlan[];
-  onNewEvaluation: (supplierId?: string) => void;
+  onNewEvaluation: () => void;
   onViewEvaluation: (evalId: string) => void;
   onManageActionPlans: () => void;
 }
@@ -44,444 +46,410 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   onViewEvaluation,
   onManageActionPlans
 }) => {
-  const [selectedAno, setSelectedAno] = useState<string>('2026');
-  const [selectedSector, setSelectedSector] = useState<string>('ALL');
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [selectedSectorId, setSelectedSectorId] = useState<string>('TODOS');
 
-  // Filtered evaluations
+  // Filtrar avaliações pelo ano e setor selecionado
   const filteredEvaluations = useMemo(() => {
-    return evaluations.filter(e => {
-      const matchAno = selectedAno === 'ALL' || e.ano.toString() === selectedAno;
-      const matchSector = selectedSector === 'ALL' || e.setorId === selectedSector;
-      return matchAno && matchSector;
+    return evaluations.filter(ev => {
+      const matchYear = ev.ano === selectedYear;
+      const matchSector = selectedSectorId === 'TODOS' || ev.setorId === selectedSectorId;
+      return matchYear && matchSector;
     });
-  }, [evaluations, selectedAno, selectedSector]);
+  }, [evaluations, selectedYear, selectedSectorId]);
 
-  // Overall Statistics
-  const stats = useMemo(() => {
-    const total = filteredEvaluations.length;
-    if (total === 0) {
-      return {
-        mediaGeral: 0,
-        dentroMetaCount: 0,
-        abaixoMetaCount: 0,
-        criticoCount: 0,
-        pctDentroMeta: 0,
-        pctAbaixoMeta: 0,
-        pctCritico: 0,
-        assinadosCount: 0,
-        pctAssinados: 0
-      };
-    }
+  // Indicadores Principais (KPIs)
+  const totalEvaluations = filteredEvaluations.length;
+  
+  const mediaGeralGlobal = useMemo(() => {
+    if (totalEvaluations === 0) return 0;
+    const sum = filteredEvaluations.reduce((acc, curr) => acc + curr.mediaGeral, 0);
+    return Number((sum / totalEvaluations).toFixed(2));
+  }, [filteredEvaluations, totalEvaluations]);
 
-    const somaGeral = filteredEvaluations.reduce((acc, e) => acc + e.mediaGeral, 0);
-    const mediaGeral = Number((somaGeral / total).toFixed(2));
-
-    const dentroMetaCount = filteredEvaluations.filter(e => e.statusMeta === 'DENTRO_DA_META').length;
-    const abaixoMetaCount = filteredEvaluations.filter(e => e.statusMeta === 'ABAIXO_DA_META').length;
-    const criticoCount = filteredEvaluations.filter(e => e.statusMeta === 'CRITICO').length;
-
-    const assinadosCount = filteredEvaluations.filter(e => e.statusAssinatura === 'ASSINADO_CIENTE').length;
-
-    return {
-      mediaGeral,
-      dentroMetaCount,
-      abaixoMetaCount,
-      criticoCount,
-      pctDentroMeta: Math.round((dentroMetaCount / total) * 100),
-      pctAbaixoMeta: Math.round((abaixoMetaCount / total) * 100),
-      pctCritico: Math.round((criticoCount / total) * 100),
-      assinadosCount,
-      pctAssinados: Math.round((assinadosCount / total) * 100)
-    };
+  const dentroDaMetaCount = useMemo(() => {
+    return filteredEvaluations.filter(ev => ev.statusMeta === 'DENTRO_DA_META').length;
   }, [filteredEvaluations]);
 
-  // Sector Averages Chart Data
+  const abaixoDaMetaCount = useMemo(() => {
+    return filteredEvaluations.filter(ev => ev.statusMeta === 'ABAIXO_DA_META' || ev.statusMeta === 'CRITICO').length;
+  }, [filteredEvaluations]);
+
+  // Percentual de conformidade
+  const taxaAprovacaoPercent = totalEvaluations > 0 
+    ? Math.round((dentroDaMetaCount / totalEvaluations) * 100) 
+    : 0;
+
+  // Dados do Gráfico de Médias por Setor
   const sectorChartData = useMemo(() => {
     return sectors.map(sec => {
-      const evalsInSector = filteredEvaluations.filter(e => e.setorId === sec.id);
-      if (evalsInSector.length === 0) {
+      const evals = filteredEvaluations.filter(e => e.setorId === sec.id);
+      if (evals.length === 0) {
         return {
-          name: sec.nome.split(' / ')[0], // short name
-          mediaGeral: 0,
-          mediaLegais: 0,
-          mediaComportamentais: 0,
-          mediaQualidade: 0
+          nome: sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome,
+          nomeCompleto: sec.nome,
+          media: 0,
+          total: 0
         };
       }
-
-      const avgGeral = evalsInSector.reduce((a, b) => a + b.mediaGeral, 0) / evalsInSector.length;
-      const avgLegais = evalsInSector.reduce((a, b) => a + b.mediaLegais, 0) / evalsInSector.length;
-      const avgComp = evalsInSector.reduce((a, b) => a + b.mediaComportamentais, 0) / evalsInSector.length;
-      const avgQual = evalsInSector.reduce((a, b) => a + b.mediaQualidade, 0) / evalsInSector.length;
-
+      const sum = evals.reduce((acc, curr) => acc + curr.mediaGeral, 0);
+      const avg = Number((sum / evals.length).toFixed(2));
       return {
-        name: sec.nome.split(' / ')[0],
-        mediaGeral: Number(avgGeral.toFixed(2)),
-        mediaLegais: Number(avgLegais.toFixed(2)),
-        mediaComportamentais: Number(avgComp.toFixed(2)),
-        mediaQualidade: Number(avgQual.toFixed(2))
+        nome: sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome,
+        nomeCompleto: sec.nome,
+        media: avg,
+        total: evals.length
       };
-    }).filter(d => d.mediaGeral > 0);
-  }, [sectors, filteredEvaluations]);
+    }).filter(d => d.total > 0 || selectedSectorId === 'TODOS');
+  }, [sectors, filteredEvaluations, selectedSectorId]);
 
-  // Pie chart status breakdown
-  const pieData = useMemo(() => {
+  // Dados do Gráfico de Pizza por Faixa de Desempenho
+  const pieChartData = useMemo(() => {
+    const otimo = filteredEvaluations.filter(e => e.mediaGeral >= 4.5).length;
+    const bom = filteredEvaluations.filter(e => e.mediaGeral >= 4.0 && e.mediaGeral < 4.5).length;
+    const regular = filteredEvaluations.filter(e => e.mediaGeral >= 3.0 && e.mediaGeral < 4.0).length;
+    const ruim = filteredEvaluations.filter(e => e.mediaGeral < 3.0).length;
+
     return [
-      { name: 'Dentro da Meta (≥ 4.0)', value: stats.dentroMetaCount, color: '#10b981' },
-      { name: 'Abaixo da Meta (3.0 a 3.99)', value: stats.abaixoMetaCount, color: '#f59e0b' },
-      { name: 'Crítico (< 3.0)', value: stats.criticoCount, color: '#ef4444' }
+      { name: 'Ótimo (≥ 4.50)', value: otimo, color: '#059669' },
+      { name: 'Bom (4.00 - 4.49)', value: bom, color: '#0d9488' },
+      { name: 'Regular (3.00 - 3.99)', value: regular, color: '#d97706' },
+      { name: 'Crítico (< 3.00)', value: ruim, color: '#dc2626' }
     ].filter(d => d.value > 0);
-  }, [stats]);
-
-  // Low score suppliers (Abaixo da Meta & Crítico)
-  const lowScoreEvaluations = useMemo(() => {
-    return filteredEvaluations.filter(e => e.mediaGeral < 4.00);
   }, [filteredEvaluations]);
 
-  // Top score suppliers
-  const topScoreEvaluations = useMemo(() => {
+  // Lista de Fornecedores com Maior Desempenho (Top Performers)
+  const topPerformers = useMemo(() => {
     return [...filteredEvaluations]
-      .filter(e => e.mediaGeral >= 4.00)
-      .sort((a, b) => b.mediaGeral - a.mediaGeral);
+      .sort((a, b) => b.mediaGeral - a.mediaGeral)
+      .slice(0, 5);
+  }, [filteredEvaluations]);
+
+  // Lista de Fornecedores que exigem Plano de Ação (Abaixo da Meta)
+  const lowPerformers = useMemo(() => {
+    return filteredEvaluations.filter(e => e.necessitaPlanoAcao || e.mediaGeral < 4.0);
   }, [filteredEvaluations]);
 
   return (
-    <div className="space-y-6">
-      {/* Bar de Filtros Globais da Diretoria */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center space-x-2 text-slate-700 font-semibold text-sm">
-          <Filter className="w-4 h-4 text-hospital-600" />
-          <span>Filtros Executivos:</span>
+    <div className="space-y-8 font-sans">
+      {/* Cabeçalho do Painel e Filtros */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="bg-hospital-500/10 text-hospital-700 text-xs font-bold px-2.5 py-0.5 rounded border border-hospital-200 uppercase">
+              Diretoria Operacional — Rede D'Or
+            </span>
+            <span className="text-slate-400 text-xs font-medium">| Visão Geral do SLA Hospitalar</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+            Painel Geral de Avaliação de Contratos
+          </h2>
         </div>
 
+        {/* Filtros de Ano e Setor */}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Filtro Ano */}
-          <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Ano de Avaliação</label>
+          <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm text-xs font-semibold">
+            <Calendar className="w-4 h-4 text-hospital-600" />
+            <span className="text-slate-600">Ciclo Anual:</span>
             <select
-              value={selectedAno}
-              onChange={(e) => setSelectedAno(e.target.value)}
-              className="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-medium rounded-lg p-2 focus:ring-hospital-500 focus:border-hospital-500"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer"
             >
-              <option value="ALL">Todos os Anos</option>
-              <option value="2026">Ano 2026</option>
-              <option value="2025">Ano 2025</option>
-              <option value="2024">Ano 2024</option>
+              <option value={2026}>Ano 2026</option>
+              <option value={2025}>Ano 2025</option>
+              <option value={2024}>Ano 2024</option>
             </select>
           </div>
 
-          {/* Filtro Setor */}
-          <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Setor Responsável</label>
+          <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm text-xs font-semibold">
+            <Filter className="w-4 h-4 text-hospital-600" />
+            <span className="text-slate-600">Setor:</span>
             <select
-              value={selectedSector}
-              onChange={(e) => setSelectedSector(e.target.value)}
-              className="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-medium rounded-lg p-2 focus:ring-hospital-500 focus:border-hospital-500"
+              value={selectedSectorId}
+              onChange={(e) => setSelectedSectorId(e.target.value)}
+              className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer max-w-[180px] truncate"
             >
-              <option value="ALL">Todos os Setores Hospitalares</option>
+              <option value="TODOS">Todos os Setores</option>
               {sectors.map(sec => (
                 <option key={sec.id} value={sec.id}>{sec.nome}</option>
               ))}
             </select>
           </div>
+
+          <button
+            onClick={onNewEvaluation}
+            className="inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md transition"
+          >
+            + Nova Avaliação Anual
+          </button>
         </div>
       </div>
 
-      {/* Cards de Indicadores de SLA (KPIs) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* KPI 1: Média Geral Hospitalar */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 relative overflow-hidden">
+      {/* Cartões dos Indicadores Principais (KPIs) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Média Geral Hospitalar */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-2 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Média Geral Hospitalar</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 mt-1">
-                {stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(2) : 'N/A'}
-              </h3>
-            </div>
-            <div className={`p-3 rounded-full ${stats.mediaGeral >= 4 ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
-              <TrendingUp className="w-6 h-6" />
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Média Geral de SLA</span>
+            <div className="p-2 bg-teal-50 text-teal-700 rounded-xl">
+              <TrendingUp className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3 flex items-center text-xs">
-            <span className="text-slate-500">Meta Estabelecida: </span>
-            <span className="font-bold text-slate-800 ml-1">≥ 4,00</span>
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-black text-slate-900">{mediaGeralGlobal.toFixed(2)}</span>
+            <span className="text-xs text-slate-500 font-semibold">/ 5,00</span>
           </div>
-          <div className={`h-1.5 w-full mt-3 rounded-full ${stats.mediaGeral >= 4 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+          <p className="text-[11px] text-slate-500">Meta Mínima Institucional: <strong>4,00</strong></p>
         </div>
 
-        {/* KPI 2: Dentro da Meta */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        {/* Taxa de Conformidade */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Dentro da Meta (≥ 4.0)</p>
-              <div className="flex items-baseline space-x-2 mt-1">
-                <h3 className="text-3xl font-extrabold text-emerald-600">
-                  {stats.dentroMetaCount}
-                </h3>
-                <span className="text-sm font-semibold text-slate-500">({stats.pctDentroMeta}%)</span>
-              </div>
-            </div>
-            <div className="p-3 bg-emerald-100 text-emerald-600 rounded-full">
-              <CheckCircle2 className="w-6 h-6" />
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Taxa de Conformidade</span>
+            <div className="p-2 bg-emerald-50 text-emerald-700 rounded-xl">
+              <CheckCircle2 className="w-5 h-5" />
             </div>
           </div>
-          <p className="mt-3 text-xs text-slate-500">Fornecedores em conformidade plena de SLA</p>
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-black text-slate-900">{taxaAprovacaoPercent}%</span>
+            <span className="text-xs text-emerald-600 font-bold">({dentroDaMetaCount} contratos)</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Contratos com média $\ge$ 4,00 no ciclo</p>
         </div>
 
-        {/* KPI 3: Abaixo da Meta e Críticos */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        {/* Contratos Abaixo da Meta */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Abaixo da Meta / Críticos</p>
-              <div className="flex items-baseline space-x-2 mt-1">
-                <h3 className="text-3xl font-extrabold text-amber-600">
-                  {stats.abaixoMetaCount + stats.criticoCount}
-                </h3>
-                <span className="text-xs font-medium text-slate-500">
-                  ({stats.abaixoMetaCount} Amarelos / {stats.criticoCount} Vermelhos)
-                </span>
-              </div>
-            </div>
-            <div className="p-3 bg-amber-100 text-amber-600 rounded-full">
-              <AlertTriangle className="w-6 h-6" />
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Abaixo da Meta (&lt; 4,00)</span>
+            <div className="p-2 bg-amber-50 text-amber-700 rounded-xl">
+              <AlertTriangle className="w-5 h-5" />
             </div>
           </div>
-          <p className="mt-3 text-xs text-amber-700 font-medium">Requerem abertura obrigatória de Plano de Ação</p>
+          <div className="flex items-baseline space-x-2">
+            <span className={`text-3xl font-black ${abaixoDaMetaCount > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
+              {abaixoDaMetaCount}
+            </span>
+            <span className="text-xs text-slate-500 font-semibold">contratos</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Exigem Plano de Ação 5W2H</p>
         </div>
 
-        {/* KPI 4: Assinatura e Ciência */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+        {/* Total de Avaliações Registradas */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Ciência do Fornecedor</p>
-              <div className="flex items-baseline space-x-2 mt-1">
-                <h3 className="text-3xl font-extrabold text-slate-800">
-                  {stats.assinadosCount}
-                </h3>
-                <span className="text-sm font-semibold text-slate-500">({stats.pctAssinados}%)</span>
-              </div>
-            </div>
-            <div className="p-3 bg-hospital-100 text-hospital-600 rounded-full">
-              <PenTool className="w-6 h-6" />
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Avaliações Concluídas</span>
+            <div className="p-2 bg-purple-50 text-purple-700 rounded-xl">
+              <ClipboardList className="w-5 h-5" />
             </div>
           </div>
-          <p className="mt-3 text-xs text-slate-500">Laudos com aceite formal registrado</p>
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-black text-slate-900">{totalEvaluations}</span>
+            <span className="text-xs text-slate-500 font-semibold">no ano {selectedYear}</span>
+          </div>
+          <p className="text-[11px] text-slate-500">Contratos avaliados no período</p>
         </div>
       </div>
 
-      {/* Gráficos da Diretoria */}
+      {/* Seção dos Gráficos Interativos (Média por Setor + Distribuição) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Gráfico 1: Médias por Setor Hospitalar */}
-        <div className="lg:col-span-2 bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-          <div className="flex items-center justify-between mb-4">
+        {/* Gráfico de Barras - Média por Setor */}
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Média de Desempenho por Setor Hospitalar</h3>
-              <p className="text-xs text-slate-500">Comparativo das avaliações anuais consolidadas por setor</p>
+              <h3 className="font-bold text-slate-900 text-sm">Média de SLA por Setor Hospitalar</h3>
+              <p className="text-xs text-slate-500">Comparativo das médias dos fornecedores vinculados a cada área no ano {selectedYear}</p>
             </div>
-            <div className="flex items-center space-x-2 text-xs">
-              <span className="inline-block w-3 h-3 bg-rose-500 rounded-full"></span>
-              <span className="text-slate-600 font-medium">Linha da Meta (4,00)</span>
-            </div>
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              Linha de Meta: 4,00
+            </span>
           </div>
 
-          <div className="h-72 w-full">
-            {sectorChartData.length > 0 ? (
+          <div className="h-72 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={sectorChartData} margin={{ top: 20, right: 30, left: -20, bottom: 25 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis 
+                  dataKey="nome" 
+                  tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }}
+                  interval={0}
+                  angle={-15}
+                  textAnchor="end"
+                />
+                <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: '#64748b' }} />
+                <Tooltip 
+                  formatter={(value: any) => [`${value} / 5,00`, 'Média Anual']}
+                  labelFormatter={(label, payload) => payload[0]?.payload?.nomeCompleto || label}
+                  contentStyle={{ borderRadius: '12px', fontSize: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}
+                />
+                <ReferenceLine y={4.0} stroke="#10b981" strokeDasharray="4 4" strokeWidth={2} label={{ value: 'Meta (4,00)', fill: '#059669', fontSize: 10, position: 'top' }} />
+                <Bar dataKey="media" radius={[6, 6, 0, 0]}>
+                  {sectorChartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.media >= 4.0 ? '#0d9488' : entry.media >= 3.0 ? '#f59e0b' : '#ef4444'} 
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Gráfico de Pizza - Distribuição de Notas */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+              Distribuição por Faixa de Desempenho
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">Proporção dos contratos por faixa de pontuação anual</p>
+          </div>
+
+          <div className="h-48 w-full flex items-center justify-center">
+            {pieChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={sectorChartData} margin={{ top: 10, right: 10, left: -20, bottom: 25 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: 11, fill: '#475569' }} 
-                    interval={0} 
-                    angle={-15} 
-                    textAnchor="end" 
-                  />
-                  <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} tick={{ fontSize: 11, fill: '#475569' }} />
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell key={`pie-cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
                   <Tooltip 
-                    formatter={(value: any) => [`${value}`, 'Média']}
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff', borderRadius: '8px' }}
+                    formatter={(val: any) => [`${val} contratos`, 'Quantidade']}
+                    contentStyle={{ borderRadius: '10px', fontSize: '11px' }}
                   />
-                  <ReferenceLine y={4.0} stroke="#ef4444" strokeDasharray="4 4" strokeWidth={2} label={{ value: 'META 4.0', fill: '#ef4444', fontSize: 10, position: 'top' }} />
-                  <Bar dataKey="mediaGeral" fill="#0284c7" radius={[6, 6, 0, 0]} name="Média Geral" />
-                </BarChart>
+                </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-slate-400 text-sm">
-                Nenhuma avaliação encontrada para os filtros selecionados.
-              </div>
+              <div className="text-center text-xs text-slate-400">Nenhum dado disponível</div>
             )}
           </div>
-        </div>
 
-        {/* Gráfico 2: Distribuição da Meta */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-          <div>
-            <h3 className="text-base font-bold text-slate-900">Distribuição por Meta de SLA</h3>
-            <p className="text-xs text-slate-500 mb-4">Proporção de fornecedores por faixa de nota</p>
-
-            <div className="h-56 w-full flex items-center justify-center">
-              {pieData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={55}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff', borderRadius: '8px' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-slate-400 text-sm">Sem dados suficientes</div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2 text-xs border-t border-slate-100 pt-3">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center text-slate-600">
-                <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2"></span>
-                Dentro da Meta (4.0 - 5.0)
-              </span>
-              <span className="font-bold text-slate-800">{stats.dentroMetaCount}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center text-slate-600">
-                <span className="w-2.5 h-2.5 bg-amber-500 rounded-full mr-2"></span>
-                Abaixo da Meta (3.0 - 3.99)
-              </span>
-              <span className="font-bold text-slate-800">{stats.abaixoMetaCount}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="flex items-center text-slate-600">
-                <span className="w-2.5 h-2.5 bg-rose-600 rounded-full mr-2"></span>
-                Crítico (&lt; 3.0)
-              </span>
-              <span className="font-bold text-slate-800">{stats.criticoCount}</span>
-            </div>
+          <div className="space-y-2 pt-2 border-t border-slate-100 text-xs">
+            {pieChartData.map((item) => (
+              <div key={item.name} className="flex items-center justify-between text-slate-700">
+                <div className="flex items-center space-x-2">
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                  <span className="font-medium text-[11px]">{item.name}</span>
+                </div>
+                <strong className="font-bold text-[11px]">{item.value} ({Math.round((item.value / totalEvaluations) * 100)}%)</strong>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Tabelas Sintéticas de Acompanhamento Executivo */}
+      {/* Listas de Destaques: Maiores Notas vs Abaixo da Meta */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Painel de Atenção: Fornecedores Abaixo da Meta (< 4.00) */}
-        <div className="bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden">
-          <div className="bg-amber-50 p-4 border-b border-amber-200 flex items-center justify-between">
+        {/* Fornecedores com Maior Nota */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-amber-600" />
-              <h3 className="font-bold text-slate-900 text-sm">Atenção Diretoria: Fornecedores Abaixo da Meta</h3>
+              <Award className="w-5 h-5 text-amber-500" />
+              <h3 className="font-bold text-slate-900 text-sm">Fornecedores com Maior Nota (Top 5)</h3>
             </div>
-            <span className="bg-amber-200 text-amber-800 font-bold text-xs px-2.5 py-0.5 rounded-full">
-              {lowScoreEvaluations.length} Alertas
-            </span>
+            <span className="text-xs text-slate-500">Ano {selectedYear}</span>
           </div>
 
-          {lowScoreEvaluations.length > 0 ? (
-            <div className="divide-y divide-slate-100">
-              {lowScoreEvaluations.map(ev => {
-                const supplier = suppliers.find(s => s.id === ev.fornecedorId);
-                const sector = sectors.find(s => s.id === ev.setorId);
-                const badge = getMetaBadgeDetails(ev.statusMeta, ev.mediaGeral);
-                const plan = actionPlans.find(p => p.evaluationId === ev.id);
+          <div className="space-y-3">
+            {topPerformers.map(ev => {
+              const sup = suppliers.find(s => s.id === ev.fornecedorId);
+              const sec = sectors.find(s => s.id === ev.setorId);
 
-                return (
-                  <div key={ev.id} className="p-4 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-bold text-slate-900 text-sm">{supplier?.nomeFantasia || 'Fornecedor'}</span>
-                        <span className={`px-2 py-0.5 text-xs font-bold rounded-md border ${badge.colorClass}`}>
-                          {ev.mediaGeral.toFixed(2)} - {badge.label}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Setor: <strong className="text-slate-700">{sector?.nome}</strong> | Ciclo Anual: {ev.ano}
-                      </p>
-                      {plan ? (
-                        <span className="inline-flex items-center text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded mt-2">
-                          <CheckCircle2 className="w-3 h-3 mr-1 text-amber-600" /> Plano de Ação em Andamento ({plan.status})
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded mt-2">
-                          <XCircle className="w-3 h-3 mr-1 text-rose-600" /> PLANO DE AÇÃO PENDENTE
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center space-x-2 self-end sm:self-center">
-                      <button
-                        onClick={() => onViewEvaluation(ev.id)}
-                        className="p-2 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded-lg transition text-xs font-medium flex items-center border border-slate-200"
-                        title="Visualizar Avaliação"
-                      >
-                        <Eye className="w-4 h-4 mr-1" /> Ver Avaliação
-                      </button>
-                    </div>
+              return (
+                <div 
+                  key={ev.id}
+                  onClick={() => onViewEvaluation(ev.id)}
+                  className="p-3.5 bg-slate-50 hover:bg-slate-100/80 rounded-xl border border-slate-200/80 transition cursor-pointer flex items-center justify-between group"
+                >
+                  <div className="space-y-0.5 truncate pr-2">
+                    <strong className="text-slate-900 text-xs font-bold block group-hover:text-hospital-600 transition truncate">
+                      {sup?.nomeFantasia || 'Fornecedor'}
+                    </strong>
+                    <p className="text-[11px] text-slate-500 truncate">
+                      {sec?.nome} | Contrato: {sup?.numeroContrato}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="p-6 text-center text-slate-500 text-sm">
-              <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-              Nenhum fornecedor abaixo da meta no período selecionado. Excelente!
-            </div>
-          )}
+
+                  <div className="flex items-center space-x-3 flex-shrink-0">
+                    <span className="text-sm font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                      {ev.mediaGeral.toFixed(2)}
+                    </span>
+                    <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-hospital-600 transition" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Top Fornecedores com Excelência (>= 4.00) */}
-        <div className="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden">
-          <div className="bg-emerald-50 p-4 border-b border-emerald-200 flex items-center justify-between">
+        {/* Fornecedores que Exigem Plano de Ação (Abaixo da Meta) */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center space-x-2">
-              <Award className="w-5 h-5 text-emerald-600" />
-              <h3 className="font-bold text-slate-900 text-sm">Top Performance Hospitalar (≥ 4.00)</h3>
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              <h3 className="font-bold text-slate-900 text-sm">Contratos Abaixo da Meta (&lt; 4,00)</h3>
             </div>
-            <span className="bg-emerald-200 text-emerald-800 font-bold text-xs px-2.5 py-0.5 rounded-full">
-              {topScoreEvaluations.length} Fornecedores
-            </span>
+            <button
+              onClick={onManageActionPlans}
+              className="text-xs font-bold text-hospital-600 hover:text-hospital-700 transition"
+            >
+              Ver Planos 5W2H →
+            </button>
           </div>
 
-          {topScoreEvaluations.length > 0 ? (
-            <div className="divide-y divide-slate-100">
-              {topScoreEvaluations.slice(0, 5).map(ev => {
-                const supplier = suppliers.find(s => s.id === ev.fornecedorId);
-                const sector = sectors.find(s => s.id === ev.setorId);
+          {lowPerformers.length > 0 ? (
+            <div className="space-y-3">
+              {lowPerformers.map(ev => {
+                const sup = suppliers.find(s => s.id === ev.fornecedorId);
+                const sec = sectors.find(s => s.id === ev.setorId);
+                const hasPlan = actionPlans.some(ap => ap.evaluationId === ev.id);
 
                 return (
-                  <div key={ev.id} className="p-4 hover:bg-slate-50 transition flex items-center justify-between">
-                    <div>
+                  <div 
+                    key={ev.id}
+                    onClick={() => onViewEvaluation(ev.id)}
+                    className="p-3.5 bg-amber-50/50 hover:bg-amber-100/50 rounded-xl border border-amber-200/80 transition cursor-pointer flex items-center justify-between group"
+                  >
+                    <div className="space-y-0.5 truncate pr-2">
                       <div className="flex items-center space-x-2">
-                        <span className="font-bold text-slate-900 text-sm">{supplier?.nomeFantasia || 'Fornecedor'}</span>
-                        <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-xs px-2 py-0.5 rounded">
-                          {ev.mediaGeral.toFixed(2)}
+                        <strong className="text-slate-900 text-xs font-bold group-hover:text-hospital-600 transition truncate">
+                          {sup?.nomeFantasia || 'Fornecedor'}
+                        </strong>
+                        <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
+                          hasPlan ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'
+                        }`}>
+                          {hasPlan ? '5W2H Ativo' : 'Pendente 5W2H'}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Setor: {sector?.nome} | Avaliado por: {ev.gestorAvaliador}
+                      <p className="text-[11px] text-slate-600 truncate">
+                        {sec?.nome} | Avaliador: {ev.gestorAvaliador}
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => onViewEvaluation(ev.id)}
-                      className="p-2 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded-lg transition text-xs border border-slate-200 flex items-center"
-                    >
-                      <Eye className="w-3.5 h-3.5 mr-1" /> Laudo
-                    </button>
+                    <div className="flex items-center space-x-3 flex-shrink-0">
+                      <span className="text-sm font-black text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-300">
+                        {ev.mediaGeral.toFixed(2)}
+                      </span>
+                      <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-hospital-600 transition" />
+                    </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="p-6 text-center text-slate-500 text-sm">
-              Nenhuma avaliação cadastrada neste período.
+            <div className="p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200 text-slate-500 text-xs space-y-1">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
+              <strong className="font-bold text-slate-800 block">Nenhum Contrato Abaixo da Meta!</strong>
+              <span>Todos os contratos avaliados no ciclo atingiram a nota mínima exigida (4,00).</span>
             </div>
           )}
         </div>
