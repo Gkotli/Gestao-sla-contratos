@@ -143,7 +143,54 @@ export default function App() {
     setSuppliers(updated);
   };
 
-  // --- Evaluation Handlers ---
+  // --- ROTEAMENTO BASEADO EM ID NA URL (Deep Linking, F5 & Navegação Direta) ---
+  React.useEffect(() => {
+    const syncEvalFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash;
+      let evalId: string | null = null;
+
+      if (params.has('eval')) {
+        evalId = params.get('eval');
+      } else if (params.has('id')) {
+        evalId = params.get('id');
+      } else if (hash.startsWith('#eval/')) {
+        evalId = hash.replace('#eval/', '');
+      }
+
+      if (evalId) {
+        setReportModalEvalId(evalId);
+      }
+    };
+
+    syncEvalFromUrl();
+    window.addEventListener('popstate', syncEvalFromUrl);
+    window.addEventListener('hashchange', syncEvalFromUrl);
+    return () => {
+      window.removeEventListener('popstate', syncEvalFromUrl);
+      window.removeEventListener('hashchange', syncEvalFromUrl);
+    };
+  }, []);
+
+  const handleViewReport = (evalId: string) => {
+    setReportModalEvalId(evalId);
+    try {
+      const newUrl = `${window.location.pathname}?eval=${encodeURIComponent(evalId)}`;
+      window.history.pushState({ evalId }, '', newUrl);
+    } catch {
+      // Fallback para navegadores legados
+    }
+  };
+
+  const handleCloseReportModal = () => {
+    setReportModalEvalId(null);
+    try {
+      window.history.pushState({}, '', window.location.pathname);
+    } catch {
+      // Fallback
+    }
+  };
+
   const handleStartNewEvaluation = (supplierId?: string) => {
     setEditingEvaluation(null);
     setPreselectedSupplierId(supplierId);
@@ -165,15 +212,23 @@ export default function App() {
     if (openActionPlanModalDirectly || evaluation.necessitaPlanoAcao) {
       setActionPlanTargetEval(evaluation);
       setActiveTab('action-plans');
+      try {
+        window.history.pushState({}, '', window.location.pathname);
+      } catch {}
     } else {
       setActiveTab('eval-list');
+      setReportModalEvalId(evaluation.id);
+      try {
+        const newUrl = `${window.location.pathname}?eval=${encodeURIComponent(evaluation.id)}`;
+        window.history.pushState({ evalId: evaluation.id }, '', newUrl);
+      } catch {}
     }
   };
 
   const handleDeleteEvaluation = (evalId: string) => {
     if (window.confirm('Tem certeza que deseja excluir esta avaliação de contrato?')) {
       const updated = evaluations.filter(e => e.id !== evalId);
-      localStorage.setItem('sla_hospital_evaluations_v5', JSON.stringify(updated));
+      localStorage.setItem('sla_hospital_evaluations_v7', JSON.stringify(updated));
       setEvaluations(updated);
     }
   };
@@ -197,10 +252,13 @@ export default function App() {
     setSignatureModalEval(null);
   };
 
-  // Evaluation targeted for report view modal
+  // Evaluation targeted for report view modal (Busca pelo ID do estado ou pelo StorageService)
   const selectedReportEvaluation = useMemo(() => {
     if (!reportModalEvalId) return null;
-    return evaluations.find(e => e.id === reportModalEvalId) || null;
+    const found = evaluations.find(e => e.id === reportModalEvalId);
+    if (found) return found;
+    const allStorageEvals = StorageService.getEvaluations();
+    return allStorageEvals.find(e => e.id === reportModalEvalId) || null;
   }, [reportModalEvalId, evaluations]);
 
   const selectedReportSupplier = useMemo(() => {
@@ -258,7 +316,7 @@ export default function App() {
             sectors={scopedSectors}
             actionPlans={scopedActionPlans}
             onNewEvaluation={handleStartNewEvaluation}
-            onViewEvaluation={(evalId) => setReportModalEvalId(evalId)}
+            onViewEvaluation={handleViewReport}
             onManageActionPlans={() => setActiveTab('action-plans')}
           />
         )}
@@ -284,7 +342,7 @@ export default function App() {
             currentUser={currentUser}
             onNewEvaluation={() => handleStartNewEvaluation()}
             onEditEvaluation={handleEditEvaluation}
-            onViewReport={(evalId) => setReportModalEvalId(evalId)}
+            onViewReport={handleViewReport}
             onOpenSignatureModal={(ev) => setSignatureModalEval(ev)}
             onOpenActionPlanModal={(ev) => {
               setActionPlanTargetEval(ev);
@@ -340,14 +398,14 @@ export default function App() {
         />
       )}
 
-      {/* Modal do Laudo Oficial (Impressão A4 Multipáginas) */}
-      {selectedReportEvaluation && (
+      {/* Modal do Laudo Oficial por ID na URL (Impressão A4 Multipáginas) */}
+      {reportModalEvalId && (
         <EvaluationReportModal
           evaluation={selectedReportEvaluation}
           supplier={selectedReportSupplier}
           sector={selectedReportSector}
           actionPlan={selectedReportActionPlan}
-          onClose={() => setReportModalEvalId(null)}
+          onClose={handleCloseReportModal}
         />
       )}
 
