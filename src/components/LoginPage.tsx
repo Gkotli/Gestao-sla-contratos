@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { Building2, Lock, Mail, ShieldCheck, ArrowRight, KeyRound, AlertCircle } from 'lucide-react';
+import { Building2, Lock, Mail, ArrowRight, KeyRound, AlertCircle } from 'lucide-react';
 
 interface LoginPageProps {
   users: User[];
@@ -101,16 +101,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
               type="submit"
               className="w-full inline-flex items-center justify-center px-4 py-3 text-sm font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg shadow-teal-900/30 transition-all transform hover:-translate-y-0.5"
             >
-              Acessar Sistema Segura
+              Acessar Sistema
               <ArrowRight className="w-4 h-4 ml-2" />
             </button>
           </form>
 
-          {/* Seção de Acesso Rápido para Testes e Demonstração */}
+          {/* Seleção de Contas Autorizadas (Sem exibição de senha) */}
           <div className="border-t border-slate-800 pt-5 space-y-3">
             <div className="flex items-center space-x-2 text-slate-400 text-xs font-semibold">
               <KeyRound className="w-4 h-4 text-teal-400" />
-              <span>Contas de Acesso Pré-Cadastradas (Demo):</span>
+              <span>Selecione a Conta Autorizada:</span>
             </div>
 
             <div className="grid grid-cols-1 gap-2 text-xs">
@@ -132,7 +132,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess }) =
                       </span>
                       <strong className="text-white group-hover:text-teal-300 transition text-xs font-semibold">{u.nome}</strong>
                     </div>
-                    <p className="text-[11px] text-slate-400 truncate mt-0.5">{u.email} (Senha: {u.senha || '123'})</p>
+                    <p className="text-[11px] text-slate-400 truncate mt-0.5">{u.email}</p>
                   </div>
                   <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-teal-400 flex-shrink-0" />
                 </button>
