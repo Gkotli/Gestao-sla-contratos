@@ -10,6 +10,7 @@ import { SuppliersManager } from './components/SuppliersManager';
 import { UsersManager } from './components/UsersManager';
 import { EvaluationReportModal } from './components/EvaluationReportModal';
 import { SupplierSignatureModal } from './components/SupplierSignatureModal';
+import { PendingEvaluationsView } from './components/PendingEvaluationsView';
 import { LoginPage } from './components/LoginPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -28,6 +29,7 @@ export default function App() {
   // Inter-component Action States
   const [editingEvaluation, setEditingEvaluation] = useState<Evaluation | null>(null);
   const [preselectedSupplierId, setPreselectedSupplierId] = useState<string | undefined>(undefined);
+  const [preselectedYear, setPreselectedYear] = useState<number | undefined>(undefined);
   const [actionPlanTargetEval, setActionPlanTargetEval] = useState<Evaluation | undefined>(undefined);
   const [reportModalEvalId, setReportModalEvalId] = useState<string | null>(null);
   const [signatureModalEval, setSignatureModalEval] = useState<Evaluation | null>(null);
@@ -191,9 +193,10 @@ export default function App() {
     }
   };
 
-  const handleStartNewEvaluation = (supplierId?: string) => {
+  const handleStartNewEvaluation = (supplierId?: string, year?: number) => {
     setEditingEvaluation(null);
     setPreselectedSupplierId(supplierId);
+    setPreselectedYear(year);
     setActiveTab('new-eval');
   };
 
@@ -328,8 +331,21 @@ export default function App() {
             currentUser={currentUser}
             initialEvaluation={editingEvaluation}
             preselectedSupplierId={preselectedSupplierId}
+            preselectedYear={preselectedYear}
+            allEvaluations={evaluations}
             onSave={handleSaveEvaluation}
             onCancel={() => setActiveTab('eval-list')}
+          />
+        )}
+
+        {activeTab === 'pending-evals' && currentUser.role !== 'FORNECEDOR' && (
+          <PendingEvaluationsView
+            suppliers={scopedSuppliers}
+            sectors={scopedSectors}
+            evaluations={scopedEvaluations}
+            users={users}
+            currentUser={currentUser}
+            onStartEvaluation={(supId, yr) => handleStartNewEvaluation(supId, yr)}
           />
         )}
 

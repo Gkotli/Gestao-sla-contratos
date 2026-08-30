@@ -139,6 +139,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {isGestor && (
+              <button
+                onClick={() => setActiveTab('pending-evals')}
+                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === 'pending-evals'
+                    ? 'bg-hospital-600 text-white shadow-sm'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Clock className="w-4 h-4 mr-2 text-amber-400" />
+                Pendências Anuais
+              </button>
+            )}
+
             <button
               onClick={() => setActiveTab('eval-list')}
               className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${

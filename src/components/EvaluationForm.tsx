@@ -21,6 +21,8 @@ interface EvaluationFormProps {
   currentUser: User | null;
   initialEvaluation?: Evaluation | null;
   preselectedSupplierId?: string;
+  preselectedYear?: number;
+  allEvaluations?: Evaluation[];
   onSave: (evaluation: Evaluation, openActionPlanModal?: boolean) => void;
   onCancel: () => void;
 }
@@ -31,6 +33,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   currentUser,
   initialEvaluation,
   preselectedSupplierId,
+  preselectedYear,
+  allEvaluations = [],
   onSave,
   onCancel
 }) => {
@@ -40,7 +44,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   );
   
   const [selectedYear, setSelectedYear] = useState<number>(
-    initialEvaluation?.ano || 2026
+    initialEvaluation?.ano || preselectedYear || 2026
   );
 
   // Selected Supplier & Sector
@@ -151,6 +155,17 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     if (!selectedSupplier) {
       alert('Por favor, selecione um fornecedor válido.');
       return;
+    }
+
+    // Validação de Duplicidade (Não duplicar avaliação para mesmo Fornecedor + Contrato + Ano)
+    if (allEvaluations && !initialEvaluation) {
+      const isDuplicate = allEvaluations.some(
+        e => e.fornecedorId === selectedSupplier.id && e.ano === selectedYear
+      );
+      if (isDuplicate) {
+        alert(`⚠️ ATENÇÃO: Já existe uma Avaliação Anual concluída para o fornecedor "${selectedSupplier.nomeFantasia}" no exercício de ${selectedYear}.\n\nCaso deseje alterar ou revisar as notas, consulte e edite o registro existente no menu "Avaliações & Histórico".`);
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -304,6 +319,29 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
               <div>Vigência: <strong className="text-slate-800">{selectedSupplier.vigenciaFim}</strong></div>
               <div>Avaliador: <strong className="text-slate-800">{currentUser?.nome || selectedSector?.gestorResponsavel}</strong></div>
               <div>E-mail: <strong className="text-slate-800">{currentUser?.email || selectedSector?.emailGestor}</strong></div>
+            </div>
+
+            {/* Histórico dos Ciclos Anuais */}
+            <div className="pt-2 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+              <span className="text-slate-600 font-bold flex items-center">
+                <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Histórico dos ciclos:
+              </span>
+              <div className="flex items-center space-x-2">
+                {[2024, 2025, 2026].map(yr => {
+                  const evFound = allEvaluations.find(e => e.fornecedorId === selectedSupplier.id && e.ano === yr);
+                  return (
+                    <span key={yr} className={`inline-flex items-center px-2 py-0.5 rounded font-bold ${
+                      evFound 
+                        ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' 
+                        : yr < 2026 
+                        ? 'bg-rose-100 text-rose-900 border border-rose-300' 
+                        : 'bg-amber-100 text-amber-900 border border-amber-300'
+                    }`}>
+                      {yr} {evFound ? '✅ Concluída' : yr < 2026 ? '🔴 Pendente' : '🟡 Pendente'}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

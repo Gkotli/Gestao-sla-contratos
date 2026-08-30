@@ -8,14 +8,12 @@ import {
   Search, 
   FileText, 
   Calendar, 
-  Mail, 
   User, 
   Filter, 
   CheckCircle2, 
   Clock, 
   AlertTriangle, 
   X,
-  Wrench,
   Layers
 } from 'lucide-react';
 
@@ -53,15 +51,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [numeroContrato, setNumeroContrato] = useState('');
   const [vigenciaFim, setVigenciaFim] = useState('');
 
-  // Identifica o setor da Manutenção
-  const manutencaoSector = useMemo(() => {
-    return sectors.find(sec => 
-      sec.nome.toLowerCase().includes('manutenção') || 
-      sec.nome.toLowerCase().includes('manutencao')
-    );
-  }, [sectors]);
-
-  // Função para determinar o status do contrato
+  // Função genérica para determinar o status do contrato
   const getContractStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
     const vig = (sup.vigenciaFim || '').trim().toLowerCase();
 
@@ -107,7 +97,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     return 'VIGENTE';
   };
 
-  // Contagem dinâmica por setor
+  // Contagem dinâmica por setor (sem destaque especial)
   const sectorCounts = useMemo(() => {
     const map: Record<string, number> = {};
     suppliers.forEach(s => {
@@ -120,10 +110,14 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     return map;
   }, [suppliers, sectors]);
 
-  // Indicadores Numéricos do Topo
+  // Setores ordenados alfabeticamente para visual neutro e padronizado
+  const sortedSectors = useMemo(() => {
+    return [...sectors].sort((a, b) => a.nome.localeCompare(b.nome));
+  }, [sectors]);
+
+  // Indicadores Numéricos Genéricos no Topo
   const metrics = useMemo(() => {
     const total = suppliers.length;
-    const manutencaoCount = manutencaoSector ? (sectorCounts[manutencaoSector.id] || 0) : 0;
     const noSectorCount = sectorCounts['NO_SECTOR'] || 0;
 
     let vigentes = 0;
@@ -137,8 +131,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       else if (st === 'VENCIDO') vencidos++;
     });
 
-    return { total, manutencaoCount, noSectorCount, vigentes, aVencer, vencidos };
-  }, [suppliers, sectorCounts, manutencaoSector]);
+    return { total, noSectorCount, vigentes, aVencer, vencidos };
+  }, [suppliers, sectorCounts]);
 
   // Filtragem Combinada (Busca + Setor + Status)
   const filteredSuppliers = useMemo(() => {
@@ -249,7 +243,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
         </button>
       </div>
 
-      {/* KPI Summary Cards no Topo */}
+      {/* KPI Summary Cards Genéricos no Topo */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div 
           onClick={() => setSelectedSectorFilter('ALL')}
@@ -265,23 +259,6 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           </div>
           <div className="text-2xl font-black mt-2">{metrics.total}</div>
           <p className="text-[11px] opacity-75 mt-0.5">Todos os fornecedores</p>
-        </div>
-
-        {/* Card Destaque: Manutenção */}
-        <div 
-          onClick={() => manutencaoSector && setSelectedSectorFilter(manutencaoSector.id)}
-          className={`p-4 rounded-xl border transition cursor-pointer ${
-            manutencaoSector && selectedSectorFilter === manutencaoSector.id 
-              ? 'bg-amber-600 text-white border-amber-600 shadow-md' 
-              : 'bg-amber-50/80 text-amber-950 border-amber-200 hover:border-amber-300 shadow-sm'
-          }`}
-        >
-          <div className="flex items-center justify-between text-xs font-bold">
-            <span>Manutenção</span>
-            <Wrench className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-2xl font-black mt-2">{metrics.manutencaoCount}</div>
-          <p className="text-[11px] opacity-80 mt-0.5">Contratos da Manutenção</p>
         </div>
 
         <div 
@@ -309,11 +286,27 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           }`}
         >
           <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-            <span>A Vencer / Aditivos</span>
+            <span>A Vencer / Em Aditivo</span>
             <Clock className="w-4 h-4 text-orange-500" />
           </div>
           <div className="text-2xl font-black mt-2 text-orange-600">{metrics.aVencer}</div>
           <p className="text-[11px] text-slate-500 mt-0.5">Pendentes ou renovação</p>
+        </div>
+
+        <div 
+          onClick={() => setSelectedStatusFilter('VENCIDO')}
+          className={`p-4 rounded-xl border transition cursor-pointer ${
+            selectedStatusFilter === 'VENCIDO' 
+              ? 'bg-rose-800 text-white border-rose-800 shadow-md' 
+              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+            <span>Contratos Vencidos</span>
+            <AlertTriangle className="w-4 h-4 text-rose-600" />
+          </div>
+          <div className="text-2xl font-black mt-2 text-rose-700">{metrics.vencidos}</div>
+          <p className="text-[11px] text-slate-500 mt-0.5">Vigência expirada</p>
         </div>
       </div>
 
@@ -332,7 +325,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
             />
           </div>
 
-          {/* 2. Filtro por Setor Responsável (4 colunas) */}
+          {/* 2. Filtro Genérico por Setor Responsável (4 colunas) */}
           <div className="md:col-span-4">
             <select
               value={selectedSectorFilter}
@@ -340,7 +333,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
               className="w-full py-2 px-3 bg-slate-50 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
             >
               <option value="ALL">Todos os setores ({suppliers.length})</option>
-              {sectors.map(sec => {
+              {sortedSectors.map(sec => {
                 const count = sectorCounts[sec.id] || 0;
                 return (
                   <option key={sec.id} value={sec.id}>
@@ -368,65 +361,43 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           </div>
         </div>
 
-        {/* Linha de Status de Filtros Ativos + Atalho Rápido da Manutenção */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
-          <div className="flex items-center space-x-2 text-slate-500 font-medium">
+        {/* Linha de Status de Filtros Ativos */}
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+          <div className="flex items-center space-x-2 font-medium">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
             <span>Exibindo <strong>{filteredSuppliers.length}</strong> de {suppliers.length} fornecedores</span>
-
-            {(searchTerm || selectedSectorFilter !== 'ALL' || selectedStatusFilter !== 'ALL') && (
-              <button
-                onClick={clearAllFilters}
-                className="text-rose-600 hover:text-rose-800 font-bold flex items-center ml-2 cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5 mr-0.5" /> Limpar Filtros
-              </button>
-            )}
           </div>
 
-          {/* Atalho Rápido para o Setor da Manutenção */}
-          {manutencaoSector && (
+          {(searchTerm || selectedSectorFilter !== 'ALL' || selectedStatusFilter !== 'ALL') && (
             <button
-              onClick={() => setSelectedSectorFilter(manutencaoSector.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-extrabold transition flex items-center cursor-pointer ${
-                selectedSectorFilter === manutencaoSector.id
-                  ? 'bg-amber-600 text-white shadow-sm'
-                  : 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
-              }`}
+              onClick={clearAllFilters}
+              className="text-rose-600 hover:text-rose-800 font-bold flex items-center cursor-pointer"
             >
-              <Wrench className="w-3.5 h-3.5 mr-1" />
-              Filtrar Manutenção ({sectorCounts[manutencaoSector.id] || 0})
+              <X className="w-3.5 h-3.5 mr-0.5" /> Limpar Filtros
             </button>
           )}
         </div>
       </div>
 
-      {/* Grid de Cards de Fornecedores */}
+      {/* Grid Neutro de Cards de Fornecedores */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredSuppliers.length > 0 ? (
           filteredSuppliers.map(sup => {
             const sector = sectors.find(sec => sec.id === sup.setorResponsavelId);
             const status = getContractStatus(sup);
-            const isManutencao = sector?.id === manutencaoSector?.id;
 
             return (
               <div 
                 key={sup.id} 
-                className={`bg-white rounded-xl shadow-sm border overflow-hidden flex flex-col justify-between transition ${
-                  isManutencao ? 'border-amber-300 hover:border-amber-400' : 'border-slate-200 hover:border-hospital-300'
-                }`}
+                className="bg-white rounded-xl shadow-sm border border-slate-200 hover:border-hospital-300 transition overflow-hidden flex flex-col justify-between"
               >
                 <div className="p-5 space-y-3">
-                  {/* Cabeçalho do Card */}
+                  {/* Cabeçalho do Card com Badge Neutra de Setor */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="space-y-1 truncate pr-1">
-                      {/* Badge Destacada do Setor Responsável */}
+                      {/* Badge Padronizada para Todos os Setores */}
                       {sector ? (
-                        <span className={`inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border uppercase ${
-                          isManutencao 
-                            ? 'bg-amber-100 text-amber-900 border-amber-300' 
-                            : 'bg-slate-100 text-slate-800 border-slate-300'
-                        }`}>
+                        <span className="inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border bg-slate-100 text-slate-800 border-slate-300 uppercase">
                           <Building2 className="w-3 h-3 mr-1 text-slate-500" />
                           SETOR: {sector.nome}
                         </span>
@@ -441,8 +412,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                       <p className="text-xs text-slate-500 font-mono truncate">{sup.cnpj}</p>
                     </div>
 
-                    <div className={`p-2 rounded-lg flex-shrink-0 ${isManutencao ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>
-                      {isManutencao ? <Wrench className="w-5 h-5" /> : <Building2 className="w-5 h-5" />}
+                    <div className="p-2 rounded-lg flex-shrink-0 bg-slate-100 text-slate-700">
+                      <Building2 className="w-5 h-5" />
                     </div>
                   </div>
 
