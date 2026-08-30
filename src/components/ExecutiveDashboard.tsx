@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
+import { safeFormatScore, safeNumber } from '../utils/formatters';
 import { 
   Building2, 
   TrendingUp, 
@@ -51,7 +52,8 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
   // Filtrar avaliações pelo ano e setor selecionado
   const filteredEvaluations = useMemo(() => {
-    return evaluations.filter(ev => {
+    return (evaluations || []).filter(ev => {
+      if (!ev) return false;
       const matchYear = ev.ano === selectedYear;
       const matchSector = selectedSectorId === 'TODOS' || ev.setorId === selectedSectorId;
       return matchYear && matchSector;
@@ -63,7 +65,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   
   const mediaGeralGlobal = useMemo(() => {
     if (totalEvaluations === 0) return 0;
-    const sum = filteredEvaluations.reduce((acc, curr) => acc + curr.mediaGeral, 0);
+    const sum = filteredEvaluations.reduce((acc, curr) => acc + safeNumber(curr.mediaGeral), 0);
     return Number((sum / totalEvaluations).toFixed(2));
   }, [filteredEvaluations, totalEvaluations]);
 
@@ -82,21 +84,21 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
   // Dados do Gráfico de Médias por Setor
   const sectorChartData = useMemo(() => {
-    return sectors.map(sec => {
+    return (sectors || []).map(sec => {
       const evals = filteredEvaluations.filter(e => e.setorId === sec.id);
       if (evals.length === 0) {
         return {
-          nome: sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome,
-          nomeCompleto: sec.nome,
+          nome: sec.nome && sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome || 'Setor',
+          nomeCompleto: sec.nome || 'Setor',
           media: 0,
           total: 0
         };
       }
-      const sum = evals.reduce((acc, curr) => acc + curr.mediaGeral, 0);
+      const sum = evals.reduce((acc, curr) => acc + safeNumber(curr.mediaGeral), 0);
       const avg = Number((sum / evals.length).toFixed(2));
       return {
-        nome: sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome,
-        nomeCompleto: sec.nome,
+        nome: sec.nome && sec.nome.length > 14 ? `${sec.nome.substring(0, 12)}...` : sec.nome || 'Setor',
+        nomeCompleto: sec.nome || 'Setor',
         media: avg,
         total: evals.length
       };
@@ -105,10 +107,10 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
   // Dados do Gráfico de Pizza por Faixa de Desempenho
   const pieChartData = useMemo(() => {
-    const otimo = filteredEvaluations.filter(e => e.mediaGeral >= 4.5).length;
-    const bom = filteredEvaluations.filter(e => e.mediaGeral >= 4.0 && e.mediaGeral < 4.5).length;
-    const regular = filteredEvaluations.filter(e => e.mediaGeral >= 3.0 && e.mediaGeral < 4.0).length;
-    const ruim = filteredEvaluations.filter(e => e.mediaGeral < 3.0).length;
+    const otimo = filteredEvaluations.filter(e => safeNumber(e.mediaGeral) >= 4.5).length;
+    const bom = filteredEvaluations.filter(e => safeNumber(e.mediaGeral) >= 4.0 && safeNumber(e.mediaGeral) < 4.5).length;
+    const regular = filteredEvaluations.filter(e => safeNumber(e.mediaGeral) >= 3.0 && safeNumber(e.mediaGeral) < 4.0).length;
+    const ruim = filteredEvaluations.filter(e => safeNumber(e.mediaGeral) < 3.0).length;
 
     return [
       { name: 'Ótimo (≥ 4.50)', value: otimo, color: '#059669' },
@@ -121,13 +123,13 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
   // Lista de Fornecedores com Maior Desempenho (Top Performers)
   const topPerformers = useMemo(() => {
     return [...filteredEvaluations]
-      .sort((a, b) => b.mediaGeral - a.mediaGeral)
+      .sort((a, b) => safeNumber(b.mediaGeral) - safeNumber(a.mediaGeral))
       .slice(0, 5);
   }, [filteredEvaluations]);
 
   // Lista de Fornecedores que exigem Plano de Ação (Abaixo da Meta)
   const lowPerformers = useMemo(() => {
-    return filteredEvaluations.filter(e => e.necessitaPlanoAcao || e.mediaGeral < 4.0);
+    return filteredEvaluations.filter(e => e.necessitaPlanoAcao || safeNumber(e.mediaGeral) < 4.0);
   }, [filteredEvaluations]);
 
   return (
@@ -171,7 +173,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               className="bg-transparent font-bold text-slate-900 focus:outline-none cursor-pointer max-w-[180px] truncate"
             >
               <option value="TODOS">Todos os Setores</option>
-              {sectors.map(sec => (
+              {(sectors || []).map(sec => (
                 <option key={sec.id} value={sec.id}>{sec.nome}</option>
               ))}
             </select>
@@ -179,7 +181,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
           <button
             onClick={onNewEvaluation}
-            className="inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md transition"
+            className="inline-flex items-center px-4 py-2 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md transition cursor-pointer"
           >
             + Nova Avaliação Anual
           </button>
@@ -197,7 +199,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </div>
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-slate-900">{mediaGeralGlobal.toFixed(2)}</span>
+            <span className="text-3xl font-black text-slate-900">{safeFormatScore(mediaGeralGlobal)}</span>
             <span className="text-xs text-slate-500 font-semibold">/ 5,00</span>
           </div>
           <p className="text-[11px] text-slate-500">Meta Mínima Institucional: <strong>4,00</strong></p>
@@ -215,7 +217,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             <span className="text-3xl font-black text-slate-900">{taxaAprovacaoPercent}%</span>
             <span className="text-xs text-emerald-600 font-bold">({dentroDaMetaCount} contratos)</span>
           </div>
-          <p className="text-[11px] text-slate-500">Contratos com média $\ge$ 4,00 no ciclo</p>
+          <p className="text-[11px] text-slate-500">Contratos com média ≥ 4,00 no ciclo</p>
         </div>
 
         {/* Contratos Abaixo da Meta */}
@@ -232,7 +234,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </span>
             <span className="text-xs text-slate-500 font-semibold">contratos</span>
           </div>
-          <p className="text-[11px] text-slate-500">Exigem Plano de Ação 5W2H</p>
+          <p className="text-[11px] text-slate-500">Exigem Plano de Ação de Melhoria</p>
         </div>
 
         {/* Total de Avaliações Registradas */}
@@ -361,8 +363,8 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
           <div className="space-y-3">
             {topPerformers.map(ev => {
-              const sup = suppliers.find(s => s.id === ev.fornecedorId);
-              const sec = sectors.find(s => s.id === ev.setorId);
+              const sup = (suppliers || []).find(s => s.id === ev.fornecedorId);
+              const sec = (sectors || []).find(s => s.id === ev.setorId);
 
               return (
                 <div 
@@ -381,7 +383,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
                   <div className="flex items-center space-x-3 flex-shrink-0">
                     <span className="text-sm font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                      {ev.mediaGeral.toFixed(2)}
+                      {safeFormatScore(ev.mediaGeral)}
                     </span>
                     <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-hospital-600 transition" />
                   </div>
@@ -400,18 +402,18 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </div>
             <button
               onClick={onManageActionPlans}
-              className="text-xs font-bold text-hospital-600 hover:text-hospital-700 transition"
+              className="text-xs font-bold text-hospital-600 hover:text-hospital-700 transition cursor-pointer"
             >
-              Ver Planos 5W2H →
+              Ver Planos de Ação →
             </button>
           </div>
 
           {lowPerformers.length > 0 ? (
             <div className="space-y-3">
               {lowPerformers.map(ev => {
-                const sup = suppliers.find(s => s.id === ev.fornecedorId);
-                const sec = sectors.find(s => s.id === ev.setorId);
-                const hasPlan = actionPlans.some(ap => ap.evaluationId === ev.id);
+                const sup = (suppliers || []).find(s => s.id === ev.fornecedorId);
+                const sec = (sectors || []).find(s => s.id === ev.setorId);
+                const hasPlan = (actionPlans || []).some(ap => ap.evaluationId === ev.id);
 
                 return (
                   <div 
@@ -427,7 +429,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                         <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
                           hasPlan ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'
                         }`}>
-                          {hasPlan ? '5W2H Ativo' : 'Pendente 5W2H'}
+                          {hasPlan ? 'Plano Ativo' : 'Pendente de Plano'}
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-600 truncate">
@@ -437,7 +439,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
 
                     <div className="flex items-center space-x-3 flex-shrink-0">
                       <span className="text-sm font-black text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-300">
-                        {ev.mediaGeral.toFixed(2)}
+                        {safeFormatScore(ev.mediaGeral)}
                       </span>
                       <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-hospital-600 transition" />
                     </div>

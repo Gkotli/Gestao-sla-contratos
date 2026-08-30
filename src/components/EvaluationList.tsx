@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { getMetaBadgeDetails } from '../services/evaluationCalculation';
+import { safeFormatScore } from '../utils/formatters';
 import { 
   Search, 
   Edit3, 
@@ -47,16 +48,17 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
 
   const filteredEvaluations = useMemo(() => {
-    return evaluations.filter(ev => {
-      const supplier = suppliers.find(s => s.id === ev.fornecedorId);
+    return (evaluations || []).filter(ev => {
+      if (!ev) return false;
+      const supplier = suppliers?.find(s => s.id === ev.fornecedorId);
       const textMatch = 
         !searchTerm ||
-        supplier?.nomeFantasia.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        supplier?.razaoSocial.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        supplier?.cnpj.includes(searchTerm) ||
-        ev.gestorAvaliador.toLowerCase().includes(searchTerm.toLowerCase());
+        supplier?.nomeFantasia?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier?.razaoSocial?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier?.cnpj?.includes(searchTerm) ||
+        ev.gestorAvaliador?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchAno = selectedAno === 'ALL' || ev.ano.toString() === selectedAno;
+      const matchAno = selectedAno === 'ALL' || ev.ano?.toString() === selectedAno;
       const matchSector = selectedSector === 'ALL' || ev.setorId === selectedSector;
       const matchStatus = selectedStatus === 'ALL' || ev.statusMeta === selectedStatus;
 
@@ -65,7 +67,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   }, [evaluations, suppliers, searchTerm, selectedAno, selectedSector, selectedStatus]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Header & Botão Nova Avaliação */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -153,23 +155,29 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
             <tbody className="divide-y divide-slate-200 text-xs">
               {filteredEvaluations.length > 0 ? (
                 filteredEvaluations.map((ev) => {
-                  const supplier = suppliers.find(s => s.id === ev.fornecedorId);
-                  const sector = sectors.find(s => s.id === ev.setorId);
-                  const metaDetails = getMetaBadgeDetails(ev.mediaGeral);
+                  const supplier = suppliers?.find(s => s.id === ev.fornecedorId);
+                  const sector = sectors?.find(s => s.id === ev.setorId);
+                  const mediaGeralVal = typeof ev.mediaGeral === 'number' ? ev.mediaGeral : parseFloat(String(ev.mediaGeral || 0));
+                  const metaDetails = getMetaBadgeDetails(ev.statusMeta || mediaGeralVal, mediaGeralVal);
+
+                  const mediaLegaisFormatted = safeFormatScore(ev.mediaLegais);
+                  const mediaComportamentaisFormatted = safeFormatScore(ev.mediaComportamentais);
+                  const mediaQualidadeFormatted = safeFormatScore(ev.mediaQualidade);
+                  const mediaGeralFormatted = safeFormatScore(ev.mediaGeral);
 
                   return (
                     <tr key={ev.id} className="hover:bg-slate-50 transition">
                       <td className="py-3 px-4">
                         <strong className="text-slate-900 block font-bold text-sm">
-                          {supplier?.nomeFantasia || 'Fornecedor Desconhecido'}
+                          {supplier?.nomeFantasia || 'Fornecedor Cadastrado'}
                         </strong>
                         <span className="text-[11px] text-slate-500 block">
-                          {supplier?.razaoSocial} | {supplier?.cnpj}
+                          {supplier?.razaoSocial} {supplier?.cnpj ? `| ${supplier.cnpj}` : ''}
                         </span>
                       </td>
 
                       <td className="py-3 px-4 font-medium text-slate-700">
-                        {sector?.nome || 'Setor Responsável'}
+                        {sector?.nome || 'Setor Hospitalar'}
                       </td>
 
                       <td className="py-3 px-4 font-bold text-slate-900">
@@ -177,26 +185,26 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                       </td>
 
                       <td className="py-3 px-4 text-center font-semibold text-slate-700">
-                        {ev.mediaLegais.toFixed(2)}
+                        {mediaLegaisFormatted}
                       </td>
 
                       <td className="py-3 px-4 text-center font-semibold text-slate-700">
-                        {ev.mediaComportamentais.toFixed(2)}
+                        {mediaComportamentaisFormatted}
                       </td>
 
                       <td className="py-3 px-4 text-center font-semibold text-slate-700">
-                        {ev.mediaQualidade.toFixed(2)}
+                        {mediaQualidadeFormatted}
                       </td>
 
                       <td className="py-3 px-4 text-center">
                         <span className="text-sm font-black text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-                          {ev.mediaGeral.toFixed(2)}
+                          {mediaGeralFormatted}
                         </span>
                       </td>
 
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails.bgClass} ${metaDetails.textClass} border ${metaDetails.borderClass}`}>
-                          {metaDetails.label} ({ev.mediaGeral.toFixed(2)})
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-slate-800'} border ${metaDetails?.borderClass || 'border-slate-300'}`}>
+                          {metaDetails?.label || 'Avaliado'} ({mediaGeralFormatted})
                         </span>
                       </td>
 
@@ -238,11 +246,11 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           </button>
 
                           {/* Plano de Ação se nota < 4.0 */}
-                          {!isFornecedor && ev.mediaGeral < 4.0 && (
+                          {!isFornecedor && mediaGeralVal < 4.0 && (
                             <button
                               onClick={() => onOpenActionPlanModal(ev)}
                               className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition cursor-pointer"
-                              title="Configurar Plano de Ação (5W2H)"
+                              title="Configurar Plano de Ação de Melhoria"
                             >
                               <AlertTriangle className="w-4 h-4" />
                             </button>

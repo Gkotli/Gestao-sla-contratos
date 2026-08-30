@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Evaluation, Supplier } from '../types';
 import { getMetaBadgeDetails } from '../services/evaluationCalculation';
+import { safeFormatScore } from '../utils/formatters';
 import { PenTool, CheckCircle2, RotateCcw, X } from 'lucide-react';
 
 interface SupplierSignatureModalProps {
@@ -108,8 +109,8 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
       ...evaluation,
       statusAssinatura: 'ASSINADO_CIENTE',
       dataCiencia: new Date().toISOString().split('T')[0],
-      nomeSignatario,
-      cargoSignatario,
+      nomeSignatario: nomeSignatario || 'Preposto Fornecedor',
+      cargoSignatario: cargoSignatario || 'Representante Legal',
       parecerFornecedor,
       assinaturaBase64: currentBase64
     };
@@ -153,20 +154,20 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
             <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-200 text-center">
               <div>
                 <span className="block text-[10px] text-slate-500">Legais</span>
-                <strong className="text-slate-800 font-bold">{evaluation.mediaLegais.toFixed(2)}</strong>
+                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaLegais)}</strong>
               </div>
               <div>
                 <span className="block text-[10px] text-slate-500">Comport.</span>
-                <strong className="text-slate-800 font-bold">{evaluation.mediaComportamentais.toFixed(2)}</strong>
+                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaComportamentais)}</strong>
               </div>
               <div>
                 <span className="block text-[10px] text-slate-500">Qualidade</span>
-                <strong className="text-slate-800 font-bold">{evaluation.mediaQualidade.toFixed(2)}</strong>
+                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaQualidade)}</strong>
               </div>
               <div>
                 <span className="block text-[10px] text-slate-500">Média Geral</span>
                 <span className={`font-extrabold px-1.5 py-0.5 rounded ${badge.colorClass}`}>
-                  {evaluation.mediaGeral.toFixed(2)}
+                  {safeFormatScore(evaluation.mediaGeral)}
                 </span>
               </div>
             </div>
@@ -175,23 +176,21 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
           {/* Dados do Signatário */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Nome do Representante Legal / Preposto *</label>
+              <label className="block font-bold text-slate-700 mb-1">Nome do Representante Legal / Preposto (Opcional)</label>
               <input
                 type="text"
                 value={nomeSignatario}
                 onChange={(e) => setNomeSignatario(e.target.value)}
-                required
                 placeholder="Ex: Dr. André Fonseca"
                 className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
               />
             </div>
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Cargo / Função *</label>
+              <label className="block font-bold text-slate-700 mb-1">Cargo / Função (Opcional)</label>
               <input
                 type="text"
                 value={cargoSignatario}
                 onChange={(e) => setCargoSignatario(e.target.value)}
-                required
                 placeholder="Ex: Diretor de Operações / Gerente"
                 className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
               />

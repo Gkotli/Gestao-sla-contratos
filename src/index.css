@@ -49,14 +49,13 @@
     print-color-adjust: exact !important;
   }
 
-  /* Oculta todos os componentes de interface da aplicação normal */
+  /* Oculta apenas os componentes de interface da aplicação normal */
   .no-print,
   nav,
   aside,
   header,
   footer,
   main,
-  .app-root-container,
   .app-main-content,
   .filters,
   .history-section,
@@ -66,6 +65,7 @@
 
   /* Reset de todos os elementos ancestrais do relatório para fluxo normal do documento */
   #root,
+  .app-root-container,
   .printable-laudo-modal,
   .printable-laudo-container {
     display: block !important;

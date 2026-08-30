@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Evaluation, Sector, Supplier, User } from '../types';
-import { ArchetypesService } from '../services/archetypesService';
+import { EVALUATION_QUESTIONS } from '../services/questions';
+import { safeFormatScore, safeNumber } from '../utils/formatters';
 import { 
   Building2, 
   Calendar, 
@@ -11,7 +12,8 @@ import {
   Save, 
   X,
   FileSpreadsheet,
-  Layers
+  Layers,
+  Clock
 } from 'lucide-react';
 
 interface EvaluationFormProps {
@@ -20,6 +22,8 @@ interface EvaluationFormProps {
   currentUser: User | null;
   initialEvaluation?: Evaluation | null;
   preselectedSupplierId?: string;
+  preselectedYear?: number;
+  allEvaluations?: Evaluation[];
   onSave: (evaluation: Evaluation, openActionPlanModal?: boolean) => void;
   onCancel: () => void;
 }
@@ -30,6 +34,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   currentUser,
   initialEvaluation,
   preselectedSupplierId,
+  preselectedYear,
+  allEvaluations = [],
   onSave,
   onCancel
 }) => {
@@ -39,7 +45,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   );
   
   const [selectedYear, setSelectedYear] = useState<number>(
-    initialEvaluation?.ano || 2026
+    initialEvaluation?.ano || preselectedYear || 2026
   );
 
   // Selected Supplier & Sector
@@ -52,23 +58,30 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     return sectors.find(sec => sec.id === selectedSupplier.setorResponsavelId);
   }, [sectors, selectedSupplier]);
 
-  // Detect Archetype for selected supplier
-  const detectedArchetype = useMemo(() => {
-    if (!selectedSupplier) return 'ARQUETIPO_2_MANUTENCAO_PREDIAL';
-    return ArchetypesService.detectArchetype(
-      selectedSupplier.setorResponsavelId,
-      selectedSupplier.categoriaServico
-    );
-  }, [selectedSupplier]);
-
-  // Load Criteria based on detected Archetype
+  // Fonte Única de Verdade (15 Perguntas da Avaliação Anual)
   const legalCriteria = useMemo(() => {
-    return ArchetypesService.getLegalCriteria(detectedArchetype);
-  }, [detectedArchetype]);
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'LEGAIS').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'LEGAL' as const
+    }));
+  }, []);
 
-  const { behavioral: behavioralCriteria, quality: qualityCriteria } = useMemo(() => {
-    return ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
-  }, [detectedArchetype]);
+  const behavioralCriteria = useMemo(() => {
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'COMPORTAMENTAIS').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'COMPORTAMENTAL' as const
+    }));
+  }, []);
+
+  const qualityCriteria = useMemo(() => {
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'QUALIDADE').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'QUALIDADE' as const
+    }));
+  }, []);
 
   // Answers State: Map of criterion ID -> score (1..5 or 'NA')
   const [respostas, setRespostas] = useState<Record<string, number | 'NA'>>(() => {
@@ -84,19 +97,15 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   const [observacoesQualidade, setObservacoesQualidade] = useState(initialEvaluation?.observacoesQualidade || '');
   const [parecerGeral, setParecerGeral] = useState(initialEvaluation?.parecerGeral || '');
 
-  // Reset or initialize default answers when supplier or archetype changes
+  // Manter respostas do fornecedor ou iniciar formulário vazio (sem notas padrão 5)
   useEffect(() => {
     if (initialEvaluation && initialEvaluation.fornecedorId === selectedSupplierId) {
-      setRespostas(initialEvaluation.respostas);
+      setRespostas(initialEvaluation.respostas || {});
       return;
     }
 
-    const defaultResps: Record<string, number | 'NA'> = {};
-    legalCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    behavioralCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    qualityCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    setRespostas(defaultResps);
-  }, [selectedSupplierId, legalCriteria, behavioralCriteria, qualityCriteria, initialEvaluation]);
+    setRespostas({});
+  }, [selectedSupplierId, initialEvaluation]);
 
   // Calculate live block averages
   const calculateBlockAverage = (criteriaList: { id: string }[]): number => {
@@ -138,37 +147,61 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     }));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent, openActionPlanModalDirectly: boolean = false) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     if (!selectedSupplier) {
       alert('Por favor, selecione um fornecedor válido.');
       return;
     }
 
-    const newEval: Evaluation = {
-      id: initialEvaluation?.id || `eval_${Date.now()}`,
-      fornecedorId: selectedSupplier.id,
-      setorId: selectedSupplier.setorResponsavelId,
-      ano: selectedYear,
-      dataAvaliacao: new Date().toISOString().split('T')[0],
-      gestorAvaliador: currentUser?.nome || selectedSector?.gestorResponsavel || 'Gestor Responsável',
-      emailAvaliador: currentUser?.email || selectedSector?.emailGestor || 'gestor@vilanovastar.com.br',
-      respostas,
-      observacoesLegais,
-      observacoesComportamentais,
-      observacoesQualidade,
-      parecerGeral: parecerGeral || `Avaliação Anual ${selectedYear} referente ao contrato ${selectedSupplier.numeroContrato}. Média Geral: ${mediaGeral.toFixed(2)}.`,
-      mediaLegais,
-      mediaComportamentais,
-      mediaQualidade,
-      mediaGeral,
-      statusMeta,
-      necessitaPlanoAcao,
-      statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO'
-    };
+    // Validação de Duplicidade (Não duplicar avaliação para mesmo Fornecedor + Contrato + Ano)
+    if (allEvaluations && !initialEvaluation) {
+      const isDuplicate = allEvaluations.some(
+        e => e.fornecedorId === selectedSupplier.id && e.ano === selectedYear
+      );
+      if (isDuplicate) {
+        alert(`⚠️ ATENÇÃO: Já existe uma Avaliação Anual concluída para o fornecedor "${selectedSupplier.nomeFantasia}" no exercício de ${selectedYear}.\n\nCaso deseje alterar ou revisar as notas, consulte e edite o registro existente no menu "Avaliações & Histórico".`);
+        return;
+      }
+    }
 
-    onSave(newEval, openActionPlanModalDirectly);
+    setIsSubmitting(true);
+    try {
+      const formattedMediaGeral = safeFormatScore(mediaGeral);
+
+      const newEval: Evaluation = {
+        id: initialEvaluation?.id || `eval_${Date.now()}`,
+        fornecedorId: selectedSupplier.id,
+        setorId: selectedSupplier.setorResponsavelId,
+        ano: selectedYear,
+        dataAvaliacao: new Date().toISOString().split('T')[0],
+        gestorAvaliador: currentUser?.nome || selectedSector?.gestorResponsavel || 'Gestor Responsável',
+        emailAvaliador: currentUser?.email || selectedSector?.emailGestor || 'gestor@vilanovastar.com.br',
+        respostas: respostas || {},
+        observacoesLegais: observacoesLegais || '',
+        observacoesComportamentais: observacoesComportamentais || '',
+        observacoesQualidade: observacoesQualidade || '',
+        parecerGeral: parecerGeral || `Avaliação Anual ${selectedYear} referente ao contrato ${selectedSupplier.numeroContrato}. Média Geral: ${formattedMediaGeral}.`,
+        mediaLegais: safeNumber(mediaLegais),
+        mediaComportamentais: safeNumber(mediaComportamentais),
+        mediaQualidade: safeNumber(mediaQualidade),
+        mediaGeral: safeNumber(mediaGeral),
+        statusMeta: statusMeta || 'DENTRO_DA_META',
+        necessitaPlanoAcao: Boolean(necessitaPlanoAcao),
+        statusAssinatura: initialEvaluation?.statusAssinatura || 'PENDENTE_ENVIO'
+      };
+
+      onSave(newEval, openActionPlanModalDirectly);
+    } catch (err) {
+      console.error('Erro ao concluir avaliação:', err);
+      alert('Ocorreu um erro ao salvar a avaliação. Por favor, tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const archetypeLabelMap: Record<string, string> = {
@@ -275,10 +308,10 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
                 <p className="text-slate-500">{selectedSupplier.categoriaServico} | CNPJ: {selectedSupplier.cnpj}</p>
               </div>
 
-              {/* Badge do Arquétipo Detectado */}
+              {/* Badge da Avaliação Anual */}
               <div className="inline-flex items-center px-3 py-1 bg-teal-900/10 border border-teal-300 text-teal-950 font-bold rounded-lg space-x-1.5">
                 <Layers className="w-4 h-4 text-teal-600" />
-                <span>{archetypeLabelMap[detectedArchetype] || 'Arquétipo Específico'}</span>
+                <span>Avaliação Anual de Contrato (15 Perguntas)</span>
               </div>
             </div>
 
@@ -287,6 +320,29 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
               <div>Vigência: <strong className="text-slate-800">{selectedSupplier.vigenciaFim}</strong></div>
               <div>Avaliador: <strong className="text-slate-800">{currentUser?.nome || selectedSector?.gestorResponsavel}</strong></div>
               <div>E-mail: <strong className="text-slate-800">{currentUser?.email || selectedSector?.emailGestor}</strong></div>
+            </div>
+
+            {/* Histórico dos Ciclos Anuais */}
+            <div className="pt-2 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+              <span className="text-slate-600 font-bold flex items-center">
+                <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Histórico dos ciclos:
+              </span>
+              <div className="flex items-center space-x-2">
+                {[2024, 2025, 2026].map(yr => {
+                  const evFound = allEvaluations.find(e => e.fornecedorId === selectedSupplier.id && e.ano === yr);
+                  return (
+                    <span key={yr} className={`inline-flex items-center px-2 py-0.5 rounded font-bold ${
+                      evFound 
+                        ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' 
+                        : yr < 2026 
+                        ? 'bg-rose-100 text-rose-900 border border-rose-300' 
+                        : 'bg-amber-100 text-amber-900 border border-amber-300'
+                    }`}>
+                      {yr} {evFound ? '✅ Concluída' : yr < 2026 ? '🔴 Pendente' : '🟡 Pendente'}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ActionPlan, ActionPlanStatus, Evaluation, Sector, Supplier } from '../types';
+import { safeFormatScore } from '../utils/formatters';
 import { 
   Plus, 
   Edit3, 
@@ -29,8 +30,11 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(Boolean(targetEvaluation));
   const [editingPlan, setEditingPlan] = useState<ActionPlan | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('ALL');
+
+  const mediaFormatted = targetEvaluation ? safeFormatScore(targetEvaluation.mediaGeral) : '0.00';
 
   // Modal Form State
   const [formEvalId, setFormEvalId] = useState<string>(targetEvaluation?.id || '');
@@ -39,11 +43,11 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
   const [formAno, setFormAno] = useState<number>(targetEvaluation?.ano || 2026);
   
   const [titulo, setTitulo] = useState(
-    targetEvaluation ? `Plano de Melhoria - Nota ${targetEvaluation.mediaGeral.toFixed(2)}` : ''
+    targetEvaluation ? `Plano de Melhoria - Nota ${mediaFormatted}` : ''
   );
   const [acao5W, setAcao5W] = useState('');
   const [justificativa5W, setJustificativa5W] = useState(
-    targetEvaluation ? `Média Anual (${targetEvaluation.mediaGeral.toFixed(2)}) ficou abaixo da meta estipulada de 4,00.` : ''
+    targetEvaluation ? `Média Anual (${mediaFormatted}) ficou abaixo da meta estipulada de 4,00.` : ''
   );
   const [responsavel5W, setResponsavel5W] = useState('');
   const [onde5W, setOnde5W] = useState('');
@@ -58,12 +62,13 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
   const openNewPlanModal = (ev?: Evaluation) => {
     setEditingPlan(null);
     if (ev) {
+      const scoreStr = safeFormatScore(ev.mediaGeral);
       setFormEvalId(ev.id);
       setFormSupplierId(ev.fornecedorId);
       setFormSectorId(ev.setorId);
       setFormAno(ev.ano);
-      setTitulo(`Plano de Ação - Avaliação Anual Nota ${ev.mediaGeral.toFixed(2)}`);
-      setJustificativa5W(`Média anual (${ev.mediaGeral.toFixed(2)}) ficou abaixo da meta aceitável de 4,00.`);
+      setTitulo(`Plano de Ação - Avaliação Anual Nota ${scoreStr}`);
+      setJustificativa5W(`Média anual (${scoreStr}) ficou abaixo da meta aceitável de 4,00.`);
     } else {
       setFormEvalId('');
       setFormSupplierId(suppliers[0]?.id || '');
@@ -103,28 +108,37 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
   const handleSubmitModal = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    const planData: ActionPlan = {
-      id: editingPlan?.id || `plan_${Date.now()}`,
-      evaluationId: formEvalId,
-      fornecedorId: formSupplierId,
-      setorId: formSectorId,
-      ano: formAno,
-      titulo,
-      acao5W,
-      justificativa5W,
-      responsavel5W,
-      onde5W,
-      prazo5W,
-      como5W,
-      custo5W,
-      status,
-      dataCriacao: editingPlan?.dataCriacao || new Date().toISOString().split('T')[0],
-      observacoesAcompanhamento: observacoes
-    };
+    setIsSubmitting(true);
+    try {
+      const planData: ActionPlan = {
+        id: editingPlan?.id || `plan_${Date.now()}`,
+        evaluationId: formEvalId,
+        fornecedorId: formSupplierId,
+        setorId: formSectorId,
+        ano: formAno,
+        titulo: titulo || 'Plano de Ação de Melhoria',
+        acao5W,
+        justificativa5W,
+        responsavel5W,
+        onde5W,
+        prazo5W,
+        como5W,
+        custo5W,
+        status,
+        dataCriacao: editingPlan?.dataCriacao || new Date().toISOString().split('T')[0],
+        observacoesAcompanhamento: observacoes
+      };
 
-    onSaveActionPlan(planData);
-    setIsModalOpen(false);
+      onSaveActionPlan(planData);
+      setIsModalOpen(false);
+    } catch (err) {
+      console.error('Erro ao salvar plano de ação:', err);
+      alert('Ocorreu um erro ao salvar o plano de ação. Por favor, tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const filteredPlans = actionPlans.filter(p => {
@@ -133,17 +147,17 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       {/* Top bar de Planos de Ação */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Gestão de Planos de Ação (CAPA / 5W2H)</h2>
+          <h2 className="text-xl font-bold text-slate-900">Gestão de Planos de Ação de Melhoria</h2>
           <p className="text-xs text-slate-500">Planos de melhoria corretiva gerados para fornecedores abaixo da meta de SLA (&lt; 4,00)</p>
         </div>
 
         <button
           onClick={() => openNewPlanModal()}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow transition self-start sm:self-auto"
+          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow transition self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4 mr-2" />
           Novo Plano de Ação
@@ -160,7 +174,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
           <button
             key={st}
             onClick={() => setSelectedStatusFilter(st)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               selectedStatusFilter === st
                 ? 'bg-slate-900 text-white shadow-sm'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -177,6 +191,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
           filteredPlans.map(plan => {
             const supplier = suppliers.find(s => s.id === plan.fornecedorId);
             const sector = sectors.find(s => s.id === plan.setorId);
+            const planStatus = plan.status || 'EM_ANDAMENTO';
 
             return (
               <div key={plan.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col justify-between">
@@ -188,12 +203,12 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                       <h3 className="font-bold text-slate-900 text-sm mt-0.5">{plan.titulo}</h3>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-extrabold uppercase ${
-                      plan.status === 'CONCLUIDO' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                      plan.status === 'EM_ANDAMENTO' ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                      plan.status === 'ATRASADO' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                      planStatus === 'CONCLUIDO' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                      planStatus === 'EM_ANDAMENTO' ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      planStatus === 'ATRASADO' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
                       'bg-amber-100 text-amber-800 border border-amber-300'
                     }`}>
-                      {plan.status.replace('_', ' ')}
+                      {planStatus.replace('_', ' ')}
                     </span>
                   </div>
 
@@ -211,17 +226,17 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                     </div>
 
                     <div>
-                      <strong className="text-slate-900 block font-semibold">O QUE FAZER (Ação):</strong>
+                      <strong className="text-slate-900 block font-semibold">Ação Corretiva:</strong>
                       <p className="text-slate-700 bg-amber-50/50 border border-amber-100 p-2 rounded mt-0.5">{plan.acao5W}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <strong className="text-slate-900 block font-semibold">QUEM (Responsável):</strong>
+                        <strong className="text-slate-900 block font-semibold">Responsável:</strong>
                         <p className="text-slate-700 mt-0.5">{plan.responsavel5W}</p>
                       </div>
                       <div>
-                        <strong className="text-slate-900 block font-semibold">QUANDO (Prazo):</strong>
+                        <strong className="text-slate-900 block font-semibold">Prazo de Conclusão:</strong>
                         <p className="text-amber-800 font-bold mt-0.5 flex items-center">
                           <Calendar className="w-3.5 h-3.5 mr-1 text-amber-600" /> {plan.prazo5W}
                         </p>
@@ -230,7 +245,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
                     {plan.justificativa5W && (
                       <div>
-                        <strong className="text-slate-900 block font-semibold">POR QUE (Justificativa):</strong>
+                        <strong className="text-slate-900 block font-semibold">Justificativa:</strong>
                         <p className="text-slate-600 mt-0.5">{plan.justificativa5W}</p>
                       </div>
                     )}
@@ -250,7 +265,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => openEditModal(plan)}
-                      className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 transition flex items-center"
+                      className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 transition flex items-center cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 mr-1" /> Editar
                     </button>
@@ -260,7 +275,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                           onDeleteActionPlan(plan.id);
                         }
                       }}
-                      className="px-2.5 py-1 text-xs font-semibold text-rose-600 bg-white border border-rose-200 rounded hover:bg-rose-50 transition"
+                      className="px-2.5 py-1 text-xs font-semibold text-rose-600 bg-white border border-rose-200 rounded hover:bg-rose-50 transition cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -283,7 +298,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
             <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-lg">
-                  {editingPlan ? 'Editar Plano de Ação (5W2H)' : 'Novo Plano de Ação de Melhoria (5W2H)'}
+                  {editingPlan ? 'Editar Plano de Ação de Melhoria' : 'Novo Plano de Ação de Melhoria'}
                 </h3>
                 <p className="text-xs text-slate-300">Definição estruturada de ações para adequação à meta de SLA (≥ 4.00)</p>
               </div>
@@ -301,20 +316,21 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                     value={formSupplierId}
                     onChange={(e) => setFormSupplierId(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium text-slate-900"
                   >
                     {suppliers.map(s => (
-                      <option key={s.id} value={s.id}>{s.nomeFantasia}</option>
+                      <option key={s.id} value={s.id}>{s.nomeFantasia} ({s.numeroContrato})</option>
                     ))}
                   </select>
                 </div>
+
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">Setor Hospitalar *</label>
                   <select
                     value={formSectorId}
                     onChange={(e) => setFormSectorId(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium text-slate-900"
                   >
                     {sectors.map(sec => (
                       <option key={sec.id} value={sec.id}>{sec.nome}</option>
@@ -331,137 +347,140 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                   required
-                  placeholder="Ex: Readequação do Dimensionamento de Pessoal da Higienização"
-                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                  placeholder="Ex: Treinamento de Reciclagem da Equipe de Higienização"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-medium text-slate-900"
                 />
               </div>
 
-              {/* O QUE (Ação) */}
-              <div>
-                <label className="block font-bold text-slate-800 mb-1">O QUE FAZER (What - Descrição da Ação Corretiva) *</label>
-                <textarea
-                  rows={2}
-                  value={acao5W}
-                  onChange={(e) => setAcao5W(e.target.value)}
-                  required
-                  placeholder="Descreva detalhadamente a medida corretiva a ser implementada..."
-                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
-                />
-              </div>
-
-              {/* POR QUE (Justificativa) */}
-              <div>
-                <label className="block font-bold text-slate-800 mb-1">POR QUE (Why - Causa Raiz / Justificativa) *</label>
-                <textarea
-                  rows={2}
-                  value={justificativa5W}
-                  onChange={(e) => setJustificativa5W(e.target.value)}
-                  required
-                  placeholder="Causa da falha ou justificativa da ação..."
-                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
-                />
-              </div>
-
-              {/* QUEM & QUANDO */}
+              {/* O que fazer / Por que fazer */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">QUEM (Who - Responsável) *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">O que será feito? (Ação Corretiva) *</label>
+                  <textarea
+                    rows={2}
+                    value={acao5W}
+                    onChange={(e) => setAcao5W(e.target.value)}
+                    required
+                    placeholder="Descreva a ação corretiva a ser implantada..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Por que será feito? (Justificativa)</label>
+                  <textarea
+                    rows={2}
+                    value={justificativa5W}
+                    onChange={(e) => setJustificativa5W(e.target.value)}
+                    placeholder="Motivo da ação (ex: Nota abaixo da meta no ciclo anual)..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
+                  />
+                </div>
+              </div>
+
+              {/* Quem / Onde / Quando */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Quem fará? (Responsável) *</label>
                   <input
                     type="text"
                     value={responsavel5W}
                     onChange={(e) => setResponsavel5W(e.target.value)}
                     required
-                    placeholder="Ex: Juliana Costa (Supervisora)"
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    placeholder="Nome do responsável..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
                   />
                 </div>
+
                 <div>
-                  <label className="block font-bold text-slate-800 mb-1">QUANDO (When - Prazo Limite) *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Onde será feito? (Local / Setor)</label>
+                  <input
+                    type="text"
+                    value={onde5W}
+                    onChange={(e) => setOnde5W(e.target.value)}
+                    placeholder="Local / Setor / UTI..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Prazo de Conclusão *</label>
                   <input
                     type="date"
                     value={prazo5W}
                     onChange={(e) => setPrazo5W(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-slate-900"
                   />
                 </div>
               </div>
 
-              {/* ONDE, COMO & CUSTO */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* Como / Quanto custa / Status */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">ONDE (Where)</label>
-                  <input
-                    type="text"
-                    value={onde5W}
-                    onChange={(e) => setOnde5W(e.target.value)}
-                    placeholder="Ex: UTI Adulto / CME"
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">COMO (How)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Como será feito? (Metodologia)</label>
                   <input
                     type="text"
                     value={como5W}
                     onChange={(e) => setComo5W(e.target.value)}
-                    placeholder="Ex: Auditoria semanal"
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    placeholder="Metodologia / Procedimento..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
                   />
                 </div>
+
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">CUSTO (How much)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Quanto custa? (Investimento)</label>
                   <input
                     type="text"
                     value={custo5W}
                     onChange={(e) => setCusto5W(e.target.value)}
-                    placeholder="Ex: Sem custo adicional"
-                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                    placeholder="Sem custo / R$..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
                   />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 mb-1">Status de Execução *</label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as ActionPlanStatus)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-slate-900"
+                  >
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="EM_ANDAMENTO">Em Andamento</option>
+                    <option value="CONCLUIDO">Concluído</option>
+                    <option value="ATRASADO">Atrasado</option>
+                  </select>
                 </div>
               </div>
 
-              {/* Status do Plano */}
+              {/* Observações */}
               <div>
-                <label className="block font-bold text-slate-800 mb-1">Status de Execução *</label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as ActionPlanStatus)}
-                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs font-bold rounded-lg p-2.5"
-                >
-                  <option value="PENDENTE">PENDENTE</option>
-                  <option value="EM_ANDAMENTO">EM ANDAMENTO</option>
-                  <option value="CONCLUIDO">CONCLUÍDO (Resolvido)</option>
-                  <option value="ATRASADO">EM ATRASO</option>
-                </select>
-              </div>
-
-              {/* Observações de Acompanhamento */}
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Acompanhamento e Histórico</label>
+                <label className="block font-semibold text-slate-700 mb-1">Observações de Acompanhamento da Gestão</label>
                 <textarea
                   rows={2}
                   value={observacoes}
                   onChange={(e) => setObservacoes(e.target.value)}
-                  placeholder="Registros de reuniões, avanços ou checagens parciais..."
-                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+                  placeholder="Anotações de auditorias, reuniões de alinhamento..."
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
                 />
               </div>
 
-              {/* Botões do Modal */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+                  className="px-4 py-2 text-slate-600 hover:text-slate-900 rounded-lg bg-slate-100 hover:bg-slate-200 font-semibold"
                 >
                   Cancelar
                 </button>
+
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow"
+                  disabled={isSubmitting}
+                  className="px-5 py-2 text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 disabled:opacity-50 rounded-lg shadow"
                 >
-                  Salvar Plano de Ação
+                  {isSubmitting ? 'Salvando...' : editingPlan ? 'Salvar Alterações' : 'Criar Plano de Ação'}
                 </button>
               </div>
             </form>

@@ -9,7 +9,8 @@ import {
   RotateCcw,
   UserCheck,
   UserCog,
-  LogOut
+  LogOut,
+  Clock
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -35,6 +36,10 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR' || isDiretoria;
+  const isGabrielAdmin = Boolean(
+    currentUser?.email === 'gabriel.kotliarenko@vilanovastar.com.br' || 
+    currentUser?.nome?.toLowerCase().includes('gabriel')
+  );
 
   return (
     <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print font-sans">
@@ -139,6 +144,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {isGestor && (
+              <button
+                onClick={() => setActiveTab('pending-evals')}
+                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                  activeTab === 'pending-evals'
+                    ? 'bg-hospital-600 text-white shadow-sm'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Clock className="w-4 h-4 mr-2 text-amber-400" />
+                Pendências Anuais
+              </button>
+            )}
+
             <button
               onClick={() => setActiveTab('eval-list')}
               className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
@@ -184,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {isDiretoria && (
+            {isGabrielAdmin && (
               <button
                 onClick={() => setActiveTab('users')}
                 className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
