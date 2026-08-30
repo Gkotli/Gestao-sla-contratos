@@ -233,10 +233,24 @@ export default function App() {
   };
 
   const handleDeleteEvaluation = (evalId: string) => {
-    if (window.confirm('Tem certeza que deseja excluir esta avaliação de contrato?')) {
-      const updated = evaluations.filter(e => e.id !== evalId);
-      localStorage.setItem('sla_hospital_evaluations_v7', JSON.stringify(updated));
-      setEvaluations(updated);
+    if (!evalId) {
+      alert('Não foi possível excluir: O ID da avaliação é inválido.');
+      return;
+    }
+
+    if (window.confirm('Tem certeza que deseja excluir esta avaliação de contrato? Esta ação é definitiva e removerá a avaliação do banco de dados.')) {
+      try {
+        const updatedEvals = StorageService.deleteEvaluation(evalId);
+        setEvaluations(updatedEvals);
+        setActionPlans(StorageService.getActionPlans());
+
+        if (reportModalEvalId === evalId) {
+          setReportModalEvalId(null);
+        }
+      } catch (err) {
+        console.error('Erro ao excluir avaliação:', err);
+        alert('Não foi possível excluir a avaliação. Ocorreu um erro ao salvar a alteração no armazenamento.');
+      }
     }
   };
 

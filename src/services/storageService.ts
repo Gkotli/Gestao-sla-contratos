@@ -184,6 +184,19 @@ export class StorageService {
     return evaluations;
   }
 
+  static deleteEvaluation(evaluationId: string): Evaluation[] {
+    if (!evaluationId) return this.getEvaluations();
+
+    const evaluations = this.getEvaluations().filter(e => e.id !== evaluationId);
+    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
+
+    // Exclui também os planos de ação vinculados para integridade referencial
+    const actionPlans = this.getActionPlans().filter(p => p.avaliacaoId !== evaluationId);
+    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(actionPlans));
+
+    return evaluations;
+  }
+
   static getActionPlans(): ActionPlan[] {
     const data = localStorage.getItem(KEYS.ACTION_PLANS);
     let list: any[] = [];
