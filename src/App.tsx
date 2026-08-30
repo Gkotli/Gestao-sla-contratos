@@ -40,6 +40,10 @@ export default function App() {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR';
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  const isGabrielAdmin = Boolean(
+    currentUser?.email === 'gabriel.kotliarenko@vilanovastar.com.br' || 
+    currentUser?.nome?.toLowerCase().includes('gabriel')
+  );
 
   const scopedSuppliers = useMemo(() => {
     if (!currentUser) return [];
@@ -390,7 +394,7 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'users' && currentUser.role === 'DIRETORIA' && (
+        {activeTab === 'users' && isGabrielAdmin && (
           <UsersManager
             users={users}
             sectors={sectors}

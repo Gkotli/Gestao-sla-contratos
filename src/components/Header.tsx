@@ -36,6 +36,10 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR' || isDiretoria;
+  const isGabrielAdmin = Boolean(
+    currentUser?.email === 'gabriel.kotliarenko@vilanovastar.com.br' || 
+    currentUser?.nome?.toLowerCase().includes('gabriel')
+  );
 
   return (
     <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print font-sans">
@@ -199,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {isDiretoria && (
+            {isGabrielAdmin && (
               <button
                 onClick={() => setActiveTab('users')}
                 className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
