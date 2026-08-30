@@ -154,13 +154,19 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         }
       }
 
-      // Filtro de Texto (Nome / Contrato / CNPJ)
-      if (searchTerm) {
-        const query = searchTerm.toLowerCase();
-        const matchesName = row.supplier.nomeFantasia.toLowerCase().includes(query) || row.supplier.razaoSocial.toLowerCase().includes(query);
+      // Filtro de Texto (Nome / Contrato / Serviço / CNPJ)
+      if (searchTerm && searchTerm.trim() !== '') {
+        const query = searchTerm.trim().toLowerCase();
+        const cleanDigits = query.replace(/\D/g, '');
+
+        const matchesName = (row.supplier.nomeFantasia || '').toLowerCase().includes(query) || (row.supplier.razaoSocial || '').toLowerCase().includes(query);
         const matchesContract = (row.supplier.numeroContrato || '').toLowerCase().includes(query);
-        const matchesCnpj = row.supplier.cnpj.includes(query);
-        if (!matchesName && !matchesContract && !matchesCnpj) return false;
+        const matchesService = (row.supplier.categoriaServico || '').toLowerCase().includes(query);
+        const matchesCnpj = row.supplier.cnpj.toLowerCase().includes(query) || (
+          cleanDigits.length >= 3 && row.supplier.cnpj.replace(/\D/g, '').includes(cleanDigits)
+        );
+
+        if (!matchesName && !matchesContract && !matchesService && !matchesCnpj) return false;
       }
 
       // Filtro por Setor

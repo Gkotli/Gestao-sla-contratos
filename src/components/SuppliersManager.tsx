@@ -137,14 +137,21 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   // Filtragem Combinada (Busca + Setor + Status)
   const filteredSuppliers = useMemo(() => {
     return suppliers.filter(s => {
-      // 1. Filtro de Texto
-      if (searchTerm) {
-        const query = searchTerm.toLowerCase();
-        const matchesName = s.nomeFantasia.toLowerCase().includes(query) || s.razaoSocial.toLowerCase().includes(query);
-        const matchesCnpj = s.cnpj.replace(/\D/g, '').includes(query.replace(/\D/g, '')) || s.cnpj.toLowerCase().includes(query);
-        const matchesService = s.categoriaServico.toLowerCase().includes(query);
+      // 1. Filtro de Texto (Nome Fantasia, Razão Social, Serviço, Contrato e CNPJ)
+      if (searchTerm && searchTerm.trim() !== '') {
+        const query = searchTerm.trim().toLowerCase();
+        const cleanDigits = query.replace(/\D/g, '');
+
+        const matchesNome = (s.nomeFantasia || '').toLowerCase().includes(query) || (s.razaoSocial || '').toLowerCase().includes(query);
+        const matchesService = (s.categoriaServico || '').toLowerCase().includes(query);
         const matchesContract = (s.numeroContrato || '').toLowerCase().includes(query);
-        if (!matchesName && !matchesCnpj && !matchesService && !matchesContract) return false;
+        const matchesCnpj = s.cnpj.toLowerCase().includes(query) || (
+          cleanDigits.length >= 3 && s.cnpj.replace(/\D/g, '').includes(cleanDigits)
+        );
+
+        if (!matchesNome && !matchesService && !matchesContract && !matchesCnpj) {
+          return false;
+        }
       }
 
       // 2. Filtro de Setor
