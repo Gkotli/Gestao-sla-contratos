@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
+import { EVALUATION_QUESTIONS } from '../services/questions';
 import { safeFormatScore } from '../utils/formatters';
 import { 
   Printer, 
@@ -15,33 +16,6 @@ interface EvaluationReportModalProps {
   actionPlan?: ActionPlan;
   onClose: () => void;
 }
-
-// Dicionário Mestre dos Textos Integrais e Inalterados das 15 Perguntas Originais
-const MASTER_15_QUESTIONS: Record<string, { pergunta: string; grupo: 'LEGAIS' | 'COMPORTAMENTAIS' | 'QUALIDADE' }> = {
-  leg_1: { pergunta: 'O fornecedor dispõe de profissionais habilitados, capacitados, treinados e tecnicamente aptos para atender à demanda?', grupo: 'LEGAIS' },
-  leg_2: { pergunta: 'O fornecedor cumpre as legislações, normas de vigilância sanitária (ANVISA), trabalhistas e fiscalizatórias aplicáveis?', grupo: 'LEGAIS' },
-  leg_3: { pergunta: 'Os profissionais cumprem normas internas, horários, crachá, segurança e demais obrigações institucionais do hospital?', grupo: 'LEGAIS' },
-  leg_4: { pergunta: 'Nos casos de ausência, faltas ou desligamento de profissionais, existe substituição adequada e tempestiva?', grupo: 'LEGAIS' },
-  leg_5: { pergunta: 'Os colaboradores utilizam obrigatoriamente todos os Equipamentos de Proteção Individual (EPIs) recomendados?', grupo: 'LEGAIS' },
-
-  comp_1: { pergunta: 'A equipe mantém atendimento cortês, com ética, urbanidade e presteza aos pacientes, acompanhantes e corpo clínico?', grupo: 'COMPORTAMENTAIS' },
-  comp_2: { pergunta: 'A apresentação pessoal dos colaboradores está adequada (uso correto de crachá de identificação e uniforme/jaleco)?', grupo: 'COMPORTAMENTAIS' },
-  comp_3: { pergunta: 'Os prestadores de serviço cumprem rigorosamente a política institucional de adornos zero em áreas assistenciais?', grupo: 'COMPORTAMENTAIS' },
-  comp_4: { pergunta: 'Existe comunicação clara, ágil e eficiente entre a supervisão da contratada e a gestão do hospital?', grupo: 'COMPORTAMENTAIS' },
-  comp_5: { pergunta: 'Os colaboradores da contratada contribuem ativamente para a higiene, organização e segurança das áreas de atuação?', grupo: 'COMPORTAMENTAIS' },
-
-  qual_1: { pergunta: 'Pesquisa de opinião: o nível de satisfação dos usuários e pacientes pelo serviço prestado está dentro da meta estipulada?', grupo: 'QUALIDADE' },
-  qual_2: { pergunta: 'Os colaboradores participam dos treinamentos obrigatórios (integração, SBV, Metas Internacionais de Segurança)?', grupo: 'QUALIDADE' },
-  qual_3: { pergunta: 'Os indicadores contratuais e relatórios operacionais são alimentados e entregues rigorosamente no prazo?', grupo: 'QUALIDADE' },
-  qual_4: { pergunta: 'O gestor do fornecedor participa das reuniões de alinhamento mensal e análise crítica de desempenho?', grupo: 'QUALIDADE' },
-  qual_5: { pergunta: 'As tratativas de não conformidades e planos de ação preventivos/corretivos são executados nos prazos firmados?', grupo: 'QUALIDADE' }
-};
-
-const ALL_15_KEYS = [
-  'leg_1', 'leg_2', 'leg_3', 'leg_4', 'leg_5',
-  'comp_1', 'comp_2', 'comp_3', 'comp_4', 'comp_5',
-  'qual_1', 'qual_2', 'qual_3', 'qual_4', 'qual_5'
-];
 
 export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   evaluation,
@@ -81,11 +55,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   const mediaGeralVal = typeof evaluation.mediaGeral === 'number' ? evaluation.mediaGeral : parseFloat(String(evaluation.mediaGeral || 0));
   const mediaGeralFormatted = safeFormatScore(evaluation.mediaGeral);
 
-  // Garante a lista completa das 15 perguntas inalteradas
-  const criteriaList = ALL_15_KEYS.map(key => ({
-    id: key,
-    pergunta: MASTER_15_QUESTIONS[key]?.pergunta || `Pergunta ${key}`,
-    grupo: MASTER_15_QUESTIONS[key]?.grupo || 'LEGAIS'
+  // Garante a lista completa das 15 perguntas oficiais extraídas da fonte única de verdade
+  const criteriaList = EVALUATION_QUESTIONS.map(q => ({
+    id: q.id,
+    pergunta: q.text,
+    grupo: q.category
   }));
 
   const temContatoFornecedor = supplier?.contatoNome || supplier?.contatoEmail || supplier?.contatoTelefone;

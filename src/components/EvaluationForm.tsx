@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Evaluation, Sector, Supplier, User } from '../types';
-import { ArchetypesService } from '../services/archetypesService';
+import { EVALUATION_QUESTIONS } from '../services/questions';
 import { safeFormatScore, safeNumber } from '../utils/formatters';
 import { 
   Building2, 
@@ -53,23 +53,30 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     return sectors.find(sec => sec.id === selectedSupplier.setorResponsavelId);
   }, [sectors, selectedSupplier]);
 
-  // Detect Archetype for selected supplier
-  const detectedArchetype = useMemo(() => {
-    if (!selectedSupplier) return 'ARQUETIPO_2_MANUTENCAO_PREDIAL';
-    return ArchetypesService.detectArchetype(
-      selectedSupplier.setorResponsavelId,
-      selectedSupplier.categoriaServico
-    );
-  }, [selectedSupplier]);
-
-  // Load Criteria based on detected Archetype
+  // Fonte Única de Verdade (15 Perguntas da Avaliação Anual)
   const legalCriteria = useMemo(() => {
-    return ArchetypesService.getLegalCriteria(detectedArchetype);
-  }, [detectedArchetype]);
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'LEGAIS').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'LEGAL' as const
+    }));
+  }, []);
 
-  const { behavioral: behavioralCriteria, quality: qualityCriteria } = useMemo(() => {
-    return ArchetypesService.getBehavioralAndQualityCriteria(detectedArchetype);
-  }, [detectedArchetype]);
+  const behavioralCriteria = useMemo(() => {
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'COMPORTAMENTAIS').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'COMPORTAMENTAL' as const
+    }));
+  }, []);
+
+  const qualityCriteria = useMemo(() => {
+    return EVALUATION_QUESTIONS.filter(q => q.category === 'QUALIDADE').map(q => ({
+      id: q.id,
+      pergunta: q.text,
+      bloco: 'QUALIDADE' as const
+    }));
+  }, []);
 
   // Answers State: Map of criterion ID -> score (1..5 or 'NA')
   const [respostas, setRespostas] = useState<Record<string, number | 'NA'>>(() => {
