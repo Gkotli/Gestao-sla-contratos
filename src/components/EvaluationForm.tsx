@@ -292,10 +292,10 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
                 <p className="text-slate-500">{selectedSupplier.categoriaServico} | CNPJ: {selectedSupplier.cnpj}</p>
               </div>
 
-              {/* Badge do Arquétipo Detectado */}
+              {/* Badge da Avaliação Anual */}
               <div className="inline-flex items-center px-3 py-1 bg-teal-900/10 border border-teal-300 text-teal-950 font-bold rounded-lg space-x-1.5">
                 <Layers className="w-4 h-4 text-teal-600" />
-                <span>{archetypeLabelMap[detectedArchetype] || 'Arquétipo Específico'}</span>
+                <span>Avaliação Anual de Contrato (15 Perguntas)</span>
               </div>
             </div>
 
