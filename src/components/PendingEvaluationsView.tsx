@@ -402,19 +402,19 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
 
       {/* Matriz / Tabela de Pendências */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+        <div className="w-full overflow-x-auto overflow-y-visible">
+          <table className="w-full text-left border-collapse text-xs min-w-[1300px]">
             <thead>
               <tr className="bg-slate-900 text-white font-bold text-xs uppercase tracking-wider">
-                <th className="p-3.5">Fornecedor / Razão Social</th>
-                <th className="p-3.5">Contrato</th>
-                <th className="p-3.5">Setor</th>
-                <th className="p-3.5">Gestor Responsável</th>
-                <th className="p-3.5 text-center">Ciclo 2024</th>
-                <th className="p-3.5 text-center">Ciclo 2025</th>
-                <th className="p-3.5 text-center">Ciclo 2026</th>
-                <th className="p-3.5 text-center">Pendências</th>
-                <th className="p-3.5 text-right">Ação</th>
+                <th className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-slate-900 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.2)]">Fornecedor / Razão Social</th>
+                <th className="p-3.5 w-[130px] min-w-[130px]">Contrato</th>
+                <th className="p-3.5 w-[150px] min-w-[150px]">Setor</th>
+                <th className="p-3.5 w-[170px] min-w-[170px]">Gestor Responsável</th>
+                <th className="p-3.5 w-[140px] min-w-[140px] text-center">Ciclo 2024</th>
+                <th className="p-3.5 w-[140px] min-w-[140px] text-center">Ciclo 2025</th>
+                <th className="p-3.5 w-[140px] min-w-[140px] text-center">Ciclo 2026</th>
+                <th className="p-3.5 w-[140px] min-w-[140px] text-center">Pendências</th>
+                <th className="p-3.5 w-[130px] min-w-[130px] text-right">Ação</th>
               </tr>
             </thead>
 
@@ -428,10 +428,10 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                     row.status2025 === 'PENDENTE_ATUAL' ? 2025 : 2026;
 
                   return (
-                    <tr key={row.supplier.id} className="hover:bg-slate-50 transition">
-                      <td className="p-3.5">
-                        <strong className="text-slate-900 text-sm block font-bold">{row.supplier.nomeFantasia}</strong>
-                        <span className="text-[11px] text-slate-500 block truncate max-w-[220px]">{row.supplier.razaoSocial}</span>
+                    <tr key={row.supplier.id} className="hover:bg-slate-50 transition group">
+                      <td className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-white group-hover:bg-slate-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)]">
+                        <strong className="text-slate-900 text-sm block font-bold truncate max-w-[240px]">{row.supplier.nomeFantasia}</strong>
+                        <span className="text-[11px] text-slate-500 block truncate max-w-[240px]">{row.supplier.razaoSocial}</span>
                       </td>
 
                       <td className="p-3.5 font-mono text-slate-700 font-bold whitespace-nowrap">
