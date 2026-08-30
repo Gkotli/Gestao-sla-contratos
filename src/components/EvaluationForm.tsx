@@ -85,19 +85,15 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
   const [observacoesQualidade, setObservacoesQualidade] = useState(initialEvaluation?.observacoesQualidade || '');
   const [parecerGeral, setParecerGeral] = useState(initialEvaluation?.parecerGeral || '');
 
-  // Reset or initialize default answers when supplier or archetype changes
+  // Manter respostas do fornecedor ou iniciar formulário vazio (sem notas padrão 5)
   useEffect(() => {
     if (initialEvaluation && initialEvaluation.fornecedorId === selectedSupplierId) {
-      setRespostas(initialEvaluation.respostas);
+      setRespostas(initialEvaluation.respostas || {});
       return;
     }
 
-    const defaultResps: Record<string, number | 'NA'> = {};
-    legalCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    behavioralCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    qualityCriteria.forEach(c => { defaultResps[c.id] = 5; });
-    setRespostas(defaultResps);
-  }, [selectedSupplierId, legalCriteria, behavioralCriteria, qualityCriteria, initialEvaluation]);
+    setRespostas({});
+  }, [selectedSupplierId, initialEvaluation]);
 
   // Calculate live block averages
   const calculateBlockAverage = (criteriaList: { id: string }[]): number => {

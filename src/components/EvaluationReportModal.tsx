@@ -270,7 +270,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                         <td className="py-2.5 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-normal">{c.pergunta}</td>
                         <td className="py-2.5 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{c.grupo}</td>
                         <td className="py-2.5 px-3 text-center font-extrabold text-slate-900 text-sm">
-                          {score === 'NA' ? 'N/A' : score !== undefined ? score : 5}
+                          {score === 'NA' ? 'N/A' : (score !== undefined && score !== null ? score : '-')}
                         </td>
                       </tr>
                     );
