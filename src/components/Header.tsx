@@ -9,7 +9,8 @@ import {
   RotateCcw,
   UserCheck,
   UserCog,
-  LogOut
+  LogOut,
+  Clock
 } from 'lucide-react';
 
 interface HeaderProps {

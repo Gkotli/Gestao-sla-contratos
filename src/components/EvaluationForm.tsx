@@ -12,7 +12,8 @@ import {
   Save, 
   X,
   FileSpreadsheet,
-  Layers
+  Layers,
+  Clock
 } from 'lucide-react';
 
 interface EvaluationFormProps {
