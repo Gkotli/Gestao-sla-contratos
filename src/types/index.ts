@@ -53,6 +53,15 @@ export interface EvaluationAnswers {
   [questionId: string]: ScoreValue;
 }
 
+export type EvaluationType = 'PADRAO' | 'EXCECAO';
+
+export interface ExceptionItem {
+  id: string;
+  pergunta: string;
+  grupo: string;
+  nota: ScoreValue;
+}
+
 export interface Evaluation {
   id: string;
   fornecedorId: string;
@@ -61,6 +70,10 @@ export interface Evaluation {
   dataAvaliacao: string;
   gestorAvaliador: string;
   emailAvaliador?: string;
+  
+  tipoAvaliacao?: EvaluationType;
+  justificativaExcecao?: string;
+  itensExcecao?: ExceptionItem[];
   
   respostas: EvaluationAnswers;
   

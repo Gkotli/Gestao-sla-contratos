@@ -168,10 +168,21 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                   return (
                     <tr key={ev.id} className="hover:bg-slate-50 transition">
                       <td className="py-3 px-4">
-                        <strong className="text-slate-900 block font-bold text-sm">
-                          {supplier?.nomeFantasia || 'Fornecedor Cadastrado'}
-                        </strong>
-                        <span className="text-[11px] text-slate-500 block">
+                        <div className="flex items-center space-x-2">
+                          <strong className="text-slate-900 font-bold text-sm">
+                            {supplier?.nomeFantasia || 'Fornecedor Cadastrado'}
+                          </strong>
+                          {ev.tipoAvaliacao === 'EXCECAO' ? (
+                            <span className="inline-flex items-center text-[10px] font-black px-2 py-0.5 rounded bg-purple-100 text-purple-950 border border-purple-300 uppercase">
+                              ⚠️ EXCEÇÃO
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 uppercase">
+                              📋 PADRÃO
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[11px] text-slate-500 block mt-0.5">
                           {supplier?.razaoSocial} {supplier?.cnpj ? `| ${supplier.cnpj}` : ''}
                         </span>
                       </td>
