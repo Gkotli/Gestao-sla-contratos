@@ -51,7 +51,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [numeroContrato, setNumeroContrato] = useState('');
   const [vigenciaFim, setVigenciaFim] = useState('');
 
-  // Função genérica para determinar o status do contrato
+  // Função para determinar o status do contrato
   const getContractStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
     const vig = (sup.vigenciaFim || '').trim().toLowerCase();
 
@@ -97,7 +97,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     return 'VIGENTE';
   };
 
-  // Contagem dinâmica por setor (sem destaque especial)
+  // Contagem dinâmica por setor para o dropdown
   const sectorCounts = useMemo(() => {
     const map: Record<string, number> = {};
     suppliers.forEach(s => {
@@ -110,34 +110,53 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     return map;
   }, [suppliers, sectors]);
 
-  // Setores ordenados alfabeticamente para visual neutro e padronizado
+  // Setores ordenados alfabeticamente
   const sortedSectors = useMemo(() => {
     return [...sectors].sort((a, b) => a.nome.localeCompare(b.nome));
   }, [sectors]);
 
-  // Indicadores Numéricos Genéricos no Topo
-  const metrics = useMemo(() => {
-    const total = suppliers.length;
-    const noSectorCount = sectorCounts['NO_SECTOR'] || 0;
+  // 1. Universo de Fornecedores filtrados pelo SETOR selecionado
+  const sectorScopedSuppliers = useMemo(() => {
+    if (selectedSectorFilter === 'NO_SECTOR') {
+      return suppliers.filter(s => !s.setorResponsavelId || !sectors.some(sec => sec.id === s.setorResponsavelId));
+    }
+    if (selectedSectorFilter !== 'ALL') {
+      return suppliers.filter(s => s.setorResponsavelId === selectedSectorFilter);
+    }
+    return suppliers;
+  }, [suppliers, sectors, selectedSectorFilter]);
 
+  // 2. Métricas Dinâmicas dos CARDS (Considera SOMENTE o setor selecionado)
+  const sectorMetrics = useMemo(() => {
+    const total = sectorScopedSuppliers.length;
     let vigentes = 0;
     let aVencer = 0;
     let vencidos = 0;
 
-    suppliers.forEach(s => {
+    sectorScopedSuppliers.forEach(s => {
       const st = getContractStatus(s);
       if (st === 'VIGENTE' || st === 'INDETERMINADO') vigentes++;
       else if (st === 'A_VENCER') aVencer++;
       else if (st === 'VENCIDO') vencidos++;
     });
 
-    return { total, noSectorCount, vigentes, aVencer, vencidos };
-  }, [suppliers, sectorCounts]);
+    return { total, vigentes, aVencer, vencidos };
+  }, [sectorScopedSuppliers]);
 
-  // Filtragem Combinada (Busca + Setor + Status)
+  // 3. Fornecedores Finais Exibidos no Grid (Setor + Status do Card + Busca por Texto)
   const filteredSuppliers = useMemo(() => {
-    return suppliers.filter(s => {
-      // 1. Filtro de Texto (Nome Fantasia, Razão Social, Serviço, Contrato e CNPJ)
+    return sectorScopedSuppliers.filter(s => {
+      // 3.1. Filtro por Status do Contrato (Card clicável)
+      if (selectedStatusFilter !== 'ALL') {
+        const status = getContractStatus(s);
+        if (selectedStatusFilter === 'VIGENTE_TODOS') {
+          if (status !== 'VIGENTE' && status !== 'INDETERMINADO') return false;
+        } else if (status !== selectedStatusFilter) {
+          return false;
+        }
+      }
+
+      // 3.2. Filtro por Busca Textual (Refina a lista sem recalcular os cards de resumo do setor)
       if (searchTerm && searchTerm.trim() !== '') {
         const query = searchTerm.trim().toLowerCase();
         const cleanDigits = query.replace(/\D/g, '');
@@ -154,26 +173,25 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
         }
       }
 
-      // 2. Filtro de Setor
-      if (selectedSectorFilter === 'NO_SECTOR') {
-        if (s.setorResponsavelId && sectors.some(sec => sec.id === s.setorResponsavelId)) return false;
-      } else if (selectedSectorFilter !== 'ALL') {
-        if (s.setorResponsavelId !== selectedSectorFilter) return false;
-      }
-
-      // 3. Filtro de Status do Contrato
-      if (selectedStatusFilter !== 'ALL') {
-        const status = getContractStatus(s);
-        if (selectedStatusFilter === 'VIGENTE_TODOS') {
-          if (status !== 'VIGENTE' && status !== 'INDETERMINADO') return false;
-        } else if (status !== selectedStatusFilter) {
-          return false;
-        }
-      }
-
       return true;
     });
-  }, [suppliers, sectors, searchTerm, selectedSectorFilter, selectedStatusFilter]);
+  }, [sectorScopedSuppliers, selectedStatusFilter, searchTerm]);
+
+  // Nomes contextuais para mensagens de resultado
+  const currentSectorObj = sectors.find(sec => sec.id === selectedSectorFilter);
+  const sectorLabel = selectedSectorFilter === 'ALL' 
+    ? 'Todos os setores' 
+    : selectedSectorFilter === 'NO_SECTOR' 
+    ? 'Sem setor definido' 
+    : currentSectorObj?.nome || 'Setor Selecionado';
+
+  const statusLabel = selectedStatusFilter === 'ALL' 
+    ? 'Todos os status' 
+    : selectedStatusFilter === 'VIGENTE_TODOS' 
+    ? 'Contratos Vigentes' 
+    : selectedStatusFilter === 'A_VENCER' 
+    ? 'A Vencer / Em Aditivo' 
+    : 'Contratos Vencidos';
 
   const clearAllFilters = () => {
     setSearchTerm('');
@@ -250,90 +268,108 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
         </button>
       </div>
 
-      {/* KPI Summary Cards Genéricos no Topo */}
+      {/* CARDS DE RESUMO CLICÁVEIS E DINÂMICOS CONFORME O SETOR SELECIONADO */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* CARD 1: TOTAL DO SETOR OU TOTAL GERAL */}
         <div 
-          onClick={() => setSelectedSectorFilter('ALL')}
-          className={`p-4 rounded-xl border transition cursor-pointer ${
-            selectedSectorFilter === 'ALL' 
-              ? 'bg-slate-900 text-white border-slate-900 shadow-md' 
-              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm'
+          onClick={() => setSelectedStatusFilter('ALL')}
+          className={`p-4 rounded-xl border transition cursor-pointer select-none ${
+            selectedStatusFilter === 'ALL' 
+              ? 'bg-slate-900 text-white border-slate-900 shadow-md ring-2 ring-slate-400' 
+              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
           }`}
         >
           <div className="flex items-center justify-between text-xs font-semibold">
-            <span>Total Cadastrados</span>
-            <Layers className="w-4 h-4 text-teal-400" />
+            <span>{selectedSectorFilter === 'ALL' ? 'TOTAL GERAL' : 'TOTAL DO SETOR'}</span>
+            <Layers className={`w-4 h-4 ${selectedStatusFilter === 'ALL' ? 'text-teal-400' : 'text-slate-400'}`} />
           </div>
-          <div className="text-2xl font-black mt-2">{metrics.total}</div>
-          <p className="text-[11px] opacity-75 mt-0.5">Todos os fornecedores</p>
+          <div className="text-2xl font-black mt-2">{sectorMetrics.total}</div>
+          <p className={`text-[11px] truncate mt-0.5 ${selectedStatusFilter === 'ALL' ? 'opacity-80' : 'text-slate-500'}`}>
+            {selectedSectorFilter === 'ALL' ? 'Todos os fornecedores' : sectorLabel}
+          </p>
         </div>
 
+        {/* CARD 2: VIGENTES NO SETOR */}
         <div 
           onClick={() => setSelectedStatusFilter('VIGENTE_TODOS')}
-          className={`p-4 rounded-xl border transition cursor-pointer ${
+          className={`p-4 rounded-xl border transition cursor-pointer select-none ${
             selectedStatusFilter === 'VIGENTE_TODOS'
-              ? 'bg-emerald-800 text-white border-emerald-800 shadow-md' 
-              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm'
+              ? 'bg-emerald-800 text-white border-emerald-800 shadow-md ring-2 ring-emerald-400' 
+              : 'bg-white text-slate-900 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40 shadow-sm'
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-            <span>Contratos Vigentes</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span>VIGENTES</span>
+            <CheckCircle2 className={`w-4 h-4 ${selectedStatusFilter === 'VIGENTE_TODOS' ? 'text-emerald-300' : 'text-emerald-600'}`} />
           </div>
-          <div className="text-2xl font-black mt-2 text-emerald-700">{metrics.vigentes}</div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Ativos ou Indeterminados</p>
+          <div className={`text-2xl font-black mt-2 ${selectedStatusFilter === 'VIGENTE_TODOS' ? 'text-white' : 'text-emerald-700'}`}>
+            {sectorMetrics.vigentes}
+          </div>
+          <p className={`text-[11px] mt-0.5 ${selectedStatusFilter === 'VIGENTE_TODOS' ? 'opacity-80' : 'text-slate-500'}`}>
+            Ativos ou Indeterminados
+          </p>
         </div>
 
+        {/* CARD 3: A VENCER / ADITIVOS NO SETOR */}
         <div 
           onClick={() => setSelectedStatusFilter('A_VENCER')}
-          className={`p-4 rounded-xl border transition cursor-pointer ${
+          className={`p-4 rounded-xl border transition cursor-pointer select-none ${
             selectedStatusFilter === 'A_VENCER' 
-              ? 'bg-orange-600 text-white border-orange-600 shadow-md' 
-              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm'
+              ? 'bg-orange-600 text-white border-orange-600 shadow-md ring-2 ring-orange-400' 
+              : 'bg-white text-slate-900 border-slate-200 hover:border-orange-300 hover:bg-orange-50/40 shadow-sm'
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-            <span>A Vencer / Em Aditivo</span>
-            <Clock className="w-4 h-4 text-orange-500" />
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span>A VENCER / ADITIVOS</span>
+            <Clock className={`w-4 h-4 ${selectedStatusFilter === 'A_VENCER' ? 'text-orange-200' : 'text-orange-500'}`} />
           </div>
-          <div className="text-2xl font-black mt-2 text-orange-600">{metrics.aVencer}</div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Pendentes ou renovação</p>
+          <div className={`text-2xl font-black mt-2 ${selectedStatusFilter === 'A_VENCER' ? 'text-white' : 'text-orange-600'}`}>
+            {sectorMetrics.aVencer}
+          </div>
+          <p className={`text-[11px] mt-0.5 ${selectedStatusFilter === 'A_VENCER' ? 'opacity-80' : 'text-slate-500'}`}>
+            Pendentes ou renovação
+          </p>
         </div>
 
+        {/* CARD 4: VENCIDOS NO SETOR */}
         <div 
           onClick={() => setSelectedStatusFilter('VENCIDO')}
-          className={`p-4 rounded-xl border transition cursor-pointer ${
+          className={`p-4 rounded-xl border transition cursor-pointer select-none ${
             selectedStatusFilter === 'VENCIDO' 
-              ? 'bg-rose-800 text-white border-rose-800 shadow-md' 
-              : 'bg-white text-slate-900 border-slate-200 hover:border-slate-300 shadow-sm'
+              ? 'bg-rose-800 text-white border-rose-800 shadow-md ring-2 ring-rose-400' 
+              : 'bg-white text-slate-900 border-slate-200 hover:border-rose-300 hover:bg-rose-50/40 shadow-sm'
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-            <span>Contratos Vencidos</span>
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span>CONTRATOS VENCIDOS</span>
+            <AlertTriangle className={`w-4 h-4 ${selectedStatusFilter === 'VENCIDO' ? 'text-rose-200' : 'text-rose-600'}`} />
           </div>
-          <div className="text-2xl font-black mt-2 text-rose-700">{metrics.vencidos}</div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Vigência expirada</p>
+          <div className={`text-2xl font-black mt-2 ${selectedStatusFilter === 'VENCIDO' ? 'text-white' : 'text-rose-700'}`}>
+            {sectorMetrics.vencidos}
+          </div>
+          <p className={`text-[11px] mt-0.5 ${selectedStatusFilter === 'VENCIDO' ? 'opacity-80' : 'text-slate-500'}`}>
+            Vigência expirada
+          </p>
         </div>
       </div>
 
-      {/* Painel Unificado de Filtros Avançados */}
+      {/* Painel Limpo de Filtro por Setor e Busca Textual */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
-          {/* 1. Busca por Texto (5 colunas) */}
-          <div className="md:col-span-5 relative">
+          {/* 1. Busca por Texto (7 colunas) */}
+          <div className="md:col-span-7 relative">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar por nome, razão social, CNPJ ou serviço..."
+              placeholder="Buscar por nome do fornecedor, razão social, CNPJ ou serviço..."
               className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 text-xs font-medium rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
             />
           </div>
 
-          {/* 2. Filtro Genérico por Setor Responsável (4 colunas) */}
-          <div className="md:col-span-4">
+          {/* 2. Seleção de Setor Responsável (5 colunas) */}
+          <div className="md:col-span-5">
             <select
               value={selectedSectorFilter}
               onChange={(e) => setSelectedSectorFilter(e.target.value)}
@@ -348,31 +384,22 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                   </option>
                 );
               })}
-              <option value="NO_SECTOR">⚠️ Sem setor definido ({metrics.noSectorCount})</option>
-            </select>
-          </div>
-
-          {/* 3. Filtro por Status do Contrato (3 colunas) */}
-          <div className="md:col-span-3">
-            <select
-              value={selectedStatusFilter}
-              onChange={(e) => setSelectedStatusFilter(e.target.value)}
-              className="w-full py-2 px-3 bg-slate-50 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
-            >
-              <option value="ALL">Todos os status</option>
-              <option value="VIGENTE_TODOS">Vigentes ({metrics.vigentes})</option>
-              <option value="A_VENCER">A Vencer / Em Aditivo ({metrics.aVencer})</option>
-              <option value="INDETERMINADO">Indeterminado</option>
-              <option value="VENCIDO">Vencidos ({metrics.vencidos})</option>
+              <option value="NO_SECTOR">⚠️ Sem setor definido ({sectorCounts['NO_SECTOR'] || 0})</option>
             </select>
           </div>
         </div>
 
-        {/* Linha de Status de Filtros Ativos */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
-          <div className="flex items-center space-x-2 font-medium">
+        {/* Linha Contextual de Resultado e Status dos Filtros */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+          <div className="flex flex-wrap items-center space-x-2 text-slate-600 font-semibold">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
-            <span>Exibindo <strong>{filteredSuppliers.length}</strong> de {suppliers.length} fornecedores</span>
+            <span>
+              <strong>{filteredSuppliers.length}</strong> {filteredSuppliers.length === 1 ? 'fornecedor encontrado' : 'fornecedores encontrados'}
+            </span>
+            <span className="text-slate-400">•</span>
+            <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded border border-slate-200 text-[11px] font-bold">
+              {sectorLabel} • {statusLabel}
+            </span>
           </div>
 
           {(searchTerm || selectedSectorFilter !== 'ALL' || selectedStatusFilter !== 'ALL') && (
