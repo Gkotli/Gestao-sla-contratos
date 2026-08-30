@@ -134,8 +134,31 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             <h2 className="font-extrabold text-sm sm:text-base text-slate-900 uppercase tracking-tight">
               LAUDO DE AVALIAÇÃO ANUAL DE DESEMPENHO E CONTRATO DE PRESTAÇÃO DE SERVIÇOS
             </h2>
-            <p className="text-xs text-slate-600 font-bold uppercase">CICLO AVALIADO: ANO DE {evaluation.ano || 2026}</p>
+            <p className="text-xs text-slate-600 font-bold uppercase">
+              CICLO AVALIADO: ANO DE {evaluation.ano || 2026}
+              {evaluation.tipoAvaliacao === 'EXCECAO' && ' • (AVALIAÇÃO POR EXCEÇÃO)'}
+            </p>
           </div>
+
+          {/* Banner de Justificativa para Avaliação por Exceção */}
+          {evaluation.tipoAvaliacao === 'EXCECAO' && (
+            <div className="bg-purple-50 border border-purple-300 p-3 rounded-xl space-y-1 print-avoid-break text-xs">
+              <div className="flex items-center space-x-2">
+                <span className="bg-purple-900 text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded uppercase">
+                  TIPO DE AVALIAÇÃO: EXCEÇÃO
+                </span>
+                <span className="text-purple-950 font-bold text-xs">
+                  Questionário Excepcional Personalizado
+                </span>
+              </div>
+              {evaluation.justificativaExcecao && (
+                <div className="pt-1.5 border-t border-purple-200 text-xs">
+                  <strong className="text-purple-950 font-bold block text-[11px] uppercase">JUSTIFICATIVA REGISTRADA DA EXCEÇÃO:</strong>
+                  <p className="text-purple-900 italic font-medium">"{evaluation.justificativaExcecao}"</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* 4. Dados Cadastrais do Fornecedor e Contrato */}
           <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3 print-avoid-break supplier-data text-xs">
@@ -219,10 +242,14 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </div>
           </div>
 
-          {/* 6. Detalhamento Integral das 15 Perguntas (Semântica <table> com Suporte Multipáginas) */}
+          {/* 6. Detalhamento Integral das Perguntas (Suporte a Exceção & Padrão) */}
           <div className="space-y-2">
             <h4 className="font-bold text-xs text-slate-900 uppercase border-b border-slate-400 pb-1 print-avoid-break">
-              DETALHAMENTO DE NOTAS POR PERGUNTA AVALIADA ({criteriaList.length} ITENS AVALIADOS)
+              DETALHAMENTO DE NOTAS POR PERGUNTA AVALIADA (
+              {evaluation.tipoAvaliacao === 'EXCECAO' && evaluation.itensExcecao
+                ? `${evaluation.itensExcecao.length} ITENS DE EXCEÇÃO`
+                : `${criteriaList.length} ITENS AVALIADOS`
+              })
             </h4>
 
             <div className="w-full">
@@ -231,24 +258,37 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                   <tr>
                     <th className="py-2.5 px-3 text-center w-12 border-r border-slate-300">ITEM</th>
                     <th className="py-2.5 px-3 border-r border-slate-300">ITEM AVALIADO</th>
-                    <th className="py-2.5 px-3 text-center w-36 border-r border-slate-300">GRUPO</th>
+                    <th className="py-2.5 px-3 text-center w-48 border-r border-slate-300">GRUPO</th>
                     <th className="py-2.5 px-3 text-center w-20">NOTA</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 font-medium">
-                  {criteriaList.map((c, i) => {
-                    const score = respostas[c.id];
-                    return (
-                      <tr key={c.id} className="hover:bg-slate-50">
+                  {evaluation.tipoAvaliacao === 'EXCECAO' && evaluation.itensExcecao && evaluation.itensExcecao.length > 0 ? (
+                    evaluation.itensExcecao.map((item, i) => (
+                      <tr key={item.id || i} className="hover:bg-slate-50">
                         <td className="py-2.5 px-3 text-center text-slate-500 font-bold border-r border-slate-200">{i + 1}</td>
-                        <td className="py-2.5 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-normal">{c.pergunta}</td>
-                        <td className="py-2.5 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{c.grupo}</td>
+                        <td className="py-2.5 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-semibold">{item.pergunta}</td>
+                        <td className="py-2.5 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{item.grupo}</td>
                         <td className="py-2.5 px-3 text-center font-extrabold text-slate-900 text-sm">
-                          {score === 'NA' ? 'N/A' : (score !== undefined && score !== null ? score : '-')}
+                          {item.nota === 'NA' ? 'N/A' : (item.nota !== undefined && item.nota !== null ? item.nota : '-')}
                         </td>
                       </tr>
-                    );
-                  })}
+                    ))
+                  ) : (
+                    criteriaList.map((c, i) => {
+                      const score = respostas[c.id];
+                      return (
+                        <tr key={c.id} className="hover:bg-slate-50">
+                          <td className="py-2.5 px-3 text-center text-slate-500 font-bold border-r border-slate-200">{i + 1}</td>
+                          <td className="py-2.5 px-3 text-slate-900 border-r border-slate-200 leading-relaxed font-normal">{c.pergunta}</td>
+                          <td className="py-2.5 px-3 text-center text-slate-700 font-bold border-r border-slate-200 text-[11px]">{c.grupo}</td>
+                          <td className="py-2.5 px-3 text-center font-extrabold text-slate-900 text-sm">
+                            {score === 'NA' ? 'N/A' : (score !== undefined && score !== null ? score : '-')}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -274,10 +314,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
               {/* Assinatura/Representante do Fornecedor */}
               <div className="border-t-2 border-slate-800 pt-2 text-center space-y-1">
-                {evaluation.assinaturaDigitalUrl ? (
+                {(evaluation.assinaturaBase64 || evaluation.assinaturaDigitalUrl) ? (
                   <div className="flex flex-col items-center">
                     <img 
-                      src={evaluation.assinaturaDigitalUrl} 
+                      src={evaluation.assinaturaBase64 || evaluation.assinaturaDigitalUrl} 
                       alt="Assinatura Digital" 
                       className="h-9 w-auto object-contain mb-1"
                     />

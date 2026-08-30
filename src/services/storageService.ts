@@ -151,7 +151,9 @@ export class StorageService {
       ano: typeof ev?.ano === 'number' ? ev.ano : 2026,
       dataAvaliacao: ev?.dataAvaliacao || new Date().toISOString().split('T')[0],
       gestorAvaliador: ev?.gestorAvaliador || 'Gestor Responsável',
-      emailAvaliador: ev?.emailAvaliador || 'gestor@vilanovastar.com.br',
+      tipoAvaliacao: ev?.tipoAvaliacao || 'PADRAO',
+      justificativaExcecao: ev?.justificativaExcecao || '',
+      itensExcecao: Array.isArray(ev?.itensExcecao) ? ev.itensExcecao : [],
       respostas: ev?.respostas && typeof ev.respostas === 'object' ? ev.respostas : {},
       observacoesLegais: ev?.observacoesLegais || '',
       observacoesComportamentais: ev?.observacoesComportamentais || '',
@@ -168,7 +170,8 @@ export class StorageService {
       nomeSignatario: ev?.nomeSignatario,
       cargoSignatario: ev?.cargoSignatario,
       parecerFornecedor: ev?.parecerFornecedor,
-      assinaturaDigitalUrl: ev?.assinaturaDigitalUrl
+      assinaturaBase64: ev?.assinaturaBase64 || ev?.assinaturaDigitalUrl,
+      assinaturaDigitalUrl: ev?.assinaturaDigitalUrl || ev?.assinaturaBase64
     }));
   }
 
@@ -181,6 +184,19 @@ export class StorageService {
       evaluations.unshift(evaluation);
     }
     localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
+    return evaluations;
+  }
+
+  static deleteEvaluation(evaluationId: string): Evaluation[] {
+    if (!evaluationId) return this.getEvaluations();
+
+    const evaluations = this.getEvaluations().filter(e => e.id !== evaluationId);
+    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
+
+    // Exclui também os planos de ação vinculados para integridade referencial
+    const actionPlans = this.getActionPlans().filter(p => p.avaliacaoId !== evaluationId);
+    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(actionPlans));
+
     return evaluations;
   }
 

@@ -233,10 +233,24 @@ export default function App() {
   };
 
   const handleDeleteEvaluation = (evalId: string) => {
-    if (window.confirm('Tem certeza que deseja excluir esta avaliação de contrato?')) {
-      const updated = evaluations.filter(e => e.id !== evalId);
-      localStorage.setItem('sla_hospital_evaluations_v7', JSON.stringify(updated));
-      setEvaluations(updated);
+    if (!evalId) {
+      alert('Não foi possível excluir: O ID da avaliação é inválido.');
+      return;
+    }
+
+    if (window.confirm('Tem certeza que deseja excluir esta avaliação de contrato? Esta ação é definitiva e removerá a avaliação do banco de dados.')) {
+      try {
+        const updatedEvals = StorageService.deleteEvaluation(evalId);
+        setEvaluations(updatedEvals);
+        setActionPlans(StorageService.getActionPlans());
+
+        if (reportModalEvalId === evalId) {
+          setReportModalEvalId(null);
+        }
+      } catch (err) {
+        console.error('Erro ao excluir avaliação:', err);
+        alert('Não foi possível excluir a avaliação. Ocorreu um erro ao salvar a alteração no armazenamento.');
+      }
     }
   };
 
@@ -315,7 +329,7 @@ export default function App() {
       />
 
       {/* Conteúdo Principal (Oculto na Impressão no-print) */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print app-main-content">
+      <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print app-main-content">
         {activeTab === 'dashboard' && currentUser.role !== 'FORNECEDOR' && (
           <ExecutiveDashboard
             evaluations={scopedEvaluations}
@@ -413,6 +427,7 @@ export default function App() {
           evaluation={signatureModalEval}
           supplier={suppliers.find(s => s.id === signatureModalEval.fornecedorId)}
           sector={sectors.find(s => s.id === signatureModalEval.setorId)}
+          onSaveSignature={handleSaveSignature}
           onSave={handleSaveSignature}
           onClose={() => setSignatureModalEval(null)}
         />

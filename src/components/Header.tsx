@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print font-sans">
       {/* Barra superior institucional com a Logo Oficial da Rede D'Or */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-4">
             <div className="bg-white p-2 rounded-xl shadow-md border border-slate-200 flex items-center justify-center">
@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Navegação por abas 100% em Português */}
       <div className="bg-slate-950 border-t border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 scrollbar-none">
             {isGestor && (
               <button
