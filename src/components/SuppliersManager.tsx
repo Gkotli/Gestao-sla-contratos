@@ -284,34 +284,31 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nome do Preposto *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Nome do Preposto (Opcional)</label>
                   <input
                     type="text"
                     value={contatoNome}
                     onChange={(e) => setContatoNome(e.target.value)}
-                    required
                     placeholder="Ex: Dr. André Fonseca"
                     className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Email de Contato *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Email de Contato (Opcional)</label>
                   <input
                     type="email"
                     value={contatoEmail}
                     onChange={(e) => setContatoEmail(e.target.value)}
-                    required
                     placeholder="contato@empresa.com.br"
                     className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Telefone *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Telefone (Opcional)</label>
                   <input
                     type="text"
                     value={contatoTelefone}
                     onChange={(e) => setContatoTelefone(e.target.value)}
-                    required
                     placeholder="(11) 99999-8888"
                     className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
                   />
