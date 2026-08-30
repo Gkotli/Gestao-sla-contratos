@@ -250,7 +250,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                             <button
                               onClick={() => onOpenActionPlanModal(ev)}
                               className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition cursor-pointer"
-                              title="Configurar Plano de Ação (5W2H)"
+                              title="Configurar Plano de Ação de Melhoria"
                             >
                               <AlertTriangle className="w-4 h-4" />
                             </button>

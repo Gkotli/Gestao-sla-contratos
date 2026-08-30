@@ -151,7 +151,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
       {/* Top bar de Planos de Ação */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Gestão de Planos de Ação (CAPA / 5W2H)</h2>
+          <h2 className="text-xl font-bold text-slate-900">Gestão de Planos de Ação de Melhoria</h2>
           <p className="text-xs text-slate-500">Planos de melhoria corretiva gerados para fornecedores abaixo da meta de SLA (&lt; 4,00)</p>
         </div>
 
@@ -226,17 +226,17 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                     </div>
 
                     <div>
-                      <strong className="text-slate-900 block font-semibold">O QUE FAZER (Ação):</strong>
+                      <strong className="text-slate-900 block font-semibold">Ação Corretiva:</strong>
                       <p className="text-slate-700 bg-amber-50/50 border border-amber-100 p-2 rounded mt-0.5">{plan.acao5W}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <strong className="text-slate-900 block font-semibold">QUEM (Responsável):</strong>
+                        <strong className="text-slate-900 block font-semibold">Responsável:</strong>
                         <p className="text-slate-700 mt-0.5">{plan.responsavel5W}</p>
                       </div>
                       <div>
-                        <strong className="text-slate-900 block font-semibold">QUANDO (Prazo):</strong>
+                        <strong className="text-slate-900 block font-semibold">Prazo de Conclusão:</strong>
                         <p className="text-amber-800 font-bold mt-0.5 flex items-center">
                           <Calendar className="w-3.5 h-3.5 mr-1 text-amber-600" /> {plan.prazo5W}
                         </p>
@@ -245,7 +245,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
                     {plan.justificativa5W && (
                       <div>
-                        <strong className="text-slate-900 block font-semibold">POR QUE (Justificativa):</strong>
+                        <strong className="text-slate-900 block font-semibold">Justificativa:</strong>
                         <p className="text-slate-600 mt-0.5">{plan.justificativa5W}</p>
                       </div>
                     )}
@@ -298,7 +298,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
             <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-lg">
-                  {editingPlan ? 'Editar Plano de Ação (5W2H)' : 'Novo Plano de Ação de Melhoria (5W2H)'}
+                  {editingPlan ? 'Editar Plano de Ação de Melhoria' : 'Novo Plano de Ação de Melhoria'}
                 </h3>
                 <p className="text-xs text-slate-300">Definição estruturada de ações para adequação à meta de SLA (≥ 4.00)</p>
               </div>
@@ -352,10 +352,10 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 />
               </div>
 
-              {/* 5W2H: O que fazer / Por que fazer */}
+              {/* O que fazer / Por que fazer */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">WHAT — O que será feito? *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">O que será feito? (Ação Corretiva) *</label>
                   <textarea
                     rows={2}
                     value={acao5W}
@@ -367,7 +367,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">WHY — Por que será feito? (Justificativa)</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Por que será feito? (Justificativa)</label>
                   <textarea
                     rows={2}
                     value={justificativa5W}
@@ -378,10 +378,10 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
               </div>
 
-              {/* 5W2H: Quem / Onde / Quando */}
+              {/* Quem / Onde / Quando */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">WHO — Quem fará? (Responsável) *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Quem fará? (Responsável) *</label>
                   <input
                     type="text"
                     value={responsavel5W}
@@ -393,7 +393,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">WHERE — Onde será feito?</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Onde será feito? (Local / Setor)</label>
                   <input
                     type="text"
                     value={onde5W}
@@ -404,7 +404,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">WHEN — Prazo de Conclusão *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Prazo de Conclusão *</label>
                   <input
                     type="date"
                     value={prazo5W}
@@ -415,10 +415,10 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
               </div>
 
-              {/* 5W2H: Como / Quanto custa / Status */}
+              {/* Como / Quanto custa / Status */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">HOW — Como será feito?</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Como será feito? (Metodologia)</label>
                   <input
                     type="text"
                     value={como5W}
@@ -429,7 +429,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">HOW MUCH — Quanto custa?</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Quanto custa? (Investimento)</label>
                   <input
                     type="text"
                     value={custo5W}

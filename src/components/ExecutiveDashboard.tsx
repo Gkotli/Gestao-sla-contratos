@@ -234,7 +234,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </span>
             <span className="text-xs text-slate-500 font-semibold">contratos</span>
           </div>
-          <p className="text-[11px] text-slate-500">Exigem Plano de Ação 5W2H</p>
+          <p className="text-[11px] text-slate-500">Exigem Plano de Ação de Melhoria</p>
         </div>
 
         {/* Total de Avaliações Registradas */}
@@ -404,7 +404,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
               onClick={onManageActionPlans}
               className="text-xs font-bold text-hospital-600 hover:text-hospital-700 transition cursor-pointer"
             >
-              Ver Planos 5W2H →
+              Ver Planos de Ação →
             </button>
           </div>
 
@@ -429,7 +429,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                         <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
                           hasPlan ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'
                         }`}>
-                          {hasPlan ? '5W2H Ativo' : 'Pendente 5W2H'}
+                          {hasPlan ? 'Plano Ativo' : 'Pendente de Plano'}
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-600 truncate">
