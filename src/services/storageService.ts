@@ -3,12 +3,12 @@ import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUP
 import { safeNumber } from '../utils/formatters';
 
 const KEYS = {
-  USERS: 'sla_hospital_users_v7',
-  CURRENT_USER: 'sla_hospital_current_user_v7',
-  SECTORS: 'sla_hospital_sectors_v7',
-  SUPPLIERS: 'sla_hospital_suppliers_v7',
-  EVALUATIONS: 'sla_hospital_evaluations_v7',
-  ACTION_PLANS: 'sla_hospital_action_plans_v7'
+  USERS: 'sla_hospital_users_v8',
+  CURRENT_USER: 'sla_hospital_current_user_v8',
+  SECTORS: 'sla_hospital_sectors_v8',
+  SUPPLIERS: 'sla_hospital_suppliers_v8',
+  EVALUATIONS: 'sla_hospital_evaluations_v8',
+  ACTION_PLANS: 'sla_hospital_action_plans_v8'
 };
 
 export class StorageService {
