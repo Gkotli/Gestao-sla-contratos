@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos Globais de Scrollbar Customizada */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==========================================================================
+   ARQUITETURA DE IMPRESSÃO NATIVA A4 MULTIPÁGINAS (SEM COMPRESSÃO NEM CORTE)
+   ========================================================================== */
+@media print {
+  /* Configuração de Página A4 Retrato */
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 12mm 12mm;
+  }
+
+  /* Reset completo de html e body para desativar rolagem/corte e permitir quebra natural */
+  html,
+  body {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Oculta apenas os componentes de interface da aplicação normal */
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  main,
+  .app-main-content,
+  .filters,
+  .history-section,
+  .actions {
+    display: none !important;
+  }
+
+  /* Reset de todos os elementos ancestrais do relatório para fluxo normal do documento */
+  #root,
+  .app-root-container,
+  .printable-laudo-modal,
+  .printable-laudo-container {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+    zoom: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  /* Container Exclusivo do Relatório Imprimível */
+  #printable-report {
+    display: block !important;
+    position: static !important;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow: visible !important;
+
+    transform: none !important;
+    zoom: 1 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  /* Estrutura de Tabela Semântica com Suporte a Múltiplas Páginas */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Repetição do cabeçalho da tabela no topo das páginas seguintes */
+  thead {
+    display: table-header-group !important;
+  }
+
+  tbody {
+    display: table-row-group !important;
+  }
+
+  /* Evita que cada linha individual da tabela seja dividida ao meio */
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  th,
+  td {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Evita quebras internas indesejadas em blocos fechados */
+  .print-avoid-break,
+  .supplier-data,
+  .sla-summary,
+  .manager-comment,
+  .signature-block {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
