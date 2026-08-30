@@ -427,6 +427,7 @@ export default function App() {
           evaluation={signatureModalEval}
           supplier={suppliers.find(s => s.id === signatureModalEval.fornecedorId)}
           sector={sectors.find(s => s.id === signatureModalEval.setorId)}
+          onSaveSignature={handleSaveSignature}
           onSave={handleSaveSignature}
           onClose={() => setSignatureModalEval(null)}
         />

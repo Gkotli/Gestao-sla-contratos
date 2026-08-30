@@ -168,7 +168,8 @@ export class StorageService {
       nomeSignatario: ev?.nomeSignatario,
       cargoSignatario: ev?.cargoSignatario,
       parecerFornecedor: ev?.parecerFornecedor,
-      assinaturaDigitalUrl: ev?.assinaturaDigitalUrl
+      assinaturaBase64: ev?.assinaturaBase64 || ev?.assinaturaDigitalUrl,
+      assinaturaDigitalUrl: ev?.assinaturaDigitalUrl || ev?.assinaturaBase64
     }));
   }
 

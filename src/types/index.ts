@@ -83,6 +83,7 @@ export interface Evaluation {
   cargoSignatario?: string;
   parecerFornecedor?: string;
   assinaturaBase64?: string;
+  assinaturaDigitalUrl?: string;
 }
 
 export interface ActionPlan {

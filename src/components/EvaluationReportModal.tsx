@@ -274,10 +274,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
               {/* Assinatura/Representante do Fornecedor */}
               <div className="border-t-2 border-slate-800 pt-2 text-center space-y-1">
-                {evaluation.assinaturaDigitalUrl ? (
+                {(evaluation.assinaturaBase64 || evaluation.assinaturaDigitalUrl) ? (
                   <div className="flex flex-col items-center">
                     <img 
-                      src={evaluation.assinaturaDigitalUrl} 
+                      src={evaluation.assinaturaBase64 || evaluation.assinaturaDigitalUrl} 
                       alt="Assinatura Digital" 
                       className="h-9 w-auto object-contain mb-1"
                     />
