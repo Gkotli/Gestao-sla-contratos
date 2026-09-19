@@ -8,7 +8,8 @@ const KEYS = {
   SECTORS: 'sla_hospital_sectors_v8',
   SUPPLIERS: 'sla_hospital_suppliers_v8',
   EVALUATIONS: 'sla_hospital_evaluations_v8',
-  ACTION_PLANS: 'sla_hospital_action_plans_v8'
+  ACTION_PLANS: 'sla_hospital_action_plans_v8',
+  PASSWORD_RESETS: 'sla_hospital_pwd_resets_v8'
 };
 
 export class StorageService {
@@ -45,6 +46,65 @@ export class StorageService {
     const users = this.getUsers().filter(u => u.id !== userId);
     localStorage.setItem(KEYS.USERS, JSON.stringify(users));
     return users;
+  }
+
+  static savePasswordResetCode(email: string, code: string, expirationMinutes = 15): void {
+    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
+    let resets: Record<string, { code: string; expiresAt: number }> = {};
+    if (data) {
+      try {
+        resets = JSON.parse(data);
+      } catch {}
+    }
+    resets[email.toLowerCase().trim()] = {
+      code: code.trim(),
+      expiresAt: Date.now() + expirationMinutes * 60 * 1000
+    };
+    localStorage.setItem(KEYS.PASSWORD_RESETS, JSON.stringify(resets));
+  }
+
+  static verifyPasswordResetCode(email: string, code: string): { valid: boolean; message?: string } {
+    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
+    if (!data) return { valid: false, message: 'Nenhum código solicitado para este e-mail.' };
+    try {
+      const resets = JSON.parse(data);
+      const entry = resets[email.toLowerCase().trim()];
+      if (!entry) return { valid: false, message: 'Código não encontrado. Solicite um novo código.' };
+      if (Date.now() > entry.expiresAt) {
+        return { valid: false, message: 'O código de verificação expirou. Solicite um novo código.' };
+      }
+      if (entry.code !== code.trim()) {
+        return { valid: false, message: 'Código incorreto. Por favor, verifique os 6 dígitos informados.' };
+      }
+      return { valid: true };
+    } catch {
+      return { valid: false, message: 'Erro ao validar código.' };
+    }
+  }
+
+  static clearPasswordResetCode(email: string): void {
+    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
+    if (!data) return;
+    try {
+      const resets = JSON.parse(data);
+      delete resets[email.toLowerCase().trim()];
+      localStorage.setItem(KEYS.PASSWORD_RESETS, JSON.stringify(resets));
+    } catch {}
+  }
+
+  static updateUserPassword(email: string, newPassword: string): User | null {
+    const users = this.getUsers();
+    const idx = users.findIndex(u => u.email.toLowerCase().trim() === email.toLowerCase().trim());
+    if (idx >= 0) {
+      users[idx] = {
+        ...users[idx],
+        senha: newPassword
+      };
+      localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+      this.clearPasswordResetCode(email);
+      return users[idx];
+    }
+    return null;
   }
 
   static getCurrentUser(): User | null {
