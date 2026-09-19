@@ -137,7 +137,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
     setItensExcecao(prev => [
       ...prev,
       {
-        id: `item_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        id: `item_${Date.now()}_${crypto.randomUUID()}`,
         pergunta: '',
         grupo: 'Qualidade',
         nota: 5

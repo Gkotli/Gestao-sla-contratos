@@ -209,7 +209,10 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setContatoNome('');
     setContatoEmail('');
     setContatoTelefone('');
-    setNumeroContrato(`CT-${new Date().getFullYear()}/${Math.floor(100 + Math.random() * 900)}`);
+    const randomArray = new Uint16Array(1);
+    crypto.getRandomValues(randomArray);
+    const randomContractNum = 100 + (randomArray[0] % 900);
+    setNumeroContrato(`CT-${new Date().getFullYear()}/${randomContractNum}`);
     setVigenciaFim('2027-12-31');
     setIsModalOpen(true);
   };
