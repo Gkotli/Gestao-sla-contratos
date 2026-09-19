@@ -8,12 +8,12 @@ interface EmailParams {
 }
 
 export class EmailService {
-  private static SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
-  private static TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
-  private static PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
+  private static SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_kv5ieuj';
+  private static TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_bs47hhd';
+  private static PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Dy9FmT3Vtvp4dKu7u';
 
   /**
-   * Verifica se as credenciais do EmailJS estão configuradas no .env
+   * Verifica se as credenciais do EmailJS estão configuradas
    */
   static isConfigured(): boolean {
     return Boolean(this.SERVICE_ID && this.TEMPLATE_ID && this.PUBLIC_KEY);
@@ -22,7 +22,11 @@ export class EmailService {
   /**
    * Dispara o e-mail com o código de redefinição de senha para o usuário
    */
-  static async sendPasswordResetEmail(params: EmailParams): Promise<{ success: boolean; simulated: boolean; error?: string }> {
+  static async sendPasswordResetEmail(params: EmailParams): Promise<{ success: boolean; error?: string }> {
+    if (!this.isConfigured()) {
+      return { success: false, error: 'Serviço de e-mail temporariamente indisponível. Contate o suporte.' };
+    }
+
     const payload = {
       service_id: this.SERVICE_ID,
       template_id: this.TEMPLATE_ID,
@@ -36,17 +40,6 @@ export class EmailService {
       }
     };
 
-    // Se não estiver configurado com chaves reais do EmailJS, opera em modo Simulado / Dev
-    if (!this.isConfigured()) {
-      console.warn(
-        `[EmailService: MODO SIMULADO] EmailJS não configurado no .env.\n` +
-        `Código de recuperação para ${params.to_email} (${params.to_name}): ${params.reset_code}`
-      );
-      // Simula uma latência de rede realista de 600ms
-      await new Promise(resolve => setTimeout(resolve, 600));
-      return { success: true, simulated: true };
-    }
-
     try {
       const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
         method: 'POST',
@@ -59,13 +52,13 @@ export class EmailService {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('[EmailService] Erro ao enviar e-mail via EmailJS:', errorText);
-        return { success: false, simulated: false, error: errorText };
+        return { success: false, error: 'Falha no serviço de e-mail. Tente novamente mais tarde.' };
       }
 
-      return { success: true, simulated: false };
+      return { success: true };
     } catch (err: any) {
       console.error('[EmailService] Falha de conexão ao enviar e-mail:', err);
-      return { success: false, simulated: false, error: err?.message || 'Erro de conexão' };
+      return { success: false, error: err?.message || 'Erro de conexão' };
     }
   }
 }

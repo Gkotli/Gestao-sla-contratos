@@ -27,7 +27,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState('');
   const [forgotSuccessMsg, setForgotSuccessMsg] = useState('');
-  const [demoCodeNotice, setDemoCodeNotice] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => {
@@ -66,7 +65,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
     setConfirmPassword('');
     setForgotError('');
     setForgotSuccessMsg('');
-    setDemoCodeNotice(null);
   };
 
   // Etapa 1: Enviar Código para o E-mail
@@ -103,9 +101,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
     setForgotLoading(false);
 
     if (result.success) {
-      if (result.simulated) {
-        setDemoCodeNotice(code);
-      }
       setForgotStep(2);
       setResendCooldown(60);
     } else {
@@ -407,22 +402,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             )}
 
             {/* Alerta de Modo Demonstração (Código visível se EmailJS não estiver configurado) */}
-            {demoCodeNotice && !forgotSuccessMsg && (
-              <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-md space-y-1">
-                <div className="flex items-center space-x-1.5 font-bold text-xs text-amber-800">
-                  <KeyRound className="w-4 h-4 text-amber-600" />
-                  <span>Código Gerado (Modo Demonstração)</span>
-                </div>
-                <p className="text-[11px] text-amber-700 leading-relaxed">
-                  Para testes imediatos sem configurar chaves de e-mail, utilize o código:
-                </p>
-                <div className="text-center py-1">
-                  <span className="font-mono text-base font-extrabold bg-amber-200/80 px-3 py-1 rounded text-amber-950 tracking-widest border border-amber-300">
-                    {demoCodeNotice}
-                  </span>
-                </div>
-              </div>
-            )}
 
             {/* Sucesso Final */}
             {forgotSuccessMsg ? (
