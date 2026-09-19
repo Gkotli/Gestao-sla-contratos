@@ -302,9 +302,19 @@ export default function App() {
     return scopedActionPlans.filter(p => p.status === 'PENDENTE' || p.status === 'EM_ANDAMENTO' || p.status === 'ATRASADO').length;
   }, [scopedActionPlans]);
 
+  const handlePasswordReset = (updatedUser: User) => {
+    setUsers(prev => prev.map(u => (u.id === updatedUser.id ? updatedUser : u)));
+  };
+
   // Bloqueio de Acesso — Exibe Tela de Login se deslogado
   if (!currentUser) {
-    return <LoginPage users={users} onLoginSuccess={handleLoginSuccess} />;
+    return (
+      <LoginPage
+        users={users}
+        onLoginSuccess={handleLoginSuccess}
+        onPasswordReset={handlePasswordReset}
+      />
+    );
   }
 
   return (
