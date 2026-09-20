@@ -337,14 +337,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             >
               Política de Segurança
             </button>
-            <span>•</span>
-            <button
-              type="button"
-              onClick={() => alert('Suporte TI Hospitalar:\nE-mail: suporte.ti@hospital.com.br\nRamal Interno: 4004')}
-              className="hover:text-[#123768] hover:underline cursor-pointer"
-            >
-              Suporte TI
-            </button>
           </div>
         </div>
       </div>
