@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply bg-[#F1F5F9] text-[#172B4D] antialiased font-sans;
+  }
+
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  a:focus-visible {
+    outline: 2px solid #123768;
+    outline-offset: 2px;
+  }
+}
+
 /* Estilos Globais de Scrollbar Customizada */
 ::-webkit-scrollbar {
   width: 6px;

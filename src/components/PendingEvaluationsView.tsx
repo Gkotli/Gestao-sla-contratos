@@ -231,8 +231,8 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
     switch (status) {
       case 'CONCLUIDA':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
-            <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-emerald-300">
+            <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-[#047857]" />
             Concluída
           </span>
         );
@@ -240,10 +240,10 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         return (
           <button
             onClick={() => onStartEvaluation(supId, year)}
-            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-extrabold bg-rose-100 hover:bg-rose-200 text-rose-900 border border-rose-300 transition cursor-pointer shadow-sm"
+            className="inline-flex items-center px-2.5 py-1 rounded text-xs font-extrabold bg-[#FEF2F2] hover:bg-rose-100 text-[#B91C1C] border border-[#FECACA] transition cursor-pointer shadow-sm"
             title={`Clique para regularizar a avaliação pendente de ${year}`}
           >
-            <AlertTriangle className="w-3.5 h-3.5 mr-1 text-rose-600 animate-pulse" />
+            <AlertTriangle className="w-3.5 h-3.5 mr-1 text-[#B91C1C] animate-pulse" />
             Pendente ({year})
           </button>
         );
@@ -251,16 +251,16 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         return (
           <button
             onClick={() => onStartEvaluation(supId, year)}
-            className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 transition cursor-pointer"
+            className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#FFFBEB] hover:bg-amber-100 text-[#92400E] border border-[#FCD34D] transition cursor-pointer"
             title={`Clique para realizar a avaliação de ${year}`}
           >
-            <Clock className="w-3.5 h-3.5 mr-1 text-amber-600" />
+            <Clock className="w-3.5 h-3.5 mr-1 text-[#92400E]" />
             Pendente ({year})
           </button>
         );
       case 'NA':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-slate-100 text-[#475569] border border-[#CBD5E1]">
             <MinusCircle className="w-3.5 h-3.5 mr-1 text-slate-400" />
             Não Aplicável
           </span>
@@ -273,11 +273,11 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 flex items-center">
-            <FileCheck2 className="w-6 h-6 mr-2 text-hospital-600" />
+          <h2 className="text-xl font-bold text-[#172B4D] flex items-center">
+            <FileCheck2 className="w-6 h-6 mr-2 text-[#123768]" />
             Matriz de Pendências de Avaliações Anuais
           </h2>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#475569]">
             Acompanhamento em tempo real das obrigações anuais por contrato, fornecedor e exercício
           </p>
         </div>
@@ -285,45 +285,45 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
 
       {/* Indicadores numéricos no topo */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+        <div className="p-4 rounded-lg bg-white border border-[#CBD5E1] shadow-sm">
+          <div className="flex items-center justify-between text-xs font-semibold text-[#475569]">
             <span>Fornecedores Sob Gestão</span>
             <Building2 className="w-4 h-4 text-slate-400" />
           </div>
-          <div className="text-2xl font-black mt-2 text-slate-900">{metrics.totalSobGestao}</div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Sob responsabilidade da visão</p>
+          <div className="text-2xl font-black mt-2 text-[#172B4D]">{metrics.totalSobGestao}</div>
+          <p className="text-[11px] text-[#475569] mt-0.5">Sob responsabilidade da visão</p>
         </div>
 
-        <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold text-emerald-950">
+        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-emerald-200 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-bold text-[#047857]">
             <span>Avaliações Em Dia</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <CheckCircle2 className="w-4 h-4 text-[#047857]" />
           </div>
-          <div className="text-2xl font-black mt-2 text-emerald-700">{metrics.emDia}</div>
-          <p className="text-[11px] text-emerald-800 mt-0.5">100% dos ciclos concluídos</p>
+          <div className="text-2xl font-black mt-2 text-[#047857]">{metrics.emDia}</div>
+          <p className="text-[11px] text-[#047857] mt-0.5">100% dos ciclos concluídos</p>
         </div>
 
-        <div className="p-4 rounded-xl bg-amber-50/80 border border-amber-200 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold text-amber-950">
+        <div className="p-4 rounded-lg bg-[#FFFBEB] border border-[#FCD34D] shadow-sm">
+          <div className="flex items-center justify-between text-xs font-bold text-[#92400E]">
             <span>Pendentes (Ciclo Atual)</span>
-            <Clock className="w-4 h-4 text-amber-600" />
+            <Clock className="w-4 h-4 text-[#92400E]" />
           </div>
-          <div className="text-2xl font-black mt-2 text-amber-700">{metrics.comPendencias}</div>
-          <p className="text-[11px] text-amber-800 mt-0.5">Requerem preenchimento</p>
+          <div className="text-2xl font-black mt-2 text-[#92400E]">{metrics.comPendencias}</div>
+          <p className="text-[11px] text-[#92400E] mt-0.5">Requerem preenchimento</p>
         </div>
 
-        <div className="p-4 rounded-xl bg-rose-50/80 border border-rose-200 shadow-sm">
-          <div className="flex items-center justify-between text-xs font-bold text-rose-950">
+        <div className="p-4 rounded-lg bg-[#FEF2F2] border border-[#FECACA] shadow-sm">
+          <div className="flex items-center justify-between text-xs font-bold text-[#B91C1C]">
             <span>Atrasos (Anos Anteriores)</span>
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
+            <AlertTriangle className="w-4 h-4 text-[#B91C1C]" />
           </div>
-          <div className="text-2xl font-black mt-2 text-rose-700">{metrics.pendenciasAnteriores}</div>
-          <p className="text-[11px] text-rose-800 mt-0.5">Exigem regularização prioritária</p>
+          <div className="text-2xl font-black mt-2 text-[#B91C1C]">{metrics.pendenciasAnteriores}</div>
+          <p className="text-[11px] text-[#B91C1C] mt-0.5">Exigem regularização prioritária</p>
         </div>
       </div>
 
       {/* Painel de Filtros */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Busca por Texto */}
           <div className="md:col-span-4 relative">
@@ -333,7 +333,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por fornecedor ou nº de contrato..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 text-xs font-medium rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-[#CBD5E1] text-xs font-medium rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768] text-[#172B4D]"
             />
           </div>
 
@@ -342,7 +342,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
             <select
               value={selectedSector}
               onChange={(e) => setSelectedSector(e.target.value)}
-              className="w-full py-2 px-3 bg-slate-50 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full py-2 px-3 bg-slate-50 border border-[#CBD5E1] text-xs font-bold text-[#172B4D] rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
             >
               <option value="ALL">Todos os setores</option>
               {sectors.map(sec => (
@@ -357,7 +357,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
               <select
                 value={selectedGestor}
                 onChange={(e) => setSelectedGestor(e.target.value)}
-                className="w-full py-2 px-3 bg-slate-50 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
+                className="w-full py-2 px-3 bg-slate-50 border border-[#CBD5E1] text-xs font-bold text-[#172B4D] rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
               >
                 <option value="ALL">Todos os gestores</option>
                 {uniqueGestores.map(g => (
@@ -372,7 +372,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
             <select
               value={selectedStatusFilter}
               onChange={(e) => setSelectedStatusFilter(e.target.value)}
-              className="w-full py-2 px-3 bg-slate-50 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full py-2 px-3 bg-slate-50 border border-[#CBD5E1] text-xs font-bold text-[#172B4D] rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
             >
               <option value="ALL">Todos os status</option>
               <option value="CONCLUIDA">✅ Em dia / Concluídas</option>
@@ -401,12 +401,12 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       </div>
 
       {/* Matriz / Tabela de Pendências */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-[#CBD5E1] overflow-hidden">
         <div className="w-full overflow-x-auto overflow-y-visible">
           <table className="w-full text-left border-collapse text-xs min-w-[1300px]">
             <thead>
-              <tr className="bg-slate-900 text-white font-bold text-xs uppercase tracking-wider">
-                <th className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-slate-900 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.2)]">Fornecedor / Razão Social</th>
+              <tr className="bg-slate-50 text-slate-700 font-semibold text-xs border-b border-[#CBD5E1] uppercase tracking-wider">
+                <th className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-slate-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] border-r border-[#CBD5E1]">Fornecedor / Razão Social</th>
                 <th className="p-3.5 w-[130px] min-w-[130px]">Contrato</th>
                 <th className="p-3.5 w-[150px] min-w-[150px]">Setor</th>
                 <th className="p-3.5 w-[170px] min-w-[170px]">Gestor Responsável</th>
@@ -418,7 +418,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-[#CBD5E1]">
               {filteredRows.length > 0 ? (
                 filteredRows.map((row) => {
                   const targetYearToEvaluate = 
@@ -429,12 +429,12 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
 
                   return (
                     <tr key={row.supplier.id} className="hover:bg-slate-50 transition group">
-                      <td className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-white group-hover:bg-slate-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.08)]">
-                        <strong className="text-slate-900 text-sm block font-bold truncate max-w-[240px]">{row.supplier.nomeFantasia}</strong>
-                        <span className="text-[11px] text-slate-500 block truncate max-w-[240px]">{row.supplier.razaoSocial}</span>
+                      <td className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-white group-hover:bg-slate-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] border-r border-[#CBD5E1]">
+                        <strong className="text-[#172B4D] text-sm block font-bold truncate max-w-[240px]">{row.supplier.nomeFantasia}</strong>
+                        <span className="text-[11px] text-[#475569] block truncate max-w-[240px]">{row.supplier.razaoSocial}</span>
                       </td>
 
-                      <td className="p-3.5 font-mono text-slate-700 font-bold whitespace-nowrap">
+                      <td className="p-3.5 font-mono text-[#172B4D] font-bold whitespace-nowrap">
                         {row.supplier.numeroContrato || 'N/A'}
                       </td>
 
@@ -442,7 +442,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                         {row.sector?.nome || 'Sem Setor'}
                       </td>
 
-                      <td className="p-3.5 text-slate-600 font-medium whitespace-nowrap">
+                      <td className="p-3.5 text-[#475569] font-medium whitespace-nowrap">
                         <div className="flex items-center">
                           <UserCheck className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
                           <span>{row.gestorName}</span>
@@ -467,12 +467,12 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                       {/* Total de Pendências */}
                       <td className="p-3.5 text-center whitespace-nowrap">
                         {row.totalPendencias === 0 ? (
-                          <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-emerald-100 text-emerald-900">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-[#ECFDF5] text-[#047857]">
                             0 (Em Dia)
                           </span>
                         ) : (
                           <span className={`px-2 py-0.5 rounded text-[11px] font-extrabold ${
-                            row.hasPreviousOverdue ? 'bg-rose-100 text-rose-900 border border-rose-300' : 'bg-amber-100 text-amber-900 border border-amber-300'
+                            row.hasPreviousOverdue ? 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]' : 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
                           }`}>
                             {row.totalPendencias} {row.totalPendencias === 1 ? 'pendência' : 'pendências'}
                           </span>
@@ -484,12 +484,12 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                         {row.totalPendencias > 0 ? (
                           <button
                             onClick={() => onStartEvaluation(row.supplier.id, targetYearToEvaluate)}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-lg shadow-sm transition cursor-pointer"
+                            className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer"
                           >
                             <Play className="w-3.5 h-3.5 mr-1" /> Avaliar {targetYearToEvaluate}
                           </button>
                         ) : (
-                          <span className="text-[11px] text-slate-400 font-semibold italic">Concluído</span>
+                          <span className="text-[11px] text-[#475569] font-semibold italic">Concluído</span>
                         )}
                       </td>
                     </tr>

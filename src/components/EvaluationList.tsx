@@ -71,8 +71,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
       {/* Header & Botão Nova Avaliação */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Histórico de Avaliações Anuais de Contratos</h2>
-          <p className="text-xs text-slate-500">
+          <h2 className="text-xl font-bold text-[#172B4D]">Histórico de Avaliações Anuais de Contratos</h2>
+          <p className="text-xs text-[#475569]">
             {isFornecedor ? 'Avaliações do seu contrato no ciclo hospitalar' : 'Acompanhamento consolidado de todos os fornecedores no ciclo anual'}
           </p>
         </div>
@@ -81,7 +81,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
         {!isFornecedor && (
           <button
             onClick={onNewEvaluation}
-            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-lg shadow transition self-start sm:self-auto cursor-pointer"
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
           >
             <Plus className="w-4 h-4 mr-2" />
             Nova Avaliação Anual
@@ -90,17 +90,17 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
       </div>
 
       {/* Barra de Pesquisa e Filtros */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+      <div className="bg-white p-3.5 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           {/* Busca por texto */}
           <div className="md:col-span-2 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por fornecedor, CNPJ ou gestor..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 text-xs font-medium rounded-lg focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs font-medium rounded-md focus:bg-white focus:ring-2 focus:ring-[#123768] focus:border-[#123768] transition"
             />
           </div>
 
@@ -109,12 +109,12 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
             <select
               value={selectedAno}
               onChange={(e) => setSelectedAno(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 text-xs font-medium rounded-lg p-2 focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs font-medium rounded-md p-1.5 focus:bg-white focus:ring-2 focus:ring-[#123768] focus:border-[#123768] transition cursor-pointer"
             >
-              <option value="ALL">Ano: Todos</option>
-              <option value="2026">Ano: 2026</option>
-              <option value="2025">Ano: 2025</option>
-              <option value="2024">Ano: 2024</option>
+              <option value="ALL">Ciclo: Todos</option>
+              <option value="2026">Ano 2026</option>
+              <option value="2025">Ano 2025</option>
+              <option value="2024">Ano 2024</option>
             </select>
           </div>
 
@@ -123,36 +123,36 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 text-xs font-medium rounded-lg p-2 focus:ring-hospital-500 focus:border-hospital-500"
+              className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs font-medium rounded-md p-1.5 focus:bg-white focus:ring-2 focus:ring-[#123768] focus:border-[#123768] transition cursor-pointer"
             >
               <option value="ALL">Status: Todos</option>
-              <option value="DENTRO_DA_META">Verde (≥ 4.0)</option>
-              <option value="ABAIXO_DA_META">Amarelo (3.0 - 3.99)</option>
-              <option value="CRITICO">Vermelho (&lt; 3.0)</option>
+              <option value="DENTRO_DA_META">Conforme (≥ 4,00)</option>
+              <option value="ABAIXO_DA_META">Abaixo da Meta (3,00 - 3,99)</option>
+              <option value="CRITICO">Crítico (&lt; 3,00)</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Tabela de Avaliações */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-[#CBD5E1] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-800 text-white text-xs font-semibold uppercase tracking-wider">
-                <th className="py-3.5 px-4">Fornecedor / CNPJ</th>
-                <th className="py-3.5 px-4">Setor Responsável</th>
-                <th className="py-3.5 px-4">Ano</th>
-                <th className="py-3.5 px-4 text-center">Legais</th>
-                <th className="py-3.5 px-4 text-center">Comport.</th>
-                <th className="py-3.5 px-4 text-center">Qualidade</th>
-                <th className="py-3.5 px-4 text-center">Média Geral</th>
-                <th className="py-3.5 px-4">Status Meta</th>
-                <th className="py-3.5 px-4">Ciência Fornecedor</th>
-                <th className="py-3.5 px-4 text-right">Ações</th>
+              <tr className="bg-slate-50 text-slate-700 text-[11px] font-bold uppercase tracking-wider border-b border-[#CBD5E1]">
+                <th className="py-3 px-4">Fornecedor / Razão Social</th>
+                <th className="py-3 px-4">Setor Responsável</th>
+                <th className="py-3 px-4 text-center">Ciclo</th>
+                <th className="py-3 px-4 text-center">Legais</th>
+                <th className="py-3 px-4 text-center">Comport.</th>
+                <th className="py-3 px-4 text-center">Qualidade</th>
+                <th className="py-3 px-4 text-center">Média Geral</th>
+                <th className="py-3 px-4 text-center">Classificação</th>
+                <th className="py-3 px-4 text-center">Ciência / Aceite</th>
+                <th className="py-3 px-4 text-right">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 text-xs">
+            <tbody className="divide-y divide-[#CBD5E1] text-xs">
               {filteredEvaluations.length > 0 ? (
                 filteredEvaluations.map((ev) => {
                   const supplier = suppliers?.find(s => s.id === ev.fornecedorId);
@@ -166,83 +166,83 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                   const mediaGeralFormatted = safeFormatScore(ev.mediaGeral);
 
                   return (
-                    <tr key={ev.id} className="hover:bg-slate-50 transition">
-                      <td className="py-3 px-4">
+                    <tr key={ev.id} className="hover:bg-slate-50/80 transition">
+                      <td className="py-2.5 px-4">
                         <div className="flex items-center space-x-2">
-                          <strong className="text-slate-900 font-bold text-sm">
-                            {supplier?.nomeFantasia || 'Fornecedor Cadastrado'}
+                          <strong className="text-[#172B4D] font-bold text-xs">
+                            {supplier?.nomeFantasia || 'Fornecedor'}
                           </strong>
                           {ev.tipoAvaliacao === 'EXCECAO' ? (
-                            <span className="inline-flex items-center text-[10px] font-black px-2 py-0.5 rounded bg-purple-100 text-purple-950 border border-purple-300 uppercase">
-                              ⚠️ EXCEÇÃO
+                            <span className="inline-flex items-center text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300 uppercase">
+                              Exceção
                             </span>
                           ) : (
-                            <span className="inline-flex items-center text-[10px] font-extrabold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 uppercase">
-                              📋 PADRÃO
+                            <span className="inline-flex items-center text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-[#CBD5E1] uppercase">
+                              Padrão
                             </span>
                           )}
                         </div>
-                        <span className="text-[11px] text-slate-500 block mt-0.5">
-                          {supplier?.razaoSocial} {supplier?.cnpj ? `| ${supplier.cnpj}` : ''}
+                        <span className="text-[11px] text-[#475569] block mt-0.5 font-mono">
+                          {supplier?.razaoSocial} {supplier?.cnpj ? `| CNPJ: ${supplier.cnpj}` : ''}
                         </span>
                       </td>
 
-                      <td className="py-3 px-4 font-medium text-slate-700">
+                      <td className="py-2.5 px-4 font-medium text-slate-700">
                         {sector?.nome || 'Setor Hospitalar'}
                       </td>
 
-                      <td className="py-3 px-4 font-bold text-slate-900">
+                      <td className="py-2.5 px-4 font-bold text-[#172B4D] text-center font-mono">
                         {ev.ano}
                       </td>
 
-                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                      <td className="py-2.5 px-4 text-center font-medium text-[#475569] font-mono">
                         {mediaLegaisFormatted}
                       </td>
 
-                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                      <td className="py-2.5 px-4 text-center font-medium text-[#475569] font-mono">
                         {mediaComportamentaisFormatted}
                       </td>
 
-                      <td className="py-3 px-4 text-center font-semibold text-slate-700">
+                      <td className="py-2.5 px-4 text-center font-medium text-[#475569] font-mono">
                         {mediaQualidadeFormatted}
                       </td>
 
-                      <td className="py-3 px-4 text-center">
-                        <span className="text-sm font-black text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+                      <td className="py-2.5 px-4 text-center">
+                        <span className="text-xs font-bold text-[#172B4D] bg-slate-100 px-2 py-0.5 rounded border border-[#CBD5E1] font-mono">
                           {mediaGeralFormatted}
                         </span>
                       </td>
 
-                      <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-slate-800'} border ${metaDetails?.borderClass || 'border-slate-300'}`}>
-                          {metaDetails?.label || 'Avaliado'} ({mediaGeralFormatted})
+                      <td className="py-2.5 px-4 text-center">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-slate-800'} border ${metaDetails?.borderClass || 'border-[#CBD5E1]'}`}>
+                          {metaDetails?.label || 'Avaliado'}
                         </span>
                       </td>
 
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4 text-center">
                         {ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
-                          <span className="inline-flex items-center text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-semibold">
-                            <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" /> Assinado / Ciente
+                          <span className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-semibold">
+                            <CheckCircle2 className="w-3 h-3 mr-1 text-[#047857]" /> Ciente
                           </span>
                         ) : ev.statusAssinatura === 'ENVIADO_FORNECEDOR' ? (
-                          <span className="inline-flex items-center text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-[11px] font-semibold">
-                            <PenTool className="w-3 h-3 mr-1 text-amber-600" /> Aguardando Aceite
+                          <span className="inline-flex items-center text-[#92400E] bg-[#FFFBEB] border border-[#FCD34D] px-2 py-0.5 rounded text-[11px] font-semibold">
+                            <PenTool className="w-3 h-3 mr-1 text-[#92400E]" /> Aguardando
                           </span>
                         ) : (
-                          <span className="inline-flex items-center text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded text-[11px]">
-                            Pendente Envio
+                          <span className="inline-flex items-center text-[#475569] bg-slate-100 border border-[#CBD5E1] px-2 py-0.5 rounded text-[11px]">
+                            Não Enviado
                           </span>
                         )}
                       </td>
 
                       {/* Ações */}
-                      <td className="py-3 px-4 text-right">
+                      <td className="py-2.5 px-4 text-right">
                         <div className="flex items-center justify-end space-x-1">
                           {/* Visualizar / PDF */}
                           <button
                             onClick={() => onViewReport(ev.id)}
-                            className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition cursor-pointer"
-                            title="Gerar Laudo PDF / Imprimir"
+                            className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
+                            title="Visualizar Laudo e Imprimir"
                           >
                             <Printer className="w-4 h-4" />
                           </button>
@@ -250,8 +250,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {/* Assinatura / Ciência */}
                           <button
                             onClick={() => onOpenSignatureModal(ev)}
-                            className="p-1.5 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded transition cursor-pointer"
-                            title="Registrar Assinatura / Ciência do Fornecedor"
+                            className="p-1.5 text-slate-600 hover:text-[#047857] hover:bg-emerald-50 rounded-md transition cursor-pointer"
+                            title="Registrar Ciência do Fornecedor"
                           >
                             <PenTool className="w-4 h-4" />
                           </button>
@@ -260,8 +260,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {!isFornecedor && mediaGeralVal < 4.0 && (
                             <button
                               onClick={() => onOpenActionPlanModal(ev)}
-                              className="p-1.5 text-amber-600 hover:bg-amber-50 rounded transition cursor-pointer"
-                              title="Configurar Plano de Ação de Melhoria"
+                              className="p-1.5 text-[#92400E] hover:bg-amber-50 rounded-md transition cursor-pointer"
+                              title="Configurar Plano de Ação"
                             >
                               <AlertTriangle className="w-4 h-4" />
                             </button>
@@ -271,7 +271,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {!isFornecedor && (
                             <button
                               onClick={() => onEditEvaluation(ev)}
-                              className="p-1.5 text-slate-600 hover:text-hospital-600 hover:bg-hospital-50 rounded transition cursor-pointer"
+                              className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
                               title="Editar Avaliação"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -286,7 +286,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                                   onDeleteEvaluation(ev.id);
                                 }
                               }}
-                              className="p-1.5 text-rose-500 hover:bg-rose-50 rounded transition cursor-pointer"
+                              className="p-1.5 text-[#B91C1C] hover:bg-rose-50 rounded-md transition cursor-pointer"
                               title="Excluir Avaliação"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -299,8 +299,12 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                 })
               ) : (
                 <tr>
-                  <td colSpan={10} className="py-8 text-center text-slate-500">
-                    Nenhuma avaliação encontrada com os filtros atuais.
+                  <td colSpan={10} className="py-12 text-center text-slate-500">
+                    <div className="max-w-xs mx-auto space-y-2">
+                      <Search className="w-8 h-8 text-slate-300 mx-auto" />
+                      <strong className="text-sm font-bold text-slate-700 block">Nenhuma avaliação encontrada</strong>
+                      <p className="text-xs text-slate-400">Verifique os termos da busca ou altere os filtros de ano e status acima.</p>
+                    </div>
                   </td>
                 </tr>
               )}

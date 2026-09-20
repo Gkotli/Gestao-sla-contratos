@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Fundo Corporativo Azul Rede D'Or com cantos arredondados -->
+  <rect width="32" height="32" rx="6" fill="#123768" />
+  
+  <!-- Símbolo Cruz Rede D'Or São Luiz -->
+  <g fill="#FFFFFF">
+    <!-- Lado Esquerdo -->
+    <path d="M5 13h9v14h-4.5v-9.5H5V13z" />
+    <path d="M9.5 5h4.5v6.5H9.5V5z" />
+    
+    <!-- Lado Direito -->
+    <path d="M18 13h9v4.5h-4.5V27H18V13z" />
+    <path d="M18 5h4.5v6.5H18V5z" />
+  </g>
+</svg>

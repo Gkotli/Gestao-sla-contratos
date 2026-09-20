@@ -155,7 +155,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
       {/* ================================================== */}
       {/* 1. LADO ESQUERDO: PAINEL INSTITUCIONAL AZUL (40%)  */}
       {/* ================================================== */}
-      <div className="w-full md:w-[40%] bg-[#073066] text-white p-8 sm:p-12 lg:p-14 flex flex-col justify-between relative overflow-hidden min-h-[400px] md:min-h-screen">
+      <div className="w-full md:w-[40%] bg-[#123768] text-white p-8 sm:p-12 lg:p-14 flex flex-col justify-between relative overflow-hidden min-h-[400px] md:min-h-screen">
         
         {/* Detalhes gráficos discretos de fundo (linhas curvas institucionais) */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -166,16 +166,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
           </svg>
         </div>
 
-        {/* Topo: Logo Oficial */}
-        <div className="relative z-10">
-          <div className="inline-block bg-white p-2.5 rounded-lg shadow-md border border-slate-200">
-            <img
-              src="/logo-rede-dor.webp"
-              alt="Logo Rede D'Or"
-              className="h-10 sm:h-12 w-auto object-contain"
-            />
-          </div>
-        </div>
 
         {/* Centro: Título e Descrição Institucional */}
         <div className="relative z-10 my-8 md:my-auto space-y-4">
@@ -202,26 +192,35 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
       {/* ================================================== */}
       {/* 2. LADO DIREITO: ÁREA DE LOGIN CORPORATIVA (60%)   */}
       {/* ================================================== */}
-      <div className="w-full md:w-[60%] bg-[#f7f9fc] flex flex-col justify-between p-6 sm:p-12 lg:p-14 min-h-screen">
+      <div className="w-full md:w-[60%] bg-[#F1F5F9] flex flex-col justify-between p-6 sm:p-12 lg:p-14 min-h-screen">
         
         <div className="flex-1 flex items-center justify-center py-6">
           {/* Card de Login Corporativo */}
-          <div className="bg-white w-full max-w-md rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-slate-200/90 p-8 sm:p-10 space-y-6">
+          <div className="bg-white w-full max-w-md rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-[#CBD5E1] p-8 sm:p-10 space-y-6">
             
+            {/* Logo Oficial em Destaque Centralizada (200px) */}
+            <div className="flex justify-center pt-1 pb-2">
+              <img
+                src="/assets/branding/rede-dor-logo.png"
+                alt="Rede D'Or Hospitais"
+                className="w-[180px] sm:w-[200px] h-auto object-contain"
+              />
+            </div>
+
             {/* Cabeçalho do Card */}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#172B4D] tracking-tight">
                 Acesso ao sistema
               </h2>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-[#475569] mt-1">
                 Informe suas credenciais corporativas para continuar.
               </p>
             </div>
 
             {/* Alerta de Erro */}
             {errorMsg && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-md flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+              <div className="p-3 bg-rose-50 border border-rose-200 text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 text-[#B91C1C] flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -229,7 +228,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             {/* Formulário de Login */}
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-[#172B4D] mb-1.5">
                   E-mail corporativo
                 </label>
                 <div className="relative">
@@ -240,20 +239,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="seu.nome@hospital.com.br"
-                    className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-300 text-slate-900 text-xs rounded-md focus:ring-2 focus:ring-[#073066] focus:border-[#073066] font-medium transition"
+                    className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768] font-medium transition"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-bold text-slate-700">
+                  <label className="block text-xs font-bold text-[#172B4D]">
                     Senha
                   </label>
                   <button
                     type="button"
                     onClick={handleOpenForgot}
-                    className="text-[11px] font-semibold text-[#073066] hover:underline cursor-pointer"
+                    className="text-[11px] font-semibold text-[#123768] hover:underline cursor-pointer"
                   >
                     Esqueci minha senha
                   </button>
@@ -266,7 +265,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     onChange={(e) => setSenha(e.target.value)}
                     required
                     placeholder="••••••••••••"
-                    className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-300 text-slate-900 text-xs rounded-md focus:ring-2 focus:ring-[#073066] focus:border-[#073066] font-medium transition"
+                    className="w-full pl-10 pr-3 py-2.5 bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md focus:ring-2 focus:ring-[#123768] focus:border-[#123768] font-medium transition"
                   />
                 </div>
               </div>
@@ -274,7 +273,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
               {/* Botão Entrar em Azul Institucional */}
               <button
                 type="submit"
-                className="w-full py-3 text-xs font-bold text-white bg-[#073066] hover:bg-[#05234d] rounded-md shadow-sm transition-colors cursor-pointer flex items-center justify-center"
+                className="w-full py-3 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition-colors cursor-pointer flex items-center justify-center"
               >
                 Entrar
               </button>
@@ -283,10 +282,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             {/* Divisor Visual de Acesso Rápido */}
             <div className="relative pt-2">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
+                <div className="w-full border-t border-[#CBD5E1]" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
-                <span className="bg-white px-3 text-slate-400">ACESSO RÁPIDO</span>
+                <span className="bg-white px-3 text-[#475569]">ACESSO RÁPIDO</span>
               </div>
             </div>
 
@@ -300,16 +299,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     key={u.id}
                     type="button"
                     onClick={() => handleQuickLogin(u)}
-                    className="w-full p-3 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-md text-left transition flex items-center justify-between group cursor-pointer"
+                    className="w-full p-3 bg-slate-50 hover:bg-slate-100/80 border border-[#CBD5E1] rounded-md text-left transition flex items-center justify-between group cursor-pointer"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white rounded border border-slate-200 text-slate-600">
+                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-slate-600">
                         <Building2 className="w-4 h-4 text-slate-600" />
                       </div>
                       <div>
-                        <span className="text-[10px] font-semibold text-slate-500 block">Conta autorizada</span>
-                        <strong className="text-slate-900 text-xs font-bold block">{u.nome}</strong>
-                        <span className="text-[11px] text-slate-500 block truncate">{u.email}</span>
+                        <span className="text-[10px] font-semibold text-[#475569] block">Conta autorizada</span>
+                        <strong className="text-[#172B4D] text-xs font-bold block">{u.nome}</strong>
+                        <span className="text-[11px] text-[#475569] block truncate">{u.email}</span>
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700" />
@@ -320,21 +319,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
         </div>
 
         {/* Rodapé Corporativo Direita */}
-        <div className="pt-6 border-t border-slate-200/80 flex flex-col lg:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
+        <div className="pt-6 border-t border-[#CBD5E1] flex flex-col lg:flex-row items-center justify-between gap-3 text-[11px] text-[#475569]">
           <div className="flex items-center space-x-1.5">
             <Lock className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
             <span>
-              <strong className="text-slate-700">Acesso corporativo restrito</strong> — Uso exclusivo para fins institucionais. Registro e monitoramento aplicados.
+              <strong className="text-[#172B4D]">Acesso corporativo restrito</strong> — Uso exclusivo para fins institucionais. Registro e monitoramento aplicados.
             </span>
           </div>
 
-          <div className="flex items-center space-x-3 text-slate-500 font-medium">
+          <div className="flex items-center space-x-3 text-[#475569] font-medium">
             <span>© 2026 Hospital Operacional de Excelência</span>
             <span>•</span>
             <button
               type="button"
               onClick={() => alert('Política de Segurança da Informação Hospitalar\n\nTodos os acessos são auditados e registrados em conformidade com as diretrizes institucionais.')}
-              className="hover:text-[#073066] hover:underline cursor-pointer"
+              className="hover:text-[#123768] hover:underline cursor-pointer"
             >
               Política de Segurança
             </button>
@@ -342,7 +341,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             <button
               type="button"
               onClick={() => alert('Suporte TI Hospitalar:\nE-mail: suporte.ti@hospital.com.br\nRamal Interno: 4004')}
-              className="hover:text-[#073066] hover:underline cursor-pointer"
+              className="hover:text-[#123768] hover:underline cursor-pointer"
             >
               Suporte TI
             </button>
@@ -353,16 +352,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
       {/* Modal de Esqueci Minha Senha (3 Etapas) */}
       {isForgotModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-lg shadow-2xl border border-slate-200 p-6 space-y-4 text-xs text-slate-800">
+          <div className="bg-white w-full max-w-md rounded-lg shadow-2xl border border-[#CBD5E1] p-6 space-y-4 text-xs text-[#172B4D]">
             {/* Header do Modal */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-[#073066]/10 flex items-center justify-center text-[#073066]">
+                <div className="w-8 h-8 rounded-full bg-[#123768]/10 flex items-center justify-center text-[#123768]">
                   <KeyRound className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900">Recuperação de Senha</h3>
-                  <p className="text-[11px] text-slate-500">Autoatendimento seguro via e-mail</p>
+                  <h3 className="font-bold text-sm text-[#172B4D]">Recuperação de Senha</h3>
+                  <p className="text-[11px] text-[#475569]">Autoatendimento seguro via e-mail</p>
                 </div>
               </div>
               <button
@@ -375,19 +374,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Stepper Visual (1 -> 2 -> 3) */}
             {!forgotSuccessMsg && (
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-md border border-slate-100 text-[11px]">
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 1 ? 'text-[#073066] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? 'bg-[#073066] text-white' : 'bg-slate-200 text-slate-600'}`}>1</span>
+              <div className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-md border border-[#CBD5E1] text-[11px]">
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 1 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>1</span>
                   <span>E-mail</span>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 2 ? 'text-[#073066] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? 'bg-[#073066] text-white' : 'bg-slate-200 text-slate-600'}`}>2</span>
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 2 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>2</span>
                   <span>Código</span>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 3 ? 'text-[#073066] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? 'bg-[#073066] text-white' : 'bg-slate-200 text-slate-600'}`}>3</span>
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 3 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>3</span>
                   <span>Nova Senha</span>
                 </div>
               </div>
@@ -395,8 +394,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Alerta de Erro */}
             {forgotError && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-md flex items-start space-x-2 text-xs">
-                <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+              <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] rounded-md flex items-start space-x-2 text-xs">
+                <AlertCircle className="w-4 h-4 text-[#B91C1C] mt-0.5 flex-shrink-0" />
                 <span className="leading-relaxed">{forgotError}</span>
               </div>
             )}
@@ -405,16 +404,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Sucesso Final */}
             {forgotSuccessMsg ? (
-              <div className="p-5 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-md space-y-3 text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600">
+              <div className="p-5 bg-[#ECFDF5] border border-emerald-200 text-[#047857] rounded-md space-y-3 text-center">
+                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-[#047857]">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
-                <h4 className="font-bold text-sm text-emerald-900">Senha Alterada com Sucesso!</h4>
-                <p className="text-xs leading-relaxed text-slate-700">{forgotSuccessMsg}</p>
+                <h4 className="font-bold text-sm text-[#047857]">Senha Alterada com Sucesso!</h4>
+                <p className="text-xs leading-relaxed text-[#172B4D]">{forgotSuccessMsg}</p>
                 <button
                   type="button"
                   onClick={() => setIsForgotModalOpen(false)}
-                  className="w-full py-2.5 bg-[#073066] hover:bg-[#05234d] text-white font-bold rounded-md shadow transition cursor-pointer"
+                  className="w-full py-2.5 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow transition cursor-pointer"
                 >
                   Acessar com Nova Senha
                 </button>
@@ -424,12 +423,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                 {/* ETAPA 1: DIGITAR E-MAIL */}
                 {forgotStep === 1 && (
                   <form onSubmit={handleSendCode} className="space-y-4">
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       Informe seu e-mail corporativo cadastrado. Enviaremos um código de verificação de 6 dígitos para validar sua identidade.
                     </p>
 
                     <div>
-                      <label className="block font-bold text-slate-700 mb-1">E-mail Corporativo *</label>
+                      <label className="block font-bold text-[#172B4D] mb-1">E-mail Corporativo *</label>
                       <div className="relative">
                         <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                         <input
@@ -438,7 +437,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                           onChange={(e) => setForgotEmail(e.target.value)}
                           required
                           placeholder="seu.nome@hospital.com.br"
-                          className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-md pl-9 pr-3 py-2.5 focus:ring-2 focus:ring-[#073066]"
+                          className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md pl-9 pr-3 py-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                         />
                       </div>
                     </div>
@@ -454,7 +453,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       <button
                         type="submit"
                         disabled={forgotLoading}
-                        className="px-5 py-2 bg-[#073066] hover:bg-[#05234d] text-white font-bold rounded-md shadow flex items-center space-x-2 disabled:opacity-60 cursor-pointer"
+                        className="px-5 py-2 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow flex items-center space-x-2 disabled:opacity-60 cursor-pointer"
                       >
                         {forgotLoading ? (
                           <>
@@ -473,11 +472,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                 {forgotStep === 2 && (
                   <form onSubmit={handleVerifyCode} className="space-y-4">
                     <div>
-                      <p className="text-slate-600 leading-relaxed">
+                      <p className="text-[#475569] leading-relaxed">
                         Um código de verificação foi enviado para: <br />
-                        <strong className="text-slate-900">{forgotEmail}</strong>
+                        <strong className="text-[#172B4D]">{forgotEmail}</strong>
                       </p>
-                      <p className="text-[11px] text-slate-500 mt-1">
+                      <p className="text-[11px] text-[#475569] mt-1">
                         Digite os 6 dígitos recebidos abaixo (válido por 15 minutos):
                       </p>
                     </div>
@@ -490,11 +489,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                         onChange={(e) => setForgotCode(e.target.value.replace(/\D/g, ''))}
                         required
                         placeholder="000000"
-                        className="w-full text-center tracking-[0.4em] font-mono text-xl font-bold bg-slate-50 border-2 border-slate-300 rounded-md p-3 focus:bg-white focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"
+                        className="w-full text-center tracking-[0.4em] font-mono text-xl font-bold bg-slate-50 border-2 border-[#CBD5E1] rounded-md p-3 focus:bg-white focus:border-[#123768] focus:ring-2 focus:ring-[#123768]/20"
                       />
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-600">
+                    <div className="flex items-center justify-between text-[11px] text-[#475569]">
                       <span>Não recebeu o código?</span>
                       {resendCooldown > 0 ? (
                         <span className="text-slate-400 font-medium">Reenviar em {resendCooldown}s</span>
@@ -503,7 +502,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                           type="button"
                           onClick={handleSendCode}
                           disabled={forgotLoading}
-                          className="text-[#073066] font-bold hover:underline cursor-pointer flex items-center space-x-1"
+                          className="text-[#123768] font-bold hover:underline cursor-pointer flex items-center space-x-1"
                         >
                           <RefreshCw className="w-3 h-3" />
                           <span>Reenviar código</span>
@@ -522,7 +521,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       <button
                         type="submit"
                         disabled={forgotCode.length !== 6}
-                        className="px-5 py-2 bg-[#073066] hover:bg-[#05234d] text-white font-bold rounded-md shadow disabled:opacity-50 cursor-pointer"
+                        className="px-5 py-2 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow disabled:opacity-50 cursor-pointer"
                       >
                         Validar Código
                       </button>
@@ -533,12 +532,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                 {/* ETAPA 3: CRIAR NOVA SENHA */}
                 {forgotStep === 3 && (
                   <form onSubmit={handleResetPassword} className="space-y-4">
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className="text-[#475569] leading-relaxed">
                       Código validado com sucesso! Crie uma nova senha para o seu acesso corporativo:
                     </p>
 
                     <div>
-                      <label className="block font-bold text-slate-700 mb-1">Nova Senha *</label>
+                      <label className="block font-bold text-[#172B4D] mb-1">Nova Senha *</label>
                       <div className="relative">
                         <input
                           type={showNewPassword ? 'text' : 'password'}
@@ -546,7 +545,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                           onChange={(e) => setNewPassword(e.target.value)}
                           required
                           placeholder="Mínimo 4 caracteres"
-                          className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-md pl-3 pr-9 py-2.5 focus:ring-2 focus:ring-[#073066]"
+                          className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md pl-3 pr-9 py-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                         />
                         <button
                           type="button"
@@ -559,7 +558,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     </div>
 
                     <div>
-                      <label className="block font-bold text-slate-700 mb-1">Confirmar Nova Senha *</label>
+                      <label className="block font-bold text-[#172B4D] mb-1">Confirmar Nova Senha *</label>
                       <div className="relative">
                         <input
                           type={showConfirmPassword ? 'text' : 'password'}
@@ -567,7 +566,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           required
                           placeholder="Repita a nova senha"
-                          className="w-full bg-white border border-slate-300 text-slate-900 text-xs rounded-md pl-3 pr-9 py-2.5 focus:ring-2 focus:ring-[#073066]"
+                          className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md pl-3 pr-9 py-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                         />
                         <button
                           type="button"
@@ -589,7 +588,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       </button>
                       <button
                         type="submit"
-                        className="px-5 py-2 bg-[#073066] hover:bg-[#05234d] text-white font-bold rounded-md shadow cursor-pointer"
+                        className="px-5 py-2 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow cursor-pointer"
                       >
                         Salvar Nova Senha
                       </button>

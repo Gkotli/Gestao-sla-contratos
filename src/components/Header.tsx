@@ -42,87 +42,87 @@ export const Header: React.FC<HeaderProps> = ({
   );
 
   return (
-    <header className="bg-slate-900 text-white shadow-lg border-b border-slate-800 no-print font-sans">
+    <header className="bg-[#123768] text-white shadow-md border-b border-[#0B2850] no-print font-sans">
       {/* Barra superior institucional com a Logo Oficial da Rede D'Or */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <div className="bg-white p-2 rounded-xl shadow-md border border-slate-200 flex items-center justify-center">
+          <div className="flex items-center space-x-3.5">
+            <div className="bg-white p-2 rounded-lg shadow-sm border border-[#CBD5E1] flex items-center justify-center">
               <img 
-                src="/logo-rede-dor.webp" 
-                alt="Logo Rede D'Or" 
-                className="h-9 sm:h-10 w-auto object-contain"
+                src="/assets/branding/rede-dor-logo.png" 
+                alt="Rede D'Or Hospitais" 
+                className="w-[110px] sm:w-[140px] md:w-[180px] h-auto object-contain"
               />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="bg-hospital-500/20 text-hospital-100 text-xs font-semibold px-2.5 py-0.5 rounded border border-hospital-400/30">
-                  DIRETORIA OPERACIONAL
+                <span className="bg-white/15 text-white text-[11px] font-semibold px-2 py-0.5 rounded border border-white/20 uppercase tracking-wide">
+                  Diretoria Operacional
                 </span>
-                <span className="text-slate-400 text-xs font-medium">| Avaliação Anual de Contratos</span>
+                <span className="text-slate-300 text-xs font-medium">| Avaliação de Nível de Serviço</span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                Gestão de Nível de Serviço e Avaliação de Contratos
+              <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                Gestão de SLA e Avaliação de Contratos
               </h1>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 self-end md:self-auto">
+          <div className="flex flex-wrap items-center gap-2.5 self-end md:self-auto">
             {/* Usuário Logado Ativo */}
             {currentUser && (
-              <div className="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                <UserCheck className="w-4 h-4 text-teal-400" />
+              <div className="flex items-center space-x-2.5 bg-white/10 px-3 py-1.5 rounded-md border border-white/15">
+                <UserCheck className="w-4 h-4 text-emerald-400" />
                 <div className="text-xs">
                   <div className="flex items-center space-x-1.5">
                     <span className="font-bold text-white block">{currentUser.nome}</span>
-                    <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
-                      currentUser.role === 'DIRETORIA' ? 'bg-purple-900 text-purple-200 border border-purple-700' :
-                      currentUser.role === 'GESTOR' ? 'bg-teal-900 text-teal-200 border border-teal-700' :
-                      'bg-amber-900 text-amber-200 border border-amber-700'
+                    <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                      currentUser.role === 'DIRETORIA' ? 'bg-amber-300 text-slate-950' :
+                      currentUser.role === 'GESTOR' ? 'bg-sky-200 text-slate-900' :
+                      'bg-emerald-200 text-emerald-950'
                     }`}>
-                      {currentUser.role === 'DIRETORIA' ? 'DIRETORIA' : currentUser.role === 'GESTOR' ? 'GESTOR' : 'FORNECEDOR'}
+                      {currentUser.role === 'DIRETORIA' ? 'Diretoria' : currentUser.role === 'GESTOR' ? 'Gestor' : 'Fornecedor'}
                     </span>
                   </div>
-                  <span className="text-[10px] text-slate-400 block">{currentUser.cargo}</span>
+                  <span className="text-[10px] text-slate-300 block">{currentUser.cargo}</span>
                 </div>
               </div>
+            )}
+
+            {isDiretoria && (
+              <button
+                onClick={onResetData}
+                title="Restaurar dados originais do sistema"
+                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-200 bg-white/10 hover:bg-white/20 hover:text-white rounded-md border border-white/20 transition cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+                Restaurar Dados
+              </button>
             )}
 
             {/* Botão Sair */}
             <button
               onClick={onLogout}
               title="Encerrar sessão de acesso"
-              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-rose-300 bg-rose-950/60 hover:bg-rose-900 hover:text-white rounded-lg border border-rose-800/80 transition"
+              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-rose-100 bg-rose-600/30 hover:bg-rose-600 hover:text-white rounded-md border border-rose-400/30 transition cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5 mr-1.5" />
               Sair
             </button>
-
-            {isDiretoria && (
-              <button
-                onClick={onResetData}
-                title="Restaurar dados originais do sistema"
-                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700 transition"
-              >
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
-                Restaurar Dados
-              </button>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Navegação por abas 100% em Português */}
-      <div className="bg-slate-950 border-t border-slate-800/80">
+      {/* Navegação por abas com hierarquia visual corporativa */}
+      <div className="bg-[#0B2850] border-t border-white/10">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 scrollbar-none">
+          <nav className="flex space-x-1 overflow-x-auto py-2 scrollbar-none">
             {isGestor && (
               <button
                 onClick={() => setActiveTab('dashboard')}
-                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'dashboard'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
@@ -133,10 +133,10 @@ export const Header: React.FC<HeaderProps> = ({
             {isGestor && (
               <button
                 onClick={() => setActiveTab('new-eval')}
-                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'new-eval'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <FileCheck2 className="w-4 h-4 mr-2" />
@@ -147,10 +147,10 @@ export const Header: React.FC<HeaderProps> = ({
             {isGestor && (
               <button
                 onClick={() => setActiveTab('pending-evals')}
-                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'pending-evals'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <Clock className="w-4 h-4 mr-2 text-amber-400" />
@@ -160,10 +160,10 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('eval-list')}
-              className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+              className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === 'eval-list'
-                  ? 'bg-hospital-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-white text-[#123768] font-bold shadow-sm'
+                  : 'text-slate-200 hover:bg-white/10 hover:text-white'
               }`}
             >
               <ClipboardList className="w-4 h-4 mr-2" />
@@ -173,16 +173,16 @@ export const Header: React.FC<HeaderProps> = ({
             {isGestor && (
               <button
                 onClick={() => setActiveTab('action-plans')}
-                className={`relative flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`relative flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'action-plans'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <AlertTriangle className="w-4 h-4 mr-2 text-amber-400" />
                 Planos de Ação
                 {pendingActionPlansCount > 0 && (
-                  <span className="ml-2 bg-amber-500 text-slate-950 font-bold text-xs px-2 py-0.5 rounded-full">
+                  <span className="ml-2 bg-amber-400 text-slate-950 font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
                     {pendingActionPlansCount}
                   </span>
                 )}
@@ -192,10 +192,10 @@ export const Header: React.FC<HeaderProps> = ({
             {isDiretoria && (
               <button
                 onClick={() => setActiveTab('suppliers')}
-                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'suppliers'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <Users className="w-4 h-4 mr-2" />
@@ -206,10 +206,10 @@ export const Header: React.FC<HeaderProps> = ({
             {isGabrielAdmin && (
               <button
                 onClick={() => setActiveTab('users')}
-                className={`flex items-center px-4 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
                   activeTab === 'users'
-                    ? 'bg-hospital-600 text-white shadow-sm'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-white text-[#123768] font-bold shadow-sm'
+                    : 'text-slate-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 <UserCog className="w-4 h-4 mr-2" />

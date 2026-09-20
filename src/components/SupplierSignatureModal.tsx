@@ -154,11 +154,11 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto font-sans">
-      <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl border border-slate-200 overflow-hidden my-8">
+      <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl border border-[#CBD5E1] overflow-hidden my-8">
         {/* Header */}
-        <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
+        <div className="bg-[#123768] text-white p-5 flex items-center justify-between border-b border-[#0B2850]">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-teal-500/20 text-teal-300 rounded-lg border border-teal-400/30">
+            <div className="p-2 bg-white/10 text-teal-300 rounded-md border border-white/20">
               <PenTool className="w-6 h-6" />
             </div>
             <div>
@@ -173,34 +173,34 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
 
         <form onSubmit={handleSave} className="p-6 space-y-5 text-xs">
           {/* Resumo da Avaliação Avaliada */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+          <div className="bg-slate-50 p-4 rounded-lg border border-[#CBD5E1] space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-slate-500 font-medium">Fornecedor Avaliado:</span>
-                <h4 className="text-sm font-bold text-slate-900">{supplier?.nomeFantasia || 'Fornecedor Terceirizado'}</h4>
-                <p className="text-[11px] text-slate-500 font-mono">CNPJ: {supplier?.cnpj || 'N/A'}</p>
+                <span className="text-[#475569] font-medium">Fornecedor Avaliado:</span>
+                <h4 className="text-sm font-bold text-[#172B4D]">{supplier?.nomeFantasia || 'Fornecedor Terceirizado'}</h4>
+                <p className="text-[11px] text-[#475569] font-mono">CNPJ: {supplier?.cnpj || 'N/A'}</p>
               </div>
               <div className="text-right">
-                <span className="text-slate-500 font-medium block">Ano do Ciclo:</span>
-                <span className="font-bold text-slate-800 text-sm">{evaluation.ano}</span>
+                <span className="text-[#475569] font-medium block">Ano do Ciclo:</span>
+                <span className="font-bold text-[#172B4D] text-sm">{evaluation.ano}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 pt-2 border-t border-slate-200 text-center">
+            <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#CBD5E1] text-center">
               <div>
-                <span className="block text-[10px] text-slate-500 font-semibold uppercase">Legais</span>
-                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaLegais)}</strong>
+                <span className="block text-[10px] text-[#475569] font-semibold uppercase">Legais</span>
+                <strong className="text-[#172B4D] font-bold">{safeFormatScore(evaluation.mediaLegais)}</strong>
               </div>
               <div>
-                <span className="block text-[10px] text-slate-500 font-semibold uppercase">Comport.</span>
-                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaComportamentais)}</strong>
+                <span className="block text-[10px] text-[#475569] font-semibold uppercase">Comport.</span>
+                <strong className="text-[#172B4D] font-bold">{safeFormatScore(evaluation.mediaComportamentais)}</strong>
               </div>
               <div>
-                <span className="block text-[10px] text-slate-500 font-semibold uppercase">Qualidade</span>
-                <strong className="text-slate-800 font-bold">{safeFormatScore(evaluation.mediaQualidade)}</strong>
+                <span className="block text-[10px] text-[#475569] font-semibold uppercase">Qualidade</span>
+                <strong className="text-[#172B4D] font-bold">{safeFormatScore(evaluation.mediaQualidade)}</strong>
               </div>
               <div>
-                <span className="block text-[10px] text-slate-500 font-semibold uppercase">Média Geral</span>
+                <span className="block text-[10px] text-[#475569] font-semibold uppercase">Média Geral</span>
                 <span className={`font-extrabold px-1.5 py-0.5 rounded ${badge.colorClass}`}>
                   {safeFormatScore(evaluation.mediaGeral)}
                 </span>
@@ -211,54 +211,54 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
           {/* Dados do Signatário */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Nome do Representante Legal / Preposto *</label>
+              <label className="block font-bold text-[#172B4D] mb-1">Nome do Representante Legal / Preposto *</label>
               <input
                 type="text"
                 required
                 value={nomeSignatario}
                 onChange={(e) => setNomeSignatario(e.target.value)}
                 placeholder="Ex: Dr. André Fonseca"
-                className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5 font-medium"
+                className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 font-medium focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
               />
             </div>
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Cargo / Função *</label>
+              <label className="block font-bold text-[#172B4D] mb-1">Cargo / Função *</label>
               <input
                 type="text"
                 required
                 value={cargoSignatario}
                 onChange={(e) => setCargoSignatario(e.target.value)}
                 placeholder="Ex: Diretor de Operações / Gerente"
-                className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5 font-medium"
+                className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 font-medium focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
               />
             </div>
           </div>
 
           {/* Parecer ou Considerações do Fornecedor */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Considerações / Parecer do Fornecedor (Opcional)</label>
+            <label className="block font-bold text-[#172B4D] mb-1">Considerações / Parecer do Fornecedor (Opcional)</label>
             <textarea
               rows={3}
               value={parecerFornecedor}
               onChange={(e) => setParecerFornecedor(e.target.value)}
               placeholder="Digite aqui quaisquer ressalvas, comentários ou alinhamentos em resposta à avaliação do hospital..."
-              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs rounded-lg p-2.5"
+              className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
             />
           </div>
 
           {/* Canvas de Assinatura Digital */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="font-bold text-slate-800">Assinatura Digital na Tela *</label>
+              <label className="font-bold text-[#172B4D]">Assinatura Digital na Tela *</label>
               <button
                 type="button"
                 onClick={clearCanvas}
-                className="text-xs text-rose-600 hover:text-rose-800 font-semibold flex items-center cursor-pointer"
+                className="text-xs text-[#B91C1C] hover:text-rose-800 font-semibold flex items-center cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3 mr-1" /> Limpar Assinatura
               </button>
             </div>
-            <div className="border-2 border-dashed border-slate-300 rounded-lg bg-slate-50 p-2 touch-none">
+            <div className="border-2 border-dashed border-[#CBD5E1] rounded-md bg-slate-50 p-2 touch-none">
               <canvas
                 ref={canvasRef}
                 width={550}
@@ -270,24 +270,24 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
                 onTouchStart={startDrawing}
                 onTouchMove={draw}
                 onTouchEnd={stopDrawing}
-                className="w-full bg-white rounded border border-slate-200 cursor-crosshair"
+                className="w-full bg-white rounded border border-[#CBD5E1] cursor-crosshair"
               />
               <p className="text-[10px] text-slate-400 text-center mt-1">Desenhe a assinatura com o mouse ou na tela sensível ao toque</p>
             </div>
           </div>
 
           {/* Botões */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-200">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-[#CBD5E1]">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer"
+              className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50 cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="inline-flex items-center px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow transition cursor-pointer"
+              className="inline-flex items-center px-5 py-2 text-xs font-bold text-white bg-[#047857] hover:bg-emerald-700 rounded-md shadow transition cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4 mr-1.5" />
               Confirmar Ciência e Registrar Assinatura

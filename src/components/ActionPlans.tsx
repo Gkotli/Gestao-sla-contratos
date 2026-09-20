@@ -151,13 +151,13 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
       {/* Top bar de Planos de Ação */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Gestão de Planos de Ação de Melhoria</h2>
-          <p className="text-xs text-slate-500">Planos de melhoria corretiva gerados para fornecedores abaixo da meta de SLA (&lt; 4,00)</p>
+          <h2 className="text-xl font-bold text-[#172B4D]">Gestão de Planos de Ação de Melhoria</h2>
+          <p className="text-xs text-[#475569]">Planos de melhoria corretiva gerados para fornecedores abaixo da meta de SLA (&lt; 4,00)</p>
         </div>
 
         <button
           onClick={() => openNewPlanModal()}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow transition self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4 mr-2" />
           Novo Plano de Ação
@@ -165,8 +165,8 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
       </div>
 
       {/* Filtros de Status */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center gap-3">
-        <span className="text-xs font-semibold text-slate-500 flex items-center">
+      <div className="bg-white p-4 rounded-lg shadow-sm border border-[#CBD5E1] flex flex-wrap items-center gap-3">
+        <span className="text-xs font-semibold text-[#475569] flex items-center">
           <Filter className="w-3.5 h-3.5 mr-1" /> Status do Plano:
         </span>
 
@@ -174,10 +174,10 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
           <button
             key={st}
             onClick={() => setSelectedStatusFilter(st)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition cursor-pointer ${
               selectedStatusFilter === st
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-[#123768] text-white shadow-sm'
+                : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
             }`}
           >
             {st === 'ALL' ? 'Todos os Planos' : st.replace('_', ' ')}
@@ -194,19 +194,19 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
             const planStatus = plan.status || 'EM_ANDAMENTO';
 
             return (
-              <div key={plan.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col justify-between">
+              <div key={plan.id} className="bg-white rounded-lg shadow-sm border border-[#CBD5E1] overflow-hidden flex flex-col justify-between">
                 <div>
                   {/* Cabeçalho do Card */}
-                  <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                  <div className="p-4 bg-slate-50 border-b border-[#CBD5E1] flex items-center justify-between">
                     <div>
-                      <span className="text-[11px] font-mono font-bold text-slate-500">{plan.id} — Ciclo Anual {plan.ano}</span>
-                      <h3 className="font-bold text-slate-900 text-sm mt-0.5">{plan.titulo}</h3>
+                      <span className="text-[11px] font-mono font-bold text-[#475569]">{plan.id} — Ciclo Anual {plan.ano}</span>
+                      <h3 className="font-bold text-[#172B4D] text-sm mt-0.5">{plan.titulo}</h3>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-extrabold uppercase ${
-                      planStatus === 'CONCLUIDO' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                      planStatus === 'EM_ANDAMENTO' ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                      planStatus === 'ATRASADO' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                      'bg-amber-100 text-amber-800 border border-amber-300'
+                    <span className={`px-2.5 py-1 rounded text-xs font-extrabold uppercase ${
+                      planStatus === 'CONCLUIDO' ? 'bg-[#ECFDF5] text-[#047857] border border-emerald-300' :
+                      planStatus === 'EM_ANDAMENTO' ? 'bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE]' :
+                      planStatus === 'ATRASADO' ? 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]' :
+                      'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
                     }`}>
                       {planStatus.replace('_', ' ')}
                     </span>
@@ -214,44 +214,44 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
                   {/* Conteúdo 5W2H */}
                   <div className="p-4 space-y-3 text-xs">
-                    <div className="grid grid-cols-2 gap-2 text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                    <div className="grid grid-cols-2 gap-2 text-[#475569] bg-slate-50 p-2.5 rounded-md border border-[#CBD5E1]">
                       <div>
                         <span className="block text-[10px] font-bold uppercase text-slate-400">Fornecedor</span>
-                        <strong className="text-slate-900">{supplier?.nomeFantasia || 'N/A'}</strong>
+                        <strong className="text-[#172B4D]">{supplier?.nomeFantasia || 'N/A'}</strong>
                       </div>
                       <div>
                         <span className="block text-[10px] font-bold uppercase text-slate-400">Setor Hospitalar</span>
-                        <strong className="text-slate-900">{sector?.nome || 'N/A'}</strong>
+                        <strong className="text-[#172B4D]">{sector?.nome || 'N/A'}</strong>
                       </div>
                     </div>
 
                     <div>
-                      <strong className="text-slate-900 block font-semibold">Ação Corretiva:</strong>
-                      <p className="text-slate-700 bg-amber-50/50 border border-amber-100 p-2 rounded mt-0.5">{plan.acao5W}</p>
+                      <strong className="text-[#172B4D] block font-semibold">Ação Corretiva:</strong>
+                      <p className="text-[#172B4D] bg-[#FFFBEB] border border-[#FCD34D] p-2 rounded-md mt-0.5">{plan.acao5W}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <strong className="text-slate-900 block font-semibold">Responsável:</strong>
-                        <p className="text-slate-700 mt-0.5">{plan.responsavel5W}</p>
+                        <strong className="text-[#172B4D] block font-semibold">Responsável:</strong>
+                        <p className="text-[#475569] mt-0.5">{plan.responsavel5W}</p>
                       </div>
                       <div>
-                        <strong className="text-slate-900 block font-semibold">Prazo de Conclusão:</strong>
-                        <p className="text-amber-800 font-bold mt-0.5 flex items-center">
-                          <Calendar className="w-3.5 h-3.5 mr-1 text-amber-600" /> {plan.prazo5W}
+                        <strong className="text-[#172B4D] block font-semibold">Prazo de Conclusão:</strong>
+                        <p className="text-[#92400E] font-bold mt-0.5 flex items-center">
+                          <Calendar className="w-3.5 h-3.5 mr-1 text-[#92400E]" /> {plan.prazo5W}
                         </p>
                       </div>
                     </div>
 
                     {plan.justificativa5W && (
                       <div>
-                        <strong className="text-slate-900 block font-semibold">Justificativa:</strong>
-                        <p className="text-slate-600 mt-0.5">{plan.justificativa5W}</p>
+                        <strong className="text-[#172B4D] block font-semibold">Justificativa:</strong>
+                        <p className="text-[#475569] mt-0.5">{plan.justificativa5W}</p>
                       </div>
                     )}
 
                     {plan.observacoesAcompanhamento && (
-                      <div className="bg-blue-50 border border-blue-100 p-2.5 rounded text-blue-900">
+                      <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 rounded-md text-[#1E40AF]">
                         <strong className="block font-bold text-[11px]">Acompanhamento da Gestão:</strong>
                         <p className="mt-0.5">{plan.observacoesAcompanhamento}</p>
                       </div>
@@ -260,12 +260,12 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 {/* Ações do Card */}
-                <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400">Criado em: {plan.dataCriacao}</span>
+                <div className="p-3 bg-slate-50 border-t border-[#CBD5E1] flex items-center justify-between">
+                  <span className="text-[11px] text-[#475569]">Criado em: {plan.dataCriacao}</span>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => openEditModal(plan)}
-                      className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-100 transition flex items-center cursor-pointer"
+                      className="px-2.5 py-1 text-xs font-semibold text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-100 transition flex items-center cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 mr-1" /> Editar
                     </button>
@@ -275,7 +275,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                           onDeleteActionPlan(plan.id);
                         }
                       }}
-                      className="px-2.5 py-1 text-xs font-semibold text-rose-600 bg-white border border-rose-200 rounded hover:bg-rose-50 transition cursor-pointer"
+                      className="px-2.5 py-1 text-xs font-semibold text-[#B91C1C] bg-white border border-rose-200 rounded-md hover:bg-rose-50 transition cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -285,7 +285,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
             );
           })
         ) : (
-          <div className="col-span-2 p-12 bg-white rounded-xl shadow-sm border border-slate-200 text-center text-slate-500">
+          <div className="col-span-2 p-12 bg-white rounded-lg shadow-sm border border-[#CBD5E1] text-center text-[#475569]">
             Nenhum plano de ação encontrado com os filtros atuais.
           </div>
         )}
@@ -294,15 +294,15 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
       {/* Modal 5W2H para Criar / Editar Plano de Ação */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl border border-slate-200 overflow-hidden my-8">
-            <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
+          <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl border border-[#CBD5E1] overflow-hidden my-8">
+            <div className="bg-[#123768] text-white p-5 flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-lg">
                   {editingPlan ? 'Editar Plano de Ação de Melhoria' : 'Novo Plano de Ação de Melhoria'}
                 </h3>
-                <p className="text-xs text-slate-300">Definição estruturada de ações para adequação à meta de SLA (≥ 4.00)</p>
+                <p className="text-xs text-slate-200">Definição estruturada de ações para adequação à meta de SLA (≥ 4.00)</p>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white text-xl font-bold">
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-300 hover:text-white text-xl font-bold">
                 ✕
               </button>
             </div>
@@ -311,12 +311,12 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
               {/* Fornecedor & Setor */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Fornecedor *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Fornecedor *</label>
                   <select
                     value={formSupplierId}
                     onChange={(e) => setFormSupplierId(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium text-slate-900"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 font-medium text-[#172B4D] focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   >
                     {suppliers.map(s => (
                       <option key={s.id} value={s.id}>{s.nomeFantasia} ({s.numeroContrato})</option>
@@ -325,12 +325,12 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Setor Hospitalar *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Setor Hospitalar *</label>
                   <select
                     value={formSectorId}
                     onChange={(e) => setFormSectorId(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium text-slate-900"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 font-medium text-[#172B4D] focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   >
                     {sectors.map(sec => (
                       <option key={sec.id} value={sec.id}>{sec.nome}</option>
@@ -341,39 +341,39 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
               {/* Título do Plano */}
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Título do Plano de Ação *</label>
+                <label className="block font-semibold text-[#172B4D] mb-1">Título do Plano de Ação *</label>
                 <input
                   type="text"
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                   required
                   placeholder="Ex: Treinamento de Reciclagem da Equipe de Higienização"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 font-medium text-slate-900"
+                  className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2.5 font-medium text-[#172B4D] focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                 />
               </div>
 
               {/* O que fazer / Por que fazer */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">O que será feito? (Ação Corretiva) *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">O que será feito? (Ação Corretiva) *</label>
                   <textarea
                     rows={2}
                     value={acao5W}
                     onChange={(e) => setAcao5W(e.target.value)}
                     required
                     placeholder="Descreva a ação corretiva a ser implantada..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Por que será feito? (Justificativa)</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Por que será feito? (Justificativa)</label>
                   <textarea
                     rows={2}
                     value={justificativa5W}
                     onChange={(e) => setJustificativa5W(e.target.value)}
                     placeholder="Motivo da ação (ex: Nota abaixo da meta no ciclo anual)..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
               </div>
@@ -381,36 +381,36 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
               {/* Quem / Onde / Quando */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Quem fará? (Responsável) *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Quem fará? (Responsável) *</label>
                   <input
                     type="text"
                     value={responsavel5W}
                     onChange={(e) => setResponsavel5W(e.target.value)}
                     required
                     placeholder="Nome do responsável..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Onde será feito? (Local / Setor)</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Onde será feito? (Local / Setor)</label>
                   <input
                     type="text"
                     value={onde5W}
                     onChange={(e) => setOnde5W(e.target.value)}
                     placeholder="Local / Setor / UTI..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Prazo de Conclusão *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Prazo de Conclusão *</label>
                   <input
                     type="date"
                     value={prazo5W}
                     onChange={(e) => setPrazo5W(e.target.value)}
                     required
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 font-bold text-[#172B4D] focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
               </div>
@@ -418,33 +418,33 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
               {/* Como / Quanto custa / Status */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Como será feito? (Metodologia)</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Como será feito? (Metodologia)</label>
                   <input
                     type="text"
                     value={como5W}
                     onChange={(e) => setComo5W(e.target.value)}
                     placeholder="Metodologia / Procedimento..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Quanto custa? (Investimento)</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Quanto custa? (Investimento)</label>
                   <input
                     type="text"
                     value={custo5W}
                     onChange={(e) => setCusto5W(e.target.value)}
                     placeholder="Sem custo / R$..."
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Status de Execução *</label>
+                  <label className="block font-semibold text-[#172B4D] mb-1">Status de Execução *</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as ActionPlanStatus)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2 font-bold text-[#172B4D] focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   >
                     <option value="PENDENTE">Pendente</option>
                     <option value="EM_ANDAMENTO">Em Andamento</option>
@@ -456,21 +456,21 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
 
               {/* Observações */}
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Observações de Acompanhamento da Gestão</label>
+                <label className="block font-semibold text-[#172B4D] mb-1">Observações de Acompanhamento da Gestão</label>
                 <textarea
                   rows={2}
                   value={observacoes}
                   onChange={(e) => setObservacoes(e.target.value)}
                   placeholder="Anotações de auditorias, reuniões de alinhamento..."
-                  className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5"
+                  className="w-full bg-slate-50 border border-[#CBD5E1] rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
+              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-[#CBD5E1]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:text-slate-900 rounded-lg bg-slate-100 hover:bg-slate-200 font-semibold"
+                  className="px-4 py-2 text-[#475569] hover:text-[#172B4D] rounded-md bg-slate-100 hover:bg-slate-200 font-semibold"
                 >
                   Cancelar
                 </button>
@@ -478,7 +478,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 text-slate-950 font-bold bg-amber-400 hover:bg-amber-300 disabled:opacity-50 rounded-lg shadow"
+                  className="px-5 py-2 text-white font-bold bg-[#123768] hover:bg-[#0B2850] disabled:opacity-50 rounded-md shadow"
                 >
                   {isSubmitting ? 'Salvando...' : editingPlan ? 'Salvar Alterações' : 'Criar Plano de Ação'}
                 </button>

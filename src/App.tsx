@@ -129,22 +129,38 @@ export default function App() {
 
   // --- User Handlers ---
   const handleSaveUser = (user: User) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para gerenciar usuários.');
+      return;
+    }
     const updated = StorageService.saveUser(user);
     setUsers(updated);
   };
 
   const handleDeleteUser = (userId: string) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para excluir usuários.');
+      return;
+    }
     const updated = StorageService.deleteUser(userId);
     setUsers(updated);
   };
 
   // --- Supplier Handlers ---
   const handleSaveSupplier = (supplier: Supplier) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para cadastrar ou alterar fornecedores.');
+      return;
+    }
     const updated = StorageService.saveSupplier(supplier);
     setSuppliers(updated);
   };
 
   const handleDeleteSupplier = (supplierId: string) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para excluir fornecedores.');
+      return;
+    }
     const updated = StorageService.deleteSupplier(supplierId);
     setSuppliers(updated);
   };
@@ -198,6 +214,10 @@ export default function App() {
   };
 
   const handleStartNewEvaluation = (supplierId?: string, year?: number) => {
+    if (currentUser?.role === 'FORNECEDOR') {
+      alert('Acesso negado: Prestadores de serviço não possuem permissão para realizar avaliações.');
+      return;
+    }
     setEditingEvaluation(null);
     setPreselectedSupplierId(supplierId);
     setPreselectedYear(year);
@@ -205,12 +225,20 @@ export default function App() {
   };
 
   const handleEditEvaluation = (evaluation: Evaluation) => {
+    if (currentUser?.role === 'FORNECEDOR') {
+      alert('Acesso negado: Prestadores de serviço não possuem permissão para editar avaliações.');
+      return;
+    }
     setEditingEvaluation(evaluation);
     setPreselectedSupplierId(evaluation.fornecedorId);
     setActiveTab('new-eval');
   };
 
   const handleSaveEvaluation = (evaluation: Evaluation, openActionPlanModalDirectly: boolean = false) => {
+    if (currentUser?.role === 'FORNECEDOR') {
+      alert('Acesso negado: Prestadores de serviço não possuem permissão para lançar avaliações.');
+      return;
+    }
     const updatedEvaluations = StorageService.saveEvaluation(evaluation);
     setEvaluations(updatedEvaluations);
     setEditingEvaluation(null);
@@ -233,6 +261,10 @@ export default function App() {
   };
 
   const handleDeleteEvaluation = (evalId: string) => {
+    if (currentUser?.role === 'FORNECEDOR') {
+      alert('Acesso negado: Prestadores de serviço não possuem permissão para excluir avaliações.');
+      return;
+    }
     if (!evalId) {
       alert('Não foi possível excluir: O ID da avaliação é inválido.');
       return;
@@ -319,7 +351,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-slate-100 flex flex-col font-sans app-root-container">
+      <div className="min-h-screen bg-[#F1F5F9] flex flex-col font-sans app-root-container">
       {/* Header institucional e navegação */}
       <Header
         activeTab={activeTab}
@@ -454,8 +486,20 @@ export default function App() {
         />
       )}
 
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
-        <p>© 2026 Rede D'Or - Hospital Vila Nova Star. Sistema Oficial de Gestão de Contratos e SLA.</p>
+      <footer className="bg-white border-t border-[#CBD5E1] py-4 px-4 sm:px-6 lg:px-8 no-print">
+        <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#475569]">
+          <div className="flex items-center space-x-3">
+            <img
+              src="/assets/branding/rede-dor-logo.png"
+              alt="Rede D'Or Hospitais"
+              className="w-[80px] h-auto object-contain"
+            />
+            <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
+          </div>
+          <p className="text-[11px] text-[#64748B]">
+            Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
+          </p>
+        </div>
       </footer>
     </div>
     </ErrorBoundary>

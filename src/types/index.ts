@@ -62,6 +62,17 @@ export interface ExceptionItem {
   nota: ScoreValue;
 }
 
+export interface SupplierQuestionItem {
+  id: string;
+  fornecedor: string;
+  categoria: string;
+  pergunta: string;
+  obrigatoria: boolean;
+  peso: number;
+  isManualAddition?: boolean;
+  justificativaAdicao?: string;
+}
+
 export interface Evaluation {
   id: string;
   fornecedorId: string;
@@ -74,6 +85,10 @@ export interface Evaluation {
   tipoAvaliacao?: EvaluationType;
   justificativaExcecao?: string;
   itensExcecao?: ExceptionItem[];
+  
+  perguntasAvaliadas?: SupplierQuestionItem[];
+  isQuestionarioEspecifico?: boolean;
+  nomeQuestionario?: string;
   
   respostas: EvaluationAnswers;
   

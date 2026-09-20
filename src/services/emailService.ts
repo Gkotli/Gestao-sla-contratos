@@ -8,9 +8,9 @@ interface EmailParams {
 }
 
 export class EmailService {
-  private static SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_kv5ieuj';
-  private static TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_bs47hhd';
-  private static PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'Dy9FmT3Vtvp4dKu7u';
+  private static SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
+  private static TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
+  private static PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 
   /**
    * Verifica se as credenciais do EmailJS estão configuradas
