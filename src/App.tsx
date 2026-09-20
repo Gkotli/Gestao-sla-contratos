@@ -490,9 +490,9 @@ export default function App() {
         <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#475569]">
           <div className="flex items-center space-x-3">
             <img
-              src="/assets/branding/rede-dor-logo.png"
-              alt="Rede D'Or Hospitais"
-              className="w-[80px] h-auto object-contain"
+              src="/assets/branding/rede-dor-header-logo.png"
+              alt="Rede D'Or"
+              className="h-5 sm:h-6 w-auto object-contain"
             />
             <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
           </div>

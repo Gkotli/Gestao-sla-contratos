@@ -198,12 +198,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
           {/* Card de Login Corporativo */}
           <div className="bg-white w-full max-w-md rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-[#CBD5E1] p-8 sm:p-10 space-y-6">
             
-            {/* Logo Oficial em Destaque Centralizada (200px) */}
+            {/* Logo Oficial em Destaque Centralizada */}
             <div className="flex justify-center pt-1 pb-2">
               <img
-                src="/assets/branding/rede-dor-logo.png"
-                alt="Rede D'Or Hospitais"
-                className="w-[180px] sm:w-[200px] h-auto object-contain"
+                src="/assets/branding/rede-dor-header-logo.png"
+                alt="Rede D'Or"
+                className="h-10 sm:h-11 w-auto object-contain"
               />
             </div>
 

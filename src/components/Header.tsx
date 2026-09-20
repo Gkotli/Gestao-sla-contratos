@@ -47,11 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-3.5">
-            <div className="bg-white p-2 rounded-lg shadow-sm border border-[#CBD5E1] flex items-center justify-center">
+            <div className="bg-white px-3 py-1.5 rounded-md shadow-sm border border-[#CBD5E1] flex items-center justify-center">
               <img 
-                src="/assets/branding/rede-dor-logo.png" 
-                alt="Rede D'Or Hospitais" 
-                className="w-[110px] sm:w-[140px] md:w-[180px] h-auto object-contain"
+                src="/assets/branding/rede-dor-header-logo.png" 
+                alt="Rede D'Or" 
+                className="h-7 sm:h-8 w-auto object-contain"
               />
             </div>
             <div>

@@ -115,11 +115,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           {/* 1. Cabeçalho Institucional */}
           <div className="border-b-2 border-[#123768] pb-3 flex items-center justify-between print-avoid-break">
             <div className="flex items-center space-x-4">
-              <div className="bg-white p-1.5 rounded-md border border-[#CBD5E1] flex items-center justify-center">
+              <div className="bg-white px-2.5 py-1 rounded-md border border-[#CBD5E1] flex items-center justify-center">
                 <img
-                  src="/assets/branding/rede-dor-logo.png"
-                  alt="Rede D'Or Hospitais"
-                  className="w-[140px] sm:w-[160px] h-auto object-contain"
+                  src="/assets/branding/rede-dor-header-logo.png"
+                  alt="Rede D'Or"
+                  className="h-8 sm:h-9 w-auto object-contain"
                 />
               </div>
               <div>
