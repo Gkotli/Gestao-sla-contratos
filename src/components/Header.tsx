@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from '../types';
+import { isSystemAdmin } from '../utils/security';
 import { 
   BarChart3, 
   FileCheck2, 
@@ -36,10 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR' || isDiretoria;
-  const isGabrielAdmin = Boolean(
-    currentUser?.email === 'gabriel.kotliarenko@vilanovastar.com.br' || 
-    currentUser?.nome?.toLowerCase().includes('gabriel')
-  );
+  const isGabrielAdmin = isSystemAdmin(currentUser);
 
   return (
     <header className="bg-[#123768] text-white shadow-md border-b border-[#0B2850] no-print font-sans">

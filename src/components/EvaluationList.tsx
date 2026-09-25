@@ -9,9 +9,11 @@ import {
   Plus, 
   AlertTriangle, 
   CheckCircle2, 
-  PenTool, 
-  Printer
+  PenTool,
+  Printer,
+  FileSpreadsheet
 } from 'lucide-react';
+import { exportEvaluationsListToExcel } from '../services/exportService';
 
 interface EvaluationListProps {
   evaluations: Evaluation[];
@@ -66,6 +68,20 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
     });
   }, [evaluations, suppliers, searchTerm, selectedAno, selectedSector, selectedStatus]);
 
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportExcel = async () => {
+    setExporting(true);
+    try {
+      await exportEvaluationsListToExcel(filteredEvaluations, suppliers, sectors, actionPlans);
+    } catch (err) {
+      console.error('Erro ao exportar avaliações:', err);
+      alert('Não foi possível gerar o arquivo Excel. Tente novamente.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 font-sans">
       {/* Header & Botão Nova Avaliação */}
@@ -77,16 +93,28 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
           </p>
         </div>
 
-        {/* Botão de Nova Avaliação exibido APENAS para Gestores e Diretoria (Oculto para Fornecedor) */}
-        {!isFornecedor && (
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
-            onClick={onNewEvaluation}
-            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
+            onClick={handleExportExcel}
+            disabled={exporting || filteredEvaluations.length === 0}
+            title="Exporta as avaliações exibidas (com os filtros atuais) para Excel"
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Avaliação Anual
+            <FileSpreadsheet className="w-4 h-4 mr-2" />
+            {exporting ? 'Gerando…' : `Exportar Excel (${filteredEvaluations.length})`}
           </button>
-        )}
+
+          {/* Botão de Nova Avaliação exibido APENAS para Gestores e Diretoria (Oculto para Fornecedor) */}
+          {!isFornecedor && (
+            <button
+              onClick={onNewEvaluation}
+              className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Avaliação Anual
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Barra de Pesquisa e Filtros */}

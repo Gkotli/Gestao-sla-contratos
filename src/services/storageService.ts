@@ -1,18 +1,19 @@
 import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUPPLIERS, INITIAL_USERS } from './mockData';
 import { safeNumber } from '../utils/formatters';
-
-const KEYS = {
-  USERS: 'sla_hospital_users_v8',
-  CURRENT_USER: 'sla_hospital_current_user_v8',
-  SECTORS: 'sla_hospital_sectors_v8',
-  SUPPLIERS: 'sla_hospital_suppliers_v8',
-  EVALUATIONS: 'sla_hospital_evaluations_v8',
-  ACTION_PLANS: 'sla_hospital_action_plans_v8',
-  PASSWORD_RESETS: 'sla_hospital_pwd_resets_v8'
-};
+import { KEYS, collectionForKey } from './storageKeys';
+import { RemoteSync } from './remoteSync';
 
 export class StorageService {
+  // Grava uma coleção no cache local e envia a diferença para o banco compartilhado (se ativo).
+  // As gravações iniciais com a base de demonstração não passam por aqui de propósito.
+  private static persist(key: string, list: unknown[]): void {
+    const previous = localStorage.getItem(key);
+    localStorage.setItem(key, JSON.stringify(list));
+    const collection = collectionForKey(key);
+    if (collection) RemoteSync.recordChange(collection, previous, list);
+  }
+
   static getUsers(): User[] {
     const data = localStorage.getItem(KEYS.USERS);
     let list: any[] = [];
@@ -38,13 +39,13 @@ export class StorageService {
     } else {
       users.push(user);
     }
-    localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+    this.persist(KEYS.USERS, users);
     return users;
   }
 
   static deleteUser(userId: string): User[] {
     const users = this.getUsers().filter(u => u.id !== userId);
-    localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+    this.persist(KEYS.USERS, users);
     return users;
   }
 
@@ -100,7 +101,7 @@ export class StorageService {
         ...users[idx],
         senha: newPassword
       };
-      localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+      this.persist(KEYS.USERS, users);
       this.clearPasswordResetCode(email);
       return users[idx];
     }
@@ -179,13 +180,13 @@ export class StorageService {
     } else {
       suppliers.push(supplier);
     }
-    localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(suppliers));
+    this.persist(KEYS.SUPPLIERS, suppliers);
     return suppliers;
   }
 
   static deleteSupplier(supplierId: string): Supplier[] {
     const suppliers = this.getSuppliers().filter(s => s.id !== supplierId);
-    localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(suppliers));
+    this.persist(KEYS.SUPPLIERS, suppliers);
     return suppliers;
   }
 
@@ -243,7 +244,7 @@ export class StorageService {
     } else {
       evaluations.unshift(evaluation);
     }
-    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
+    this.persist(KEYS.EVALUATIONS, evaluations);
     return evaluations;
   }
 
@@ -251,11 +252,11 @@ export class StorageService {
     if (!evaluationId) return this.getEvaluations();
 
     const evaluations = this.getEvaluations().filter(e => e.id !== evaluationId);
-    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(evaluations));
+    this.persist(KEYS.EVALUATIONS, evaluations);
 
     // Exclui também os planos de ação vinculados para integridade referencial
-    const actionPlans = this.getActionPlans().filter(p => p.avaliacaoId !== evaluationId);
-    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(actionPlans));
+    const actionPlans = this.getActionPlans().filter(p => p.evaluationId !== evaluationId);
+    this.persist(KEYS.ACTION_PLANS, actionPlans);
 
     return evaluations;
   }
@@ -285,15 +286,21 @@ export class StorageService {
     } else {
       plans.unshift(plan);
     }
-    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(plans));
+    this.persist(KEYS.ACTION_PLANS, plans);
+    return plans;
+  }
+
+  static deleteActionPlan(planId: string): ActionPlan[] {
+    const plans = this.getActionPlans().filter(p => p.id !== planId);
+    this.persist(KEYS.ACTION_PLANS, plans);
     return plans;
   }
 
   static resetAllData(): void {
-    localStorage.setItem(KEYS.SECTORS, JSON.stringify(INITIAL_SECTORS));
-    localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(INITIAL_SUPPLIERS));
-    localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(INITIAL_EVALUATIONS));
-    localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(INITIAL_ACTION_PLANS));
-    localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
+    this.persist(KEYS.SECTORS, INITIAL_SECTORS);
+    this.persist(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
+    this.persist(KEYS.EVALUATIONS, INITIAL_EVALUATIONS);
+    this.persist(KEYS.ACTION_PLANS, INITIAL_ACTION_PLANS);
+    this.persist(KEYS.USERS, INITIAL_USERS);
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Evaluation, EvaluationType, ExceptionItem, ScoreValue, Sector, Supplier, SupplierQuestionItem, User } from '../types';
+import { Evaluation, EvaluationAnswers, EvaluationType, ExceptionItem, ScoreValue, Sector, Supplier, SupplierQuestionItem, User } from '../types';
 import { QuestionnaireService } from '../services/questionnaireService';
 import { safeFormatScore, safeNumber } from '../utils/formatters';
 import { 
@@ -322,7 +322,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
         perguntasAvaliadas: tipoAvaliacao === 'EXCECAO' ? [] : currentQuestions,
         isQuestionarioEspecifico: tipoAvaliacao === 'EXCECAO' ? false : questionnaireStatus.isCustom,
         nomeQuestionario: tipoAvaliacao === 'EXCECAO' ? 'Questionário Excepcional' : questionnaireStatus.label,
-        respostas: tipoAvaliacao === 'EXCECAO' ? {} : (respostas || {}),
+        respostas: tipoAvaliacao === 'EXCECAO' ? {} : ((respostas || {}) as EvaluationAnswers),
         observacoesLegais: categoryObservations['ASPECTOS LEGAIS'] || '',
         observacoesComportamentais: categoryObservations['ASPECTOS COMPORTAMENTAIS'] || '',
         observacoesQualidade: categoryObservations['PROGRAMA QUALIDADE E SEGURANÇA'] || '',
