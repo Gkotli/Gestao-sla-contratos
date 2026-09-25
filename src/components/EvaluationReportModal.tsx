@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from '../services/questions';
+import { evaluationFileName, exportElementToPdf, exportEvaluationToExcel } from '../services/exportService';
 import { safeFormatScore } from '../utils/formatters';
-import { 
-  Printer, 
-  X, 
+import {
+  Printer,
+  X,
   FileCheck2,
-  AlertCircle
+  AlertCircle,
+  FileDown,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface EvaluationReportModalProps {
@@ -24,8 +27,30 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   actionPlan,
   onClose
 }) => {
+  const reportRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState<'pdf' | 'excel' | null>(null);
+
   const handlePrint = () => {
     window.print();
+  };
+
+  const runExport = async (kind: 'pdf' | 'excel') => {
+    if (!evaluation || exporting) return;
+    setExporting(kind);
+    try {
+      if (kind === 'pdf') {
+        if (reportRef.current) {
+          await exportElementToPdf(reportRef.current, evaluationFileName(evaluation, supplier));
+        }
+      } else {
+        await exportEvaluationToExcel(evaluation, supplier, sector, actionPlan);
+      }
+    } catch (err) {
+      console.error('Erro ao exportar avaliação:', err);
+      alert('Não foi possível gerar o arquivo. Tente novamente ou use "Imprimir".');
+    } finally {
+      setExporting(null);
+    }
   };
 
   // Se o objeto da avaliação for nulo ou inválido, exibe estado de erro seguro em vez de causar Tela Branca
@@ -90,13 +115,31 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </h3>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center flex-wrap justify-end gap-2">
+            <button
+              onClick={() => runExport('pdf')}
+              disabled={exporting !== null}
+              className="inline-flex items-center px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-md border border-white/20 transition cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+            >
+              <FileDown className="w-4 h-4 mr-1.5" />
+              {exporting === 'pdf' ? 'Gerando PDF…' : 'Baixar PDF'}
+            </button>
+
+            <button
+              onClick={() => runExport('excel')}
+              disabled={exporting !== null}
+              className="inline-flex items-center px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-md border border-white/20 transition cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+            >
+              <FileSpreadsheet className="w-4 h-4 mr-1.5" />
+              {exporting === 'excel' ? 'Gerando Excel…' : 'Excel'}
+            </button>
+
             <button
               onClick={handlePrint}
               className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
             >
               <Printer className="w-4 h-4 mr-2" />
-              Imprimir / Salvar em PDF
+              Imprimir
             </button>
 
             <button
@@ -110,7 +153,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
         </div>
 
         {/* --- CONTAINER EXCLUSIVO DO RELATÓRIO IMPRIMÍVEL (#printable-report) --- */}
-        <div id="printable-report" className="p-6 sm:p-8 space-y-6 text-[#172B4D] bg-white">
+        <div id="printable-report" ref={reportRef} className="p-6 sm:p-8 space-y-6 text-[#172B4D] bg-white">
           
           {/* 1. Cabeçalho Institucional */}
           <div className="border-b-2 border-[#123768] pb-3 flex items-center justify-between print-avoid-break">

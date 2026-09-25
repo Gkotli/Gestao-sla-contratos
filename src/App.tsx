@@ -1,18 +1,36 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier, User } from './types';
 import { StorageService } from './services/storageService';
+import { RemoteSync, SyncStatus } from './services/remoteSync';
+import { isSystemAdmin } from './utils/security';
 import { Header } from './components/Header';
-import { ExecutiveDashboard } from './components/ExecutiveDashboard';
-import { EvaluationForm } from './components/EvaluationForm';
-import { EvaluationList } from './components/EvaluationList';
-import { ActionPlans } from './components/ActionPlans';
-import { SuppliersManager } from './components/SuppliersManager';
-import { UsersManager } from './components/UsersManager';
-import { EvaluationReportModal } from './components/EvaluationReportModal';
-import { SupplierSignatureModal } from './components/SupplierSignatureModal';
-import { PendingEvaluationsView } from './components/PendingEvaluationsView';
 import { LoginPage } from './components/LoginPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
+
+// Telas carregadas sob demanda: cada aba vira um arquivo JS separado,
+// então o login e o painel inicial abrem sem baixar o sistema inteiro.
+const ExecutiveDashboard = lazy(() => import('./components/ExecutiveDashboard').then(m => ({ default: m.ExecutiveDashboard })));
+const EvaluationForm = lazy(() => import('./components/EvaluationForm').then(m => ({ default: m.EvaluationForm })));
+const EvaluationList = lazy(() => import('./components/EvaluationList').then(m => ({ default: m.EvaluationList })));
+const ActionPlans = lazy(() => import('./components/ActionPlans').then(m => ({ default: m.ActionPlans })));
+const SuppliersManager = lazy(() => import('./components/SuppliersManager').then(m => ({ default: m.SuppliersManager })));
+const UsersManager = lazy(() => import('./components/UsersManager').then(m => ({ default: m.UsersManager })));
+const EvaluationReportModal = lazy(() => import('./components/EvaluationReportModal').then(m => ({ default: m.EvaluationReportModal })));
+const SupplierSignatureModal = lazy(() => import('./components/SupplierSignatureModal').then(m => ({ default: m.SupplierSignatureModal })));
+const PendingEvaluationsView = lazy(() => import('./components/PendingEvaluationsView').then(m => ({ default: m.PendingEvaluationsView })));
+
+const TabFallback = () => (
+  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#64748B]">
+    Carregando…
+  </div>
+);
+
+const SYNC_LABELS: Record<SyncStatus, string> = {
+  local: 'Modo local (dados apenas neste navegador)',
+  connecting: 'Conectando ao banco compartilhado…',
+  online: 'Banco compartilhado conectado',
+  error: 'Falha na sincronização — alterações salvas localmente'
+};
 
 export default function App() {
   // Navigation State
@@ -40,10 +58,25 @@ export default function App() {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR';
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
-  const isGabrielAdmin = Boolean(
-    currentUser?.email === 'gabriel.kotliarenko@vilanovastar.com.br' || 
-    currentUser?.nome?.toLowerCase().includes('gabriel')
-  );
+  const isGabrielAdmin = isSystemAdmin(currentUser);
+
+  // --- SINCRONIZAÇÃO COM O BANCO COMPARTILHADO (Supabase) ---
+  // O localStorage continua como cache; quando outro gestor altera algo,
+  // o RemoteSync atualiza o cache e avisa aqui para recarregar o estado.
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>(() => RemoteSync.getStatus());
+
+  React.useEffect(() => {
+    const reloadFromCache = () => {
+      setUsers(StorageService.getUsers());
+      setSectors(StorageService.getSectors());
+      setSuppliers(StorageService.getSuppliers());
+      setEvaluations(StorageService.getEvaluations());
+      setActionPlans(StorageService.getActionPlans());
+    };
+    const unsubscribe = RemoteSync.subscribe(setSyncStatus, reloadFromCache);
+    RemoteSync.start();
+    return unsubscribe;
+  }, []);
 
   const scopedSuppliers = useMemo(() => {
     if (!currentUser) return [];
@@ -116,6 +149,10 @@ export default function App() {
 
   // --- Reset de Dados ---
   const handleResetData = () => {
+    if (RemoteSync.isEnabled()) {
+      alert('Com o banco compartilhado ativo, restaurar a base de demonstração apagaria as avaliações de todos os gestores. Esta ação está desabilitada.');
+      return;
+    }
     if (window.confirm('Deseja restaurar a base de dados oficial com os 11 setores e 83 fornecedores do Vila Nova Star?')) {
       StorageService.resetAllData();
       setSectors(StorageService.getSectors());
@@ -371,6 +408,7 @@ export default function App() {
       />
 
       {/* Conteúdo Principal (Oculto na Impressão no-print) */}
+      <Suspense fallback={<TabFallback />}>
       <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 no-print app-main-content">
         {activeTab === 'dashboard' && currentUser.role !== 'FORNECEDOR' && (
           <ExecutiveDashboard
@@ -485,6 +523,7 @@ export default function App() {
           onClose={handleCloseReportModal}
         />
       )}
+      </Suspense>
 
       <footer className="bg-white border-t border-[#CBD5E1] py-4 px-4 sm:px-6 lg:px-8 no-print">
         <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#475569]">
@@ -496,9 +535,22 @@ export default function App() {
             />
             <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
           </div>
-          <p className="text-[11px] text-[#64748B]">
-            Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
-          </p>
+          <div className="flex flex-col sm:items-end gap-1">
+            <p className="text-[11px] text-[#64748B]">
+              Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
+            </p>
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#475569]" title="Status do armazenamento de dados">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  syncStatus === 'online' ? 'bg-emerald-500'
+                    : syncStatus === 'error' ? 'bg-rose-500'
+                    : syncStatus === 'connecting' ? 'bg-amber-400'
+                    : 'bg-slate-400'
+                }`}
+              />
+              {SYNC_LABELS[syncStatus]}
+            </span>
+          </div>
         </div>
       </footer>
     </div>

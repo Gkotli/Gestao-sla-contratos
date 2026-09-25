@@ -1221,7 +1221,7 @@ export const INITIAL_EVALUATIONS: Evaluation[] = [
     mediaGeral: 4.28,
     statusMeta: 'DENTRO_DA_META',
     necessitaPlanoAcao: false,
-    statusAssinatura: 'PENDENTE'
+    statusAssinatura: 'PENDENTE_ENVIO'
   },
 
   // 2. Equipe Multi - VO2 Care Fisioterapia 2026
