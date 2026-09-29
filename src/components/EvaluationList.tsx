@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
+import { ActionPlan, EnvioLaudo, Evaluation, Sector, Supplier, User } from '../types';
 import { getMetaBadgeDetails } from '../services/evaluationCalculation';
 import { safeFormatScore } from '../utils/formatters';
 import { 
@@ -11,9 +11,16 @@ import {
   CheckCircle2, 
   PenTool,
   Printer,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Mail,
+  ShieldCheck,
+  Eye
 } from 'lucide-react';
 import { exportEvaluationsListToExcel } from '../services/exportService';
+import { formatDateTime, getLastEnvio } from '../services/laudoEnvioService';
+
+const envioTooltip = (envio: EnvioLaudo) =>
+  `Laudo enviado em ${formatDateTime(envio.dataHora)} para ${envio.destinatario}, por ${envio.enviadoPor} (código ${envio.codigoLaudo})`;
 
 interface EvaluationListProps {
   evaluations: Evaluation[];
@@ -25,6 +32,7 @@ interface EvaluationListProps {
   onEditEvaluation: (evaluation: Evaluation) => void;
   onViewReport: (evalId: string) => void;
   onOpenSignatureModal: (evaluation: Evaluation) => void;
+  onOpenSendModal?: (evaluation: Evaluation) => void;
   onOpenActionPlanModal: (evaluation: Evaluation) => void;
   onDeleteEvaluation: (evalId: string) => void;
 }
@@ -39,6 +47,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   onEditEvaluation,
   onViewReport,
   onOpenSignatureModal,
+  onOpenSendModal,
   onOpenActionPlanModal,
   onDeleteEvaluation
 }) => {
@@ -48,6 +57,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   const [selectedStatus, setSelectedStatus] = useState('ALL');
 
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  const pendentesValidacao = isFornecedor ? (evaluations || []).filter(ev => ev && !ev.validacaoFornecedor).length : 0;
 
   const filteredEvaluations = useMemo(() => {
     return (evaluations || []).filter(ev => {
@@ -116,6 +126,16 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
           )}
         </div>
       </div>
+
+      {isFornecedor && pendentesValidacao > 0 && (
+        <div className="flex items-center bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] p-3 rounded-md text-xs">
+          <ShieldCheck className="w-4 h-4 mr-2 flex-shrink-0" />
+          <span>
+            <strong>{pendentesValidacao} laudo{pendentesValidacao > 1 ? 's aguardam' : ' aguarda'} a sua validação.</strong>{' '}
+            Abra o laudo (ícone de impressora) e clique em "Validar laudo".
+          </span>
+        </div>
+      )}
 
       {/* Barra de Pesquisa e Filtros */}
       <div className="bg-white p-3.5 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
@@ -192,6 +212,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                   const mediaComportamentaisFormatted = safeFormatScore(ev.mediaComportamentais);
                   const mediaQualidadeFormatted = safeFormatScore(ev.mediaQualidade);
                   const mediaGeralFormatted = safeFormatScore(ev.mediaGeral);
+                  const lastEnvio = getLastEnvio(ev);
 
                   return (
                     <tr key={ev.id} className="hover:bg-slate-50/80 transition">
@@ -248,10 +269,48 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                       </td>
 
                       <td className="py-2.5 px-4 text-center">
-                        {ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
-                          <span className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded text-[11px] font-semibold">
-                            <CheckCircle2 className="w-3 h-3 mr-1 text-[#047857]" /> Ciente
-                          </span>
+                        {ev.validacaoFornecedor ? (
+                          <div className="inline-flex flex-col items-center gap-0.5">
+                            <span
+                              className="inline-flex items-center text-white bg-[#047857] border border-[#047857] px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap"
+                              title={`Validado no site em ${formatDateTime(ev.validacaoFornecedor.dataHora)} por ${ev.validacaoFornecedor.nome} (${ev.validacaoFornecedor.email})`}
+                            >
+                              <ShieldCheck className="w-3 h-3 mr-1" /> Validado no site {formatDateTime(ev.validacaoFornecedor.dataHora).slice(0, 5)}
+                            </span>
+                            {lastEnvio && (
+                              <span className="text-[10px] text-[#475569]" title={envioTooltip(lastEnvio)}>
+                                E-mail em {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
+                              </span>
+                            )}
+                          </div>
+                        ) : ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
+                          <div className="inline-flex flex-col items-center gap-0.5">
+                            <span
+                              className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded text-[11px] font-semibold"
+                              title={ev.cienciaRegistradaPor ? `Ciência registrada por ${ev.cienciaRegistradaPor}` : undefined}
+                            >
+                              <CheckCircle2 className="w-3 h-3 mr-1 text-[#047857]" /> Ciente
+                            </span>
+                            {lastEnvio && (
+                              <span className="text-[10px] text-[#475569]" title={envioTooltip(lastEnvio)}>
+                                E-mail em {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
+                              </span>
+                            )}
+                          </div>
+                        ) : lastEnvio ? (
+                          <div className="inline-flex flex-col items-center gap-0.5">
+                            <span
+                              className="inline-flex items-center text-[#1E40AF] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap"
+                              title={envioTooltip(lastEnvio)}
+                            >
+                              <Mail className="w-3 h-3 mr-1 text-[#1E40AF]" /> Enviado {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
+                            </span>
+                            {ev.visualizacaoFornecedor && (
+                              <span className="inline-flex items-center text-[10px] text-[#475569]" title={`Visualizado no site por ${ev.visualizacaoFornecedor.nome}`}>
+                                <Eye className="w-3 h-3 mr-0.5" /> Visto {formatDateTime(ev.visualizacaoFornecedor.dataHora).slice(0, 5)}
+                              </span>
+                            )}
+                          </div>
                         ) : ev.statusAssinatura === 'ENVIADO_FORNECEDOR' ? (
                           <span className="inline-flex items-center text-[#92400E] bg-[#FFFBEB] border border-[#FCD34D] px-2 py-0.5 rounded text-[11px] font-semibold">
                             <PenTool className="w-3 h-3 mr-1 text-[#92400E]" /> Aguardando
@@ -274,6 +333,17 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           >
                             <Printer className="w-4 h-4" />
                           </button>
+
+                          {/* Enviar laudo ao fornecedor (Outlook) */}
+                          {!isFornecedor && onOpenSendModal && (
+                            <button
+                              onClick={() => onOpenSendModal(ev)}
+                              className="p-1.5 text-[#475569] hover:text-[#1E40AF] hover:bg-[#EFF6FF] rounded-md transition cursor-pointer"
+                              title={lastEnvio ? `Reenviar laudo ao fornecedor (último envio: ${formatDateTime(lastEnvio.dataHora)})` : 'Enviar laudo ao fornecedor por e-mail'}
+                            >
+                              <Mail className="w-4 h-4" />
+                            </button>
+                          )}
 
                           {/* Assinatura / Ciência */}
                           <button

@@ -5,11 +5,12 @@ import type { SheetData, Cell } from 'write-excel-file/browser';
 import { ActionPlan, Evaluation, ScoreValue, Sector, SignStatus, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from './questions';
 import { QuestionnaireService } from './questionnaireService';
+import { formatDateTime, getLastEnvio } from './laudoEnvioService';
 import { getMetaBadgeDetails } from './evaluationCalculation';
 
 const SIGN_LABELS: Record<SignStatus, string> = {
   PENDENTE_ENVIO: 'Não enviado',
-  ENVIADO_FORNECEDOR: 'Aguardando ciência',
+  ENVIADO_FORNECEDOR: 'Enviado ao fornecedor',
   ASSINADO_CIENTE: 'Ciente / assinado',
   CONTESTADO: 'Contestado'
 };
@@ -134,6 +135,15 @@ export async function exportEvaluationToExcel(
     ['Ciência do fornecedor', SIGN_LABELS[evaluation.statusAssinatura] || evaluation.statusAssinatura],
     ['Signatário', evaluation.nomeSignatario ? `${evaluation.nomeSignatario} (${evaluation.cargoSignatario || ''})` : '-'],
     ['Data da ciência', evaluation.dataCiencia || '-'],
+    ['Ciência registrada por', evaluation.cienciaRegistradaPor || '-'],
+    ['Visualizado pelo fornecedor no site', evaluation.visualizacaoFornecedor
+      ? `${formatDateTime(evaluation.visualizacaoFornecedor.dataHora)} - ${evaluation.visualizacaoFornecedor.nome} (${evaluation.visualizacaoFornecedor.email})` : '-'],
+    ['Validado pelo fornecedor no site', evaluation.validacaoFornecedor
+      ? `${formatDateTime(evaluation.validacaoFornecedor.dataHora)} - ${evaluation.validacaoFornecedor.nome} (${evaluation.validacaoFornecedor.email}), código ${evaluation.validacaoFornecedor.codigoLaudo}` : '-'],
+    ...(evaluation.historicoEnvios || []).map((envio, i): Cell[] => [
+      `Envio ao fornecedor ${i + 1}`,
+      `${formatDateTime(envio.dataHora)} para ${envio.destinatario}, por ${envio.enviadoPor} (código ${envio.codigoLaudo})`
+    ]),
     ['Parecer do gestor', evaluation.parecerGeral || '-'],
     ['Parecer do fornecedor', evaluation.parecerFornecedor || '-'],
     ['Obs. legais', evaluation.observacoesLegais || '-'],
@@ -195,11 +205,13 @@ export async function exportEvaluationsListToExcel(
     header([
       'Ano', 'Fornecedor', 'CNPJ', 'Contrato', 'Setor', 'Avaliador', 'Data',
       'Legais', 'Comportamentais', 'Qualidade', 'Média Geral', 'Status da Meta',
-      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor'
+      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor', 'Enviado ao Fornecedor em', 'E-mail de Envio',
+      'Visualizado no Site em', 'Validado no Site em', 'Validado por'
     ]),
     ...evaluations.map((ev): Cell[] => {
       const supplier = suppliers.find(s => s.id === ev.fornecedorId);
       const plan = actionPlans.find(p => p.evaluationId === ev.id);
+      const envio = getLastEnvio(ev);
       return [
         { value: ev.ano, type: Number },
         supplier?.nomeFantasia || ev.fornecedorId,
@@ -215,7 +227,12 @@ export async function exportEvaluationsListToExcel(
         getMetaBadgeDetails(ev.statusMeta, ev.mediaGeral)?.label || '',
         ev.necessitaPlanoAcao ? 'Obrigatório' : 'Não',
         plan ? PLAN_LABELS[plan.status] || plan.status : ev.necessitaPlanoAcao ? 'Não cadastrado' : '-',
-        SIGN_LABELS[ev.statusAssinatura] || ev.statusAssinatura
+        SIGN_LABELS[ev.statusAssinatura] || ev.statusAssinatura,
+        envio ? formatDateTime(envio.dataHora) : '-',
+        envio?.destinatario || '-',
+        ev.visualizacaoFornecedor ? formatDateTime(ev.visualizacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? formatDateTime(ev.validacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? `${ev.validacaoFornecedor.nome} (${ev.validacaoFornecedor.email})` : '-'
       ];
     })
   ];
@@ -225,7 +242,7 @@ export async function exportEvaluationsListToExcel(
     sheet: 'Avaliações',
     columns: [
       { width: 7 }, { width: 36 }, { width: 20 }, { width: 22 }, { width: 28 }, { width: 28 }, { width: 12 },
-      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }
+      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }, { width: 18 }, { width: 32 }, { width: 18 }, { width: 18 }, { width: 36 }
     ],
     stickyRowsCount: 1
   }).toFile(`Avaliacoes_SLA_${today}.xlsx`);

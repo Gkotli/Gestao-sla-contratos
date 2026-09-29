@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Evaluation, Sector, Supplier } from '../types';
+import { Evaluation, Sector, Supplier, User } from '../types';
 import { getMetaBadgeDetails } from '../services/evaluationCalculation';
 import { safeFormatScore } from '../utils/formatters';
 import { PenTool, CheckCircle2, RotateCcw, X } from 'lucide-react';
@@ -10,6 +10,7 @@ interface SupplierSignatureModalProps {
   sector?: Sector;
   onSaveSignature?: (updatedEval: Evaluation) => void;
   onSave?: (updatedEval: Evaluation) => void;
+  currentUser?: User | null;
   onClose: () => void;
 }
 
@@ -19,6 +20,7 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
   sector,
   onSaveSignature,
   onSave,
+  currentUser,
   onClose
 }) => {
   const [nomeSignatario, setNomeSignatario] = useState(evaluation.nomeSignatario || supplier?.contatoNome || '');
@@ -141,7 +143,10 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
       cargoSignatario: cargoSignatario || 'Representante do Fornecedor',
       parecerFornecedor,
       assinaturaBase64: finalSignature,
-      assinaturaDigitalUrl: finalSignature
+      assinaturaDigitalUrl: finalSignature,
+      cienciaRegistradaPor: currentUser
+        ? `${currentUser.nome}${currentUser.role === 'FORNECEDOR' ? '' : ' (em nome do fornecedor)'}`
+        : evaluation.cienciaRegistradaPor
     };
 
     const callback = onSaveSignature || onSave;
