@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from '../services/questions';
+import { QuestionnaireService } from '../services/questionnaireService';
 import { evaluationFileName, exportElementToPdf, exportEvaluationToExcel } from '../services/exportService';
 import { safeFormatScore } from '../utils/formatters';
 import {
@@ -80,10 +81,9 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   const mediaGeralVal = typeof evaluation.mediaGeral === 'number' ? evaluation.mediaGeral : parseFloat(String(evaluation.mediaGeral || 0));
   const mediaGeralFormatted = safeFormatScore(evaluation.mediaGeral);
 
-  // Garante a lista de perguntas: avaliadas salvas, ou fallback para as 15 padrão
-  const evaluatedQuestions = evaluation.perguntasAvaliadas && evaluation.perguntasAvaliadas.length > 0
-    ? evaluation.perguntasAvaliadas
-    : null;
+  // Garante a lista de perguntas: avaliadas salvas (ou reconstruídas pelos códigos das respostas),
+  // ou fallback para as 15 padrão
+  const evaluatedQuestions = QuestionnaireService.resolveEvaluatedQuestions(evaluation);
 
   const criteriaList = evaluatedQuestions
     ? evaluatedQuestions.map(q => ({
