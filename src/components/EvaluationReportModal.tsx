@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from '../services/questions';
 import { QuestionnaireService } from '../services/questionnaireService';
 import { evaluationFileName, exportElementToPdf, exportEvaluationToExcel } from '../services/exportService';
+import { computeLaudoCode, formatDateTime } from '../services/laudoEnvioService';
 import { safeFormatScore } from '../utils/formatters';
 import {
   Printer,
@@ -10,7 +11,9 @@ import {
   FileCheck2,
   AlertCircle,
   FileDown,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Mail,
+  AlertTriangle
 } from 'lucide-react';
 
 interface EvaluationReportModalProps {
@@ -18,6 +21,7 @@ interface EvaluationReportModalProps {
   supplier?: Supplier;
   sector?: Sector;
   actionPlan?: ActionPlan;
+  onOpenSendModal?: (evaluation: Evaluation) => void;
   onClose: () => void;
 }
 
@@ -26,10 +30,16 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   supplier,
   sector,
   actionPlan,
+  onOpenSendModal,
   onClose
 }) => {
   const reportRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState<'pdf' | 'excel' | null>(null);
+  const [codigoAtual, setCodigoAtual] = useState('');
+
+  useEffect(() => {
+    if (evaluation) computeLaudoCode(evaluation).then(setCodigoAtual);
+  }, [evaluation]);
 
   const handlePrint = () => {
     window.print();
@@ -75,6 +85,8 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
   // Acesso ultrasseguro às respostas e médias
   const respostas = evaluation.respostas || {};
+  const envios = evaluation.historicoEnvios || [];
+  const ultimoEnvio = envios[envios.length - 1];
   const mediaLegais = safeFormatScore(evaluation.mediaLegais);
   const mediaComportamentais = safeFormatScore(evaluation.mediaComportamentais);
   const mediaQualidade = safeFormatScore(evaluation.mediaQualidade);
@@ -116,6 +128,16 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
 
           <div className="flex items-center flex-wrap justify-end gap-2">
+            {onOpenSendModal && (
+              <button
+                onClick={() => onOpenSendModal(evaluation)}
+                className="inline-flex items-center px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-md border border-white/20 transition cursor-pointer"
+              >
+                <Mail className="w-4 h-4 mr-1.5" />
+                {envios.length ? 'Reenviar ao Fornecedor' : 'Enviar ao Fornecedor'}
+              </button>
+            )}
+
             <button
               onClick={() => runExport('pdf')}
               disabled={exporting !== null}
@@ -397,12 +419,59 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                     </strong>
                     <span className="text-[11px] text-[#475569] block">{evaluation.cargoSignatario || 'Representante do Fornecedor'}</span>
                     <span className="text-[10px] text-[#475569] block">
-                      {evaluation.statusAssinatura === 'ASSINADO_CIENTE' ? `Ciência Registrada em ${evaluation.dataCiencia}` : 'Assinatura PENDENTE de Envio'}
+                      {evaluation.statusAssinatura === 'ASSINADO_CIENTE'
+                        ? `Ciência Registrada em ${evaluation.dataCiencia}`
+                        : ultimoEnvio
+                          ? `Laudo encaminhado por e-mail em ${formatDateTime(ultimoEnvio.dataHora)}`
+                          : 'Laudo ainda não encaminhado ao fornecedor'}
                     </span>
                   </div>
                 )}
+                {evaluation.statusAssinatura === 'ASSINADO_CIENTE' && evaluation.cienciaRegistradaPor && (
+                  <span className="text-[10px] text-[#475569] block">Registrada por {evaluation.cienciaRegistradaPor}</span>
+                )}
               </div>
             </div>
+          </div>
+
+          {/* 10. Comprovação de comunicação ao fornecedor */}
+          <div className="border-t border-[#CBD5E1] pt-3 space-y-2 print-avoid-break text-xs">
+            <h4 className="font-bold text-xs text-[#172B4D] uppercase">Comunicação ao Fornecedor</h4>
+            {envios.length > 0 ? (
+              <>
+                <table className="w-full text-left border border-[#CBD5E1] text-[11px] border-collapse">
+                  <thead className="bg-slate-100 text-[#172B4D] font-bold uppercase text-[10px]">
+                    <tr>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Data / Hora</th>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Destinatário</th>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Enviado por</th>
+                      <th className="py-1.5 px-2 whitespace-nowrap">Código do laudo</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#CBD5E1] text-[#172B4D]">
+                    {envios.map(envio => (
+                      <tr key={envio.id}>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1] whitespace-nowrap">{formatDateTime(envio.dataHora)}</td>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1]">{envio.destinatario}</td>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1]">{envio.enviadoPor}{envio.enviadoPorEmail ? ` (${envio.enviadoPorEmail})` : ''}</td>
+                        <td className="py-1.5 px-2 font-mono whitespace-nowrap">{envio.codigoLaudo}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="text-[10px] text-[#475569]">
+                  Laudo encaminhado pelo e-mail corporativo do gestor (Outlook). Código de verificação desta versão:{' '}
+                  <strong className="font-mono text-[#172B4D]">{codigoAtual || '…'}</strong>
+                </p>
+                {codigoAtual && ultimoEnvio && ultimoEnvio.codigoLaudo !== codigoAtual && (
+                  <p className="flex items-center text-[10px] font-semibold text-[#92400E]">
+                    <AlertTriangle className="w-3.5 h-3.5 mr-1" /> Este laudo foi alterado depois do último envio ao fornecedor.
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-[11px] text-[#475569]">Nenhum envio registrado. Código de verificação desta versão: <strong className="font-mono text-[#172B4D]">{codigoAtual || '…'}</strong></p>
+            )}
           </div>
 
         </div>

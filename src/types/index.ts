@@ -73,6 +73,18 @@ export interface SupplierQuestionItem {
   justificativaAdicao?: string;
 }
 
+// Registro de que o laudo foi encaminhado ao fornecedor (comprovação de comunicação)
+export interface EnvioLaudo {
+  id: string;
+  dataHora: string;          // ISO
+  enviadoPor: string;
+  enviadoPorEmail?: string;
+  destinatario: string;
+  assunto: string;
+  meio: 'OUTLOOK';
+  codigoLaudo: string;       // código de verificação do conteúdo enviado
+}
+
 export interface Evaluation {
   id: string;
   fornecedorId: string;
@@ -112,6 +124,9 @@ export interface Evaluation {
   parecerFornecedor?: string;
   assinaturaBase64?: string;
   assinaturaDigitalUrl?: string;
+  cienciaRegistradaPor?: string;   // usuário que registrou a ciência (fornecedor ou gestor em nome dele)
+
+  historicoEnvios?: EnvioLaudo[];
 }
 
 export interface ActionPlan {
