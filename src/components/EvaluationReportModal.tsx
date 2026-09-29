@@ -58,7 +58,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   if (!evaluation) {
     return (
       <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-slate-200 space-y-4 text-center">
+        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-[#CBD5E1] space-y-4 text-center">
           <AlertCircle className="w-12 h-12 text-[#B91C1C] mx-auto" />
           <h3 className="text-lg font-bold text-[#172B4D]">Avaliação Não Encontrada</h3>
           <p className="text-xs text-[#475569]">Não foi possível localizar os registros desta avaliação no momento.</p>
@@ -105,7 +105,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto printable-laudo-container">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-[#CBD5E1] overflow-hidden my-auto printable-laudo-container">
         {/* Barra de Ações Superior (Oculta na Impressão no-print) */}
         <div className="bg-[#123768] text-white px-6 py-3 flex items-center justify-between no-print border-b border-[#0B2850]">
           <div className="flex items-center space-x-2">
@@ -136,7 +136,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
+              className="inline-flex items-center px-4 py-2 bg-[#047857] hover:bg-[#065F46] text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
             >
               <Printer className="w-4 h-4 mr-2" />
               Imprimir
@@ -291,7 +291,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <span className="font-bold text-[#172B4D]">Classificação da Meta (Mínimo 4.00):</span>
               <span className={`font-black px-3 py-1 rounded uppercase ${
                 mediaGeralVal >= 4.0 
-                  ? 'bg-[#ECFDF5] text-[#047857] border border-emerald-300' 
+                  ? 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]' 
                   : 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
               }`}>
                 {mediaGeralVal >= 4.0 ? `Dentro da Meta (${mediaGeralFormatted})` : `Abaixo da Meta (${mediaGeralFormatted})`}

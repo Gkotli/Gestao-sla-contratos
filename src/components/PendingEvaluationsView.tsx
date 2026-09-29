@@ -231,7 +231,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
     switch (status) {
       case 'CONCLUIDA':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-emerald-300">
+          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]">
             <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-[#047857]" />
             Concluída
           </span>
@@ -294,7 +294,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
           <p className="text-[11px] text-[#475569] mt-0.5">Sob responsabilidade da visão</p>
         </div>
 
-        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-emerald-200 shadow-sm">
+        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] shadow-sm">
           <div className="flex items-center justify-between text-xs font-bold text-[#047857]">
             <span>Avaliações Em Dia</span>
             <CheckCircle2 className="w-4 h-4 text-[#047857]" />

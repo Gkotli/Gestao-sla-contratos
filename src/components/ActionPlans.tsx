@@ -203,7 +203,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                       <h3 className="font-bold text-[#172B4D] text-sm mt-0.5">{plan.titulo}</h3>
                     </div>
                     <span className={`px-2.5 py-1 rounded text-xs font-extrabold uppercase ${
-                      planStatus === 'CONCLUIDO' ? 'bg-[#ECFDF5] text-[#047857] border border-emerald-300' :
+                      planStatus === 'CONCLUIDO' ? 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]' :
                       planStatus === 'EM_ANDAMENTO' ? 'bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE]' :
                       planStatus === 'ATRASADO' ? 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]' :
                       'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
@@ -275,7 +275,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                           onDeleteActionPlan(plan.id);
                         }
                       }}
-                      className="px-2.5 py-1 text-xs font-semibold text-[#B91C1C] bg-white border border-rose-200 rounded-md hover:bg-rose-50 transition cursor-pointer"
+                      className="px-2.5 py-1 text-xs font-semibold text-[#B91C1C] bg-white border border-[#FECACA] rounded-md hover:bg-rose-50 transition cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

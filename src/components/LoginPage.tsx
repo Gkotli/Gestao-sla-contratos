@@ -150,7 +150,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] flex flex-col md:flex-row font-sans text-[#172B4D] overflow-x-hidden">
+    <div className="min-h-screen bg-[#F1F5F9] flex flex-col md:flex-row font-sans text-[#172B4D] overflow-x-hidden">
       
       {/* ================================================== */}
       {/* 1. LADO ESQUERDO: PAINEL INSTITUCIONAL AZUL (40%)  */}
@@ -169,7 +169,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
         {/* Centro: Título e Descrição Institucional */}
         <div className="relative z-10 my-8 md:my-auto space-y-4">
-          <div className="w-12 h-1 bg-sky-400 rounded-full" />
+          <div className="w-12 h-1 bg-white/70 rounded-full" />
           
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
             Gestão de SLA e<br />Avaliação de Contratos
@@ -219,7 +219,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Alerta de Erro */}
             {errorMsg && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
+              <div className="p-3 bg-rose-50 border border-[#FECACA] text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 text-[#B91C1C] flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -396,7 +396,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Sucesso Final */}
             {forgotSuccessMsg ? (
-              <div className="p-5 bg-[#ECFDF5] border border-emerald-200 text-[#047857] rounded-md space-y-3 text-center">
+              <div className="p-5 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] rounded-md space-y-3 text-center">
                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-[#047857]">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>

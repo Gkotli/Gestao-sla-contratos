@@ -249,7 +249,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
 
                       <td className="py-2.5 px-4 text-center">
                         {ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
-                          <span className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-emerald-200 px-2 py-0.5 rounded text-[11px] font-semibold">
+                          <span className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded text-[11px] font-semibold">
                             <CheckCircle2 className="w-3 h-3 mr-1 text-[#047857]" /> Ciente
                           </span>
                         ) : ev.statusAssinatura === 'ENVIADO_FORNECEDOR' ? (

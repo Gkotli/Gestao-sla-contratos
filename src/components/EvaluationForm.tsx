@@ -843,8 +843,8 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
       )}
 
       {/* PARECER GERAL E MÉDIA FINAL ANUAL */}
-      <div className="bg-white text-[#172B4D] p-6 rounded-lg shadow-sm border border-[#D0D5DD] space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#D0D5DD] pb-4">
+      <div className="bg-white text-[#172B4D] p-6 rounded-lg shadow-sm border border-[#CBD5E1] space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#CBD5E1] pb-4">
           <div>
             <span className="text-xs text-[#475569] font-bold uppercase block">
               Resultado do Ciclo Anual {selectedYear} ({tipoAvaliacao === 'EXCECAO' ? 'Modo Exceção' : questionnaireStatus.label})
@@ -852,7 +852,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
             <h3 className="text-xl font-bold text-[#172B4D]">Média Geral da Avaliação de Contrato</h3>
           </div>
 
-          <div className="flex items-center space-x-3 bg-white p-3 rounded-md border border-[#D0D5DD] shadow-sm">
+          <div className="flex items-center space-x-3 bg-white p-3 rounded-md border border-[#CBD5E1] shadow-sm">
             <div className="text-right">
               <span className="text-[10px] text-[#475569] block uppercase font-bold">Média Final</span>
               <span className={`text-2xl font-black ${
@@ -869,7 +869,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
               activeMediaGeral >= 4.0
                 ? 'bg-[#ECFDF5] text-[#047857]'
                 : activeMediaGeral >= 2.0
-                ? 'bg-[#FEF3C7] text-[#92400E]'
+                ? 'bg-[#FFFBEB] text-[#92400E]'
                 : 'bg-[#FEF2F2] text-[#B91C1C]'
             }`}>
               {activeMediaGeral >= 4.0
@@ -901,15 +901,15 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
             onChange={(e) => setParecerGeral(e.target.value)}
             required
             placeholder="Resumo anual do desempenho do fornecedor, pontos fortes e recomendação de continuidade contratual..."
-            className="w-full bg-white border border-[#D0D5DD] text-[#172B4D] placeholder:text-[#94A3B8] text-xs rounded-md p-3 focus:ring-2 focus:ring-[#0052CC] focus:border-[#0052CC]"
+            className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] placeholder:text-[#94A3B8] text-xs rounded-md p-3 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-[#D0D5DD]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-[#CBD5E1]">
           <button
             type="button"
             onClick={onCancel}
-            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-[#172B4D] bg-[#E5E7EB] hover:bg-[#D1D5DB] rounded-md cursor-pointer transition"
+            className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold text-[#172B4D] bg-slate-100 hover:bg-slate-200 rounded-md cursor-pointer transition"
           >
             Cancelar
           </button>
@@ -928,7 +928,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
 
             <button
               type="submit"
-              className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-[#0052CC] hover:bg-[#0066FF] rounded-md shadow-sm transition flex items-center justify-center cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition flex items-center justify-center cursor-pointer"
             >
               <Save className="w-4 h-4 mr-2" />
               Finalizar e Salvar Avaliação

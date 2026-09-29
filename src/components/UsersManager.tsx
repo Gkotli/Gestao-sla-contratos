@@ -94,7 +94,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
       </div>
 
       {/* Aviso de Segurança e Privacidade LGPD */}
-      <div className="bg-[#ECFDF5] border border-emerald-200 p-4 rounded-lg flex items-center space-x-3 text-xs text-[#047857]">
+      <div className="bg-[#ECFDF5] border border-[#A7F3D0] p-4 rounded-lg flex items-center space-x-3 text-xs text-[#047857]">
         <ShieldCheck className="w-6 h-6 text-[#047857] flex-shrink-0" />
         <div>
           <strong className="font-bold block text-[#047857]">Proteção de Privacidade & LGPD:</strong>
@@ -103,7 +103,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
       </div>
 
       {/* Troca Rápida de Sessão Demo */}
-      <div className="bg-[#F5F7FA] p-5 rounded-lg shadow-sm border border-[#D0D5DD] space-y-3">
+      <div className="bg-slate-50 p-5 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <KeyRound className="w-5 h-5 text-[#123768]" />
@@ -121,8 +121,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 onClick={() => onSelectUser(u)}
                 className={`p-3 rounded-md border text-left transition flex flex-col justify-between cursor-pointer ${
                   isSelected
-                    ? 'bg-white border-2 border-[#10B981] shadow-md ring-2 ring-[#10B981]/20 text-[#172B4D]'
-                    : 'bg-white border-[#D0D5DD] text-[#172B4D] shadow-sm hover:border-[#123768] hover:shadow-md'
+                    ? 'bg-white border-2 border-[#047857] shadow-md ring-2 ring-[#047857]/20 text-[#172B4D]'
+                    : 'bg-white border-[#CBD5E1] text-[#172B4D] shadow-sm hover:border-[#123768] hover:shadow-md'
                 }`}
               >
                 <div>

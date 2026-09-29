@@ -300,6 +300,12 @@ export class StorageService {
     return plans;
   }
 
+  // Apaga só a cópia local (sem enviar nada ao banco); ao recarregar, os dados vêm do banco.
+  static clearLocalCache(): void {
+    [KEYS.USERS, KEYS.SECTORS, KEYS.SUPPLIERS, KEYS.EVALUATIONS, KEYS.ACTION_PLANS, KEYS.SYNC_OUTBOX]
+      .forEach(key => localStorage.removeItem(key));
+  }
+
   static resetAllData(): void {
     this.persist(KEYS.SECTORS, INITIAL_SECTORS);
     this.persist(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
