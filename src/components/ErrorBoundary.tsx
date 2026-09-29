@@ -31,14 +31,10 @@ export class ErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
-  private handleResetAllData = () => {
-    // Com o banco compartilhado, restaurar a base de demonstração apagaria os dados de todos:
-    // descarta só a cópia deste navegador, que é baixada de novo do banco ao recarregar.
-    if (RemoteSync.isEnabled()) {
-      StorageService.clearLocalCache();
-    } else {
-      StorageService.resetAllData();
-    }
+  private handleClearLocalCache = () => {
+    // Descarta só a cópia deste navegador (nada é apagado no banco); ao recarregar,
+    // os dados são baixados de novo do banco compartilhado.
+    StorageService.clearLocalCache();
     this.setState({ hasError: false, error: null });
     window.location.reload();
   };
@@ -75,11 +71,11 @@ export class ErrorBoundary extends Component<Props, State> {
               </button>
 
               <button
-                onClick={this.handleResetAllData}
+                onClick={this.handleClearLocalCache}
                 className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
-                {RemoteSync.isEnabled() ? 'Baixar Dados do Banco' : 'Restaurar Base & Limpar'}
+                {RemoteSync.isEnabled() ? 'Baixar Dados do Banco' : 'Limpar Dados Locais'}
               </button>
             </div>
           </div>

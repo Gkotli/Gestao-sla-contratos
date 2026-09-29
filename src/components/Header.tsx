@@ -7,7 +7,6 @@ import {
   ClipboardList, 
   AlertTriangle, 
   Users, 
-  RotateCcw,
   UserCheck,
   UserCog,
   LogOut,
@@ -17,7 +16,6 @@ import {
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  onResetData: () => void;
   pendingActionPlansCount: number;
   currentUser: User | null;
   users: User[];
@@ -28,7 +26,6 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
-  onResetData,
   pendingActionPlansCount,
   currentUser,
   users,
@@ -57,10 +54,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="bg-white/15 text-white text-[11px] font-semibold px-2 py-0.5 rounded border border-white/20 uppercase tracking-wide">
                   Diretoria Operacional
                 </span>
-                <span className="text-slate-300 text-xs font-medium">| Avaliação de Nível de Serviço</span>
+                <span className="text-slate-300 text-xs font-medium">| Avaliação anual de desempenho dos contratos</span>
               </div>
               <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-                Gestão de SLA e Avaliação de Contratos
+                SLA de Fornecedores
               </h1>
             </div>
           </div>
@@ -84,17 +81,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <span className="text-[10px] text-slate-300 block">{currentUser.cargo}</span>
                 </div>
               </div>
-            )}
-
-            {isDiretoria && (
-              <button
-                onClick={onResetData}
-                title="Restaurar dados originais do sistema"
-                className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-200 bg-white/10 hover:bg-white/20 hover:text-white rounded-md border border-white/20 transition cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
-                Restaurar Dados
-              </button>
             )}
 
             {/* Botão Sair */}

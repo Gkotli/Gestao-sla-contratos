@@ -147,23 +147,6 @@ export default function App() {
     }
   };
 
-  // --- Reset de Dados ---
-  const handleResetData = () => {
-    if (RemoteSync.isEnabled()) {
-      alert('Com o banco compartilhado ativo, restaurar a base de demonstração apagaria as avaliações de todos os gestores. Esta ação está desabilitada.');
-      return;
-    }
-    if (window.confirm('Deseja restaurar a base de dados oficial com os 11 setores e 83 fornecedores do Vila Nova Star?')) {
-      StorageService.resetAllData();
-      setSectors(StorageService.getSectors());
-      setSuppliers(StorageService.getSuppliers());
-      setEvaluations(StorageService.getEvaluations());
-      setActionPlans(StorageService.getActionPlans());
-      setUsers(StorageService.getUsers());
-      alert('Base de dados restaurada com sucesso!');
-    }
-  };
-
   // --- User Handlers ---
   const handleSaveUser = (user: User) => {
     if (currentUser?.role !== 'DIRETORIA') {
@@ -399,7 +382,6 @@ export default function App() {
           }
           setActiveTab(tab);
         }}
-        onResetData={handleResetData}
         pendingActionPlansCount={pendingActionPlansCount}
         currentUser={currentUser}
         users={users}
@@ -537,7 +519,7 @@ export default function App() {
           </div>
           <div className="flex flex-col sm:items-end gap-1">
             <p className="text-[11px] text-[#475569]">
-              Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
+              Hospital Vila Nova Star • Diretoria Operacional • SLA de Fornecedores
             </p>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#475569]" title="Status do armazenamento de dados">
               <span

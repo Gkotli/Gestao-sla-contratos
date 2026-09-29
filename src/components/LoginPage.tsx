@@ -172,11 +172,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
           <div className="w-12 h-1 bg-white/70 rounded-full" />
           
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Gestão de SLA e<br />Avaliação de Contratos
+            SLA de<br />Fornecedores
           </h1>
           
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md font-medium">
-            Sistema interno da Diretoria Operacional para acompanhamento de contratos, SLA e avaliações anuais.
+            Sistema interno da Diretoria Operacional para a avaliação anual de desempenho dos contratos.
           </p>
         </div>
 

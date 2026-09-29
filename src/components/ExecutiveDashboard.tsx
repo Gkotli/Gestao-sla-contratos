@@ -144,7 +144,7 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             <span className="text-[#475569] text-xs">| Desempenho de Contratos</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-[#172B4D] tracking-tight mt-1">
-            Indicadores de SLA & Nível de Serviço
+            Indicadores de SLA
           </h2>
         </div>
 
