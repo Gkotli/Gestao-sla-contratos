@@ -3,6 +3,7 @@ import { ActionPlan, Evaluation, Sector, Supplier, User } from './types';
 import { StorageService } from './services/storageService';
 import { RemoteSync, SyncStatus } from './services/remoteSync';
 import { isSystemAdmin } from './utils/security';
+import { computeLaudoCode, registerValidacaoFornecedor, registerVisualizacaoFornecedor } from './services/laudoEnvioService';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -321,10 +322,19 @@ export default function App() {
   };
 
   // --- Signature Handler ---
-  const handleSaveSignature = (updatedEval: Evaluation) => {
-    const updatedEvaluations = StorageService.saveEvaluation(updatedEval);
+  const handleSaveSignature = async (updatedEval: Evaluation) => {
+    const finalEval = currentUser?.role === 'FORNECEDOR'
+      ? registerValidacaoFornecedor(updatedEval, currentUser, await computeLaudoCode(updatedEval), updatedEval.parecerFornecedor)
+      : updatedEval;
+    const updatedEvaluations = StorageService.saveEvaluation(finalEval);
     setEvaluations(updatedEvaluations);
     setSignatureModalEval(null);
+  };
+
+  // --- Validação do laudo pelo fornecedor no site ---
+  const handleSupplierValidate = (updatedEval: Evaluation) => {
+    if (currentUser?.role !== 'FORNECEDOR') return;
+    setEvaluations(StorageService.saveEvaluation(updatedEval));
   };
 
   // --- Envio do laudo ao fornecedor (Outlook do gestor) ---
@@ -347,6 +357,18 @@ export default function App() {
     const allStorageEvals = StorageService.getEvaluations();
     return allStorageEvals.find(e => e.id === reportModalEvalId) || null;
   }, [reportModalEvalId, evaluations]);
+
+  React.useEffect(() => {
+    const ev = selectedReportEvaluation;
+    if (!ev || !currentUser || currentUser.role !== 'FORNECEDOR') return;
+    if (ev.visualizacaoFornecedor || ev.fornecedorId !== currentUser.fornecedorId) return;
+    let cancelled = false;
+    computeLaudoCode(ev).then(codigo => {
+      if (cancelled) return;
+      setEvaluations(StorageService.saveEvaluation(registerVisualizacaoFornecedor(ev, currentUser, codigo)));
+    });
+    return () => { cancelled = true; };
+  }, [selectedReportEvaluation, currentUser]);
 
   const selectedReportSupplier = useMemo(() => {
     if (!selectedReportEvaluation) return undefined;
@@ -519,6 +541,8 @@ export default function App() {
           sector={selectedReportSector}
           actionPlan={selectedReportActionPlan}
           onOpenSendModal={currentUser.role !== 'FORNECEDOR' ? handleOpenSendModal : undefined}
+          currentUser={currentUser}
+          onSupplierValidate={currentUser.role === 'FORNECEDOR' ? handleSupplierValidate : undefined}
           onClose={handleCloseReportModal}
         />
       )}

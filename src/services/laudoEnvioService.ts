@@ -4,7 +4,7 @@
 // O sistema guarda quem enviou, quando, para qual endereço e o código de verificação
 // do conteúdo — o mesmo código vai no corpo do e-mail, ligando a mensagem à versão do laudo.
 
-import { EnvioLaudo, Evaluation, Sector, Supplier, User } from '../types';
+import { AcaoFornecedorSite, EnvioLaudo, Evaluation, Sector, Supplier, User } from '../types';
 import { safeFormatScore } from '../utils/formatters';
 import { getMetaBadgeDetails } from './evaluationCalculation';
 
@@ -108,5 +108,39 @@ export function registerEnvio(evaluation: Evaluation, envio: Omit<EnvioLaudo, 'i
     historicoEnvios: [...(evaluation.historicoEnvios || []), registro],
     // Envio não desfaz uma ciência já registrada
     statusAssinatura: evaluation.statusAssinatura === 'ASSINADO_CIENTE' ? 'ASSINADO_CIENTE' : 'ENVIADO_FORNECEDOR'
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Ações do próprio fornecedor no site (segunda validação, além do e-mail)
+// ---------------------------------------------------------------------------
+function acaoFornecedor(user: User, codigoLaudo: string): AcaoFornecedorSite {
+  return {
+    dataHora: new Date().toISOString(),
+    usuarioId: user.id,
+    nome: user.nome,
+    email: user.email,
+    codigoLaudo,
+    navegador: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
+  };
+}
+
+export function registerVisualizacaoFornecedor(evaluation: Evaluation, user: User, codigoLaudo: string): Evaluation {
+  return { ...evaluation, visualizacaoFornecedor: acaoFornecedor(user, codigoLaudo) };
+}
+
+// Validação no site equivale à ciência do fornecedor, feita por ele mesmo
+export function registerValidacaoFornecedor(evaluation: Evaluation, user: User, codigoLaudo: string, parecerFornecedor?: string): Evaluation {
+  const validacao = acaoFornecedor(user, codigoLaudo);
+  return {
+    ...evaluation,
+    validacaoFornecedor: validacao,
+    visualizacaoFornecedor: evaluation.visualizacaoFornecedor || validacao,
+    statusAssinatura: 'ASSINADO_CIENTE',
+    dataCiencia: validacao.dataHora.split('T')[0],
+    nomeSignatario: evaluation.nomeSignatario || user.nome,
+    cargoSignatario: evaluation.cargoSignatario || user.cargo,
+    cienciaRegistradaPor: user.nome,
+    parecerFornecedor: parecerFornecedor !== undefined ? parecerFornecedor : evaluation.parecerFornecedor
   };
 }

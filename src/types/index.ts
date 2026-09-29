@@ -85,6 +85,16 @@ export interface EnvioLaudo {
   codigoLaudo: string;       // código de verificação do conteúdo enviado
 }
 
+// Ação feita pelo próprio fornecedor, logado com a conta dele no site
+export interface AcaoFornecedorSite {
+  dataHora: string;          // ISO
+  usuarioId: string;
+  nome: string;
+  email: string;
+  codigoLaudo: string;       // versão do laudo vista/validada
+  navegador?: string;
+}
+
 export interface Evaluation {
   id: string;
   fornecedorId: string;
@@ -127,6 +137,8 @@ export interface Evaluation {
   cienciaRegistradaPor?: string;   // usuário que registrou a ciência (fornecedor ou gestor em nome dele)
 
   historicoEnvios?: EnvioLaudo[];
+  visualizacaoFornecedor?: AcaoFornecedorSite;   // primeira vez que o fornecedor abriu o laudo no site
+  validacaoFornecedor?: AcaoFornecedorSite;      // fornecedor validou o laudo no site
 }
 
 export interface ActionPlan {

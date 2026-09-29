@@ -12,7 +12,9 @@ import {
   PenTool,
   Printer,
   FileSpreadsheet,
-  Mail
+  Mail,
+  ShieldCheck,
+  Eye
 } from 'lucide-react';
 import { exportEvaluationsListToExcel } from '../services/exportService';
 import { formatDateTime, getLastEnvio } from '../services/laudoEnvioService';
@@ -55,6 +57,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   const [selectedStatus, setSelectedStatus] = useState('ALL');
 
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  const pendentesValidacao = isFornecedor ? (evaluations || []).filter(ev => ev && !ev.validacaoFornecedor).length : 0;
 
   const filteredEvaluations = useMemo(() => {
     return (evaluations || []).filter(ev => {
@@ -123,6 +126,16 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
           )}
         </div>
       </div>
+
+      {isFornecedor && pendentesValidacao > 0 && (
+        <div className="flex items-center bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] p-3 rounded-md text-xs">
+          <ShieldCheck className="w-4 h-4 mr-2 flex-shrink-0" />
+          <span>
+            <strong>{pendentesValidacao} laudo{pendentesValidacao > 1 ? 's aguardam' : ' aguarda'} a sua validação.</strong>{' '}
+            Abra o laudo (ícone de impressora) e clique em "Validar laudo".
+          </span>
+        </div>
+      )}
 
       {/* Barra de Pesquisa e Filtros */}
       <div className="bg-white p-3.5 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
@@ -256,7 +269,21 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                       </td>
 
                       <td className="py-2.5 px-4 text-center">
-                        {ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
+                        {ev.validacaoFornecedor ? (
+                          <div className="inline-flex flex-col items-center gap-0.5">
+                            <span
+                              className="inline-flex items-center text-white bg-[#047857] border border-[#047857] px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap"
+                              title={`Validado no site em ${formatDateTime(ev.validacaoFornecedor.dataHora)} por ${ev.validacaoFornecedor.nome} (${ev.validacaoFornecedor.email})`}
+                            >
+                              <ShieldCheck className="w-3 h-3 mr-1" /> Validado no site {formatDateTime(ev.validacaoFornecedor.dataHora).slice(0, 5)}
+                            </span>
+                            {lastEnvio && (
+                              <span className="text-[10px] text-[#475569]" title={envioTooltip(lastEnvio)}>
+                                E-mail em {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
+                              </span>
+                            )}
+                          </div>
+                        ) : ev.statusAssinatura === 'ASSINADO_CIENTE' ? (
                           <div className="inline-flex flex-col items-center gap-0.5">
                             <span
                               className="inline-flex items-center text-[#047857] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded text-[11px] font-semibold"
@@ -271,12 +298,19 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                             )}
                           </div>
                         ) : lastEnvio ? (
-                          <span
-                            className="inline-flex items-center text-[#1E40AF] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap"
-                            title={envioTooltip(lastEnvio)}
-                          >
-                            <Mail className="w-3 h-3 mr-1 text-[#1E40AF]" /> Enviado {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
-                          </span>
+                          <div className="inline-flex flex-col items-center gap-0.5">
+                            <span
+                              className="inline-flex items-center text-[#1E40AF] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap"
+                              title={envioTooltip(lastEnvio)}
+                            >
+                              <Mail className="w-3 h-3 mr-1 text-[#1E40AF]" /> Enviado {formatDateTime(lastEnvio.dataHora).slice(0, 5)}
+                            </span>
+                            {ev.visualizacaoFornecedor && (
+                              <span className="inline-flex items-center text-[10px] text-[#475569]" title={`Visualizado no site por ${ev.visualizacaoFornecedor.nome}`}>
+                                <Eye className="w-3 h-3 mr-0.5" /> Visto {formatDateTime(ev.visualizacaoFornecedor.dataHora).slice(0, 5)}
+                              </span>
+                            )}
+                          </div>
                         ) : ev.statusAssinatura === 'ENVIADO_FORNECEDOR' ? (
                           <span className="inline-flex items-center text-[#92400E] bg-[#FFFBEB] border border-[#FCD34D] px-2 py-0.5 rounded text-[11px] font-semibold">
                             <PenTool className="w-3 h-3 mr-1 text-[#92400E]" /> Aguardando

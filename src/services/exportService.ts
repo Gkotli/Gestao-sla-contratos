@@ -136,6 +136,10 @@ export async function exportEvaluationToExcel(
     ['Signatário', evaluation.nomeSignatario ? `${evaluation.nomeSignatario} (${evaluation.cargoSignatario || ''})` : '-'],
     ['Data da ciência', evaluation.dataCiencia || '-'],
     ['Ciência registrada por', evaluation.cienciaRegistradaPor || '-'],
+    ['Visualizado pelo fornecedor no site', evaluation.visualizacaoFornecedor
+      ? `${formatDateTime(evaluation.visualizacaoFornecedor.dataHora)} - ${evaluation.visualizacaoFornecedor.nome} (${evaluation.visualizacaoFornecedor.email})` : '-'],
+    ['Validado pelo fornecedor no site', evaluation.validacaoFornecedor
+      ? `${formatDateTime(evaluation.validacaoFornecedor.dataHora)} - ${evaluation.validacaoFornecedor.nome} (${evaluation.validacaoFornecedor.email}), código ${evaluation.validacaoFornecedor.codigoLaudo}` : '-'],
     ...(evaluation.historicoEnvios || []).map((envio, i): Cell[] => [
       `Envio ao fornecedor ${i + 1}`,
       `${formatDateTime(envio.dataHora)} para ${envio.destinatario}, por ${envio.enviadoPor} (código ${envio.codigoLaudo})`
@@ -201,7 +205,8 @@ export async function exportEvaluationsListToExcel(
     header([
       'Ano', 'Fornecedor', 'CNPJ', 'Contrato', 'Setor', 'Avaliador', 'Data',
       'Legais', 'Comportamentais', 'Qualidade', 'Média Geral', 'Status da Meta',
-      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor', 'Enviado ao Fornecedor em', 'E-mail de Envio'
+      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor', 'Enviado ao Fornecedor em', 'E-mail de Envio',
+      'Visualizado no Site em', 'Validado no Site em', 'Validado por'
     ]),
     ...evaluations.map((ev): Cell[] => {
       const supplier = suppliers.find(s => s.id === ev.fornecedorId);
@@ -224,7 +229,10 @@ export async function exportEvaluationsListToExcel(
         plan ? PLAN_LABELS[plan.status] || plan.status : ev.necessitaPlanoAcao ? 'Não cadastrado' : '-',
         SIGN_LABELS[ev.statusAssinatura] || ev.statusAssinatura,
         envio ? formatDateTime(envio.dataHora) : '-',
-        envio?.destinatario || '-'
+        envio?.destinatario || '-',
+        ev.visualizacaoFornecedor ? formatDateTime(ev.visualizacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? formatDateTime(ev.validacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? `${ev.validacaoFornecedor.nome} (${ev.validacaoFornecedor.email})` : '-'
       ];
     })
   ];
@@ -234,7 +242,7 @@ export async function exportEvaluationsListToExcel(
     sheet: 'Avaliações',
     columns: [
       { width: 7 }, { width: 36 }, { width: 20 }, { width: 22 }, { width: 28 }, { width: 28 }, { width: 12 },
-      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }, { width: 18 }, { width: 32 }
+      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }, { width: 18 }, { width: 32 }, { width: 18 }, { width: 18 }, { width: 36 }
     ],
     stickyRowsCount: 1
   }).toFile(`Avaliacoes_SLA_${today}.xlsx`);
