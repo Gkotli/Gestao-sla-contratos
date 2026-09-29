@@ -35,7 +35,7 @@ export class EmailService {
         to_email: params.to_email,
         to_name: params.to_name,
         reset_code: params.reset_code,
-        app_name: params.app_name || "Rede D'Or - Gestão de SLA",
+        app_name: params.app_name || "Rede D'Or - SLA de Fornecedores",
         timestamp: new Date().toLocaleString('pt-BR')
       }
     };

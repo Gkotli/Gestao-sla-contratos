@@ -284,7 +284,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
         >
           <div className="flex items-center justify-between text-xs font-semibold">
             <span>{selectedSectorFilter === 'ALL' ? 'TOTAL GERAL' : 'TOTAL DO SETOR'}</span>
-            <Layers className={`w-4 h-4 ${selectedStatusFilter === 'ALL' ? 'text-teal-400' : 'text-slate-400'}`} />
+            <Layers className={`w-4 h-4 ${selectedStatusFilter === 'ALL' ? 'text-slate-300' : 'text-slate-400'}`} />
           </div>
           <div className="text-2xl font-black mt-2">{sectorMetrics.total}</div>
           <p className={`text-[11px] truncate mt-0.5 ${selectedStatusFilter === 'ALL' ? 'opacity-80' : 'text-[#475569]'}`}>
@@ -408,7 +408,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           {(searchTerm || selectedSectorFilter !== 'ALL' || selectedStatusFilter !== 'ALL') && (
             <button
               onClick={clearAllFilters}
-              className="text-[#B91C1C] hover:text-rose-800 font-bold flex items-center cursor-pointer"
+              className="text-[#B91C1C] hover:text-[#991B1B] font-bold flex items-center cursor-pointer"
             >
               <X className="w-3.5 h-3.5 mr-0.5" /> Limpar Filtros
             </button>
@@ -434,8 +434,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                     <div className="space-y-1 truncate pr-1">
                       {/* Badge Padronizada para Todos os Setores */}
                       {sector ? (
-                        <span className="inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border bg-slate-100 text-slate-800 border-[#CBD5E1] uppercase">
-                          <Building2 className="w-3 h-3 mr-1 text-slate-500" />
+                        <span className="inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border bg-slate-100 text-[#172B4D] border-[#CBD5E1] uppercase">
+                          <Building2 className="w-3 h-3 mr-1 text-[#475569]" />
                           SETOR: {sector.nome}
                         </span>
                       ) : (
@@ -449,7 +449,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                       <p className="text-xs text-[#475569] font-mono truncate">{sup.cnpj}</p>
                     </div>
 
-                    <div className="p-2 rounded-md flex-shrink-0 bg-slate-100 text-slate-700">
+                    <div className="p-2 rounded-md flex-shrink-0 bg-slate-100 text-[#172B4D]">
                       <Building2 className="w-5 h-5" />
                     </div>
                   </div>
@@ -500,7 +500,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                   <div className="flex items-center space-x-1">
                     <button
                       onClick={() => openEditModal(sup)}
-                      className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-200 rounded-md transition cursor-pointer"
+                      className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-200 rounded-md transition cursor-pointer"
                       title="Editar Cadastro"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -676,7 +676,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
+                  className="px-4 py-2 text-xs font-medium text-[#172B4D] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
                 >
                   Cancelar
                 </button>

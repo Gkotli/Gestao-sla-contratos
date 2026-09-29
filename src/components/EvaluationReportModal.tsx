@@ -58,10 +58,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   if (!evaluation) {
     return (
       <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-slate-200 space-y-4 text-center">
-          <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
-          <h3 className="text-lg font-bold text-slate-900">Avaliação Não Encontrada</h3>
-          <p className="text-xs text-slate-500">Não foi possível localizar os registros desta avaliação no momento.</p>
+        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-[#CBD5E1] space-y-4 text-center">
+          <AlertCircle className="w-12 h-12 text-[#B91C1C] mx-auto" />
+          <h3 className="text-lg font-bold text-[#172B4D]">Avaliação Não Encontrada</h3>
+          <p className="text-xs text-[#475569]">Não foi possível localizar os registros desta avaliação no momento.</p>
           <button
             onClick={onClose}
             className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl"
@@ -105,11 +105,11 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto printable-laudo-container">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-[#CBD5E1] overflow-hidden my-auto printable-laudo-container">
         {/* Barra de Ações Superior (Oculta na Impressão no-print) */}
         <div className="bg-[#123768] text-white px-6 py-3 flex items-center justify-between no-print border-b border-[#0B2850]">
           <div className="flex items-center space-x-2">
-            <FileCheck2 className="w-5 h-5 text-teal-400" />
+            <FileCheck2 className="w-5 h-5 text-white" />
             <h3 className="font-bold text-sm text-white">
               Visualização do Laudo Oficial — Impressão Formal A4 Multipáginas ({criteriaList.length} Perguntas)
             </h3>
@@ -136,7 +136,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
+              className="inline-flex items-center px-4 py-2 bg-[#047857] hover:bg-[#065F46] text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
             >
               <Printer className="w-4 h-4 mr-2" />
               Imprimir
@@ -282,8 +282,8 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                 <strong className="text-base font-black text-[#172B4D]">{mediaQualidade}</strong>
               </div>
               <div className="p-2 bg-[#123768] text-white rounded-md border border-[#123768]">
-                <span className="text-[10px] text-teal-300 font-bold uppercase block">MÉDIA GERAL SLA</span>
-                <strong className="text-lg font-black text-teal-300">{mediaGeralFormatted}</strong>
+                <span className="text-[10px] text-slate-300 font-bold uppercase block">MÉDIA GERAL SLA</span>
+                <strong className="text-lg font-black text-white">{mediaGeralFormatted}</strong>
               </div>
             </div>
 
@@ -291,7 +291,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <span className="font-bold text-[#172B4D]">Classificação da Meta (Mínimo 4.00):</span>
               <span className={`font-black px-3 py-1 rounded uppercase ${
                 mediaGeralVal >= 4.0 
-                  ? 'bg-[#ECFDF5] text-[#047857] border border-emerald-300' 
+                  ? 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]' 
                   : 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
               }`}>
                 {mediaGeralVal >= 4.0 ? `Dentro da Meta (${mediaGeralFormatted})` : `Abaixo da Meta (${mediaGeralFormatted})`}
@@ -341,7 +341,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                             <div className="flex flex-col">
                               <span>{c.pergunta}</span>
                               {c.isManualAddition && (
-                                <span className="text-[10px] text-amber-700 italic mt-0.5">
+                                <span className="text-[10px] text-[#92400E] italic mt-0.5">
                                   * Adição manual: {c.justificativaAdicao}
                                 </span>
                               )}
@@ -375,7 +375,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <div className="border-t-2 border-[#123768] pt-2 text-center space-y-1">
                 <strong className="text-[#172B4D] font-bold block text-xs">{evaluation.gestorAvaliador || 'Gestor do Contrato'}</strong>
                 <span className="text-[11px] text-[#475569] block">Gestor do Contrato / Diretoria Operacional</span>
-                <span className="text-[10px] text-slate-400 block">REDE D'OR – HOSPITAL VILA NOVA STAR</span>
+                <span className="text-[10px] text-[#475569] block">REDE D'OR – HOSPITAL VILA NOVA STAR</span>
               </div>
 
               {/* Assinatura/Representante do Fornecedor */}
@@ -396,7 +396,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                       {evaluation.nomeSignatario || (supplier?.contatoNome ? supplier.contatoNome : 'Preposto / Representante Legal (A definir)')}
                     </strong>
                     <span className="text-[11px] text-[#475569] block">{evaluation.cargoSignatario || 'Representante do Fornecedor'}</span>
-                    <span className="text-[10px] text-slate-500 block">
+                    <span className="text-[10px] text-[#475569] block">
                       {evaluation.statusAssinatura === 'ASSINADO_CIENTE' ? `Ciência Registrada em ${evaluation.dataCiencia}` : 'Assinatura PENDENTE de Envio'}
                     </span>
                   </div>

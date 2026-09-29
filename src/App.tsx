@@ -20,7 +20,7 @@ const SupplierSignatureModal = lazy(() => import('./components/SupplierSignature
 const PendingEvaluationsView = lazy(() => import('./components/PendingEvaluationsView').then(m => ({ default: m.PendingEvaluationsView })));
 
 const TabFallback = () => (
-  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#64748B]">
+  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#475569]">
     Carregando…
   </div>
 );
@@ -144,23 +144,6 @@ export default function App() {
     StorageService.setCurrentUser(user);
     if (user.role === 'FORNECEDOR') {
       setActiveTab('eval-list');
-    }
-  };
-
-  // --- Reset de Dados ---
-  const handleResetData = () => {
-    if (RemoteSync.isEnabled()) {
-      alert('Com o banco compartilhado ativo, restaurar a base de demonstração apagaria as avaliações de todos os gestores. Esta ação está desabilitada.');
-      return;
-    }
-    if (window.confirm('Deseja restaurar a base de dados oficial com os 11 setores e 83 fornecedores do Vila Nova Star?')) {
-      StorageService.resetAllData();
-      setSectors(StorageService.getSectors());
-      setSuppliers(StorageService.getSuppliers());
-      setEvaluations(StorageService.getEvaluations());
-      setActionPlans(StorageService.getActionPlans());
-      setUsers(StorageService.getUsers());
-      alert('Base de dados restaurada com sucesso!');
     }
   };
 
@@ -399,7 +382,6 @@ export default function App() {
           }
           setActiveTab(tab);
         }}
-        onResetData={handleResetData}
         pendingActionPlansCount={pendingActionPlansCount}
         currentUser={currentUser}
         users={users}
@@ -536,8 +518,8 @@ export default function App() {
             <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
           </div>
           <div className="flex flex-col sm:items-end gap-1">
-            <p className="text-[11px] text-[#64748B]">
-              Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
+            <p className="text-[11px] text-[#475569]">
+              Hospital Vila Nova Star • Diretoria Operacional • SLA de Fornecedores
             </p>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#475569]" title="Status do armazenamento de dados">
               <span

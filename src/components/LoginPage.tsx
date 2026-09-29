@@ -150,7 +150,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] flex flex-col md:flex-row font-sans text-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F1F5F9] flex flex-col md:flex-row font-sans text-[#172B4D] overflow-x-hidden">
       
       {/* ================================================== */}
       {/* 1. LADO ESQUERDO: PAINEL INSTITUCIONAL AZUL (40%)  */}
@@ -169,21 +169,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
         {/* Centro: Título e Descrição Institucional */}
         <div className="relative z-10 my-8 md:my-auto space-y-4">
-          <div className="w-12 h-1 bg-sky-400 rounded-full" />
+          <div className="w-12 h-1 bg-white/70 rounded-full" />
           
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Gestão de SLA e<br />Avaliação de Contratos
+            SLA de<br />Fornecedores
           </h1>
           
-          <p className="text-xs sm:text-sm text-sky-100/90 leading-relaxed max-w-md font-medium">
-            Sistema interno da Diretoria Operacional para acompanhamento de contratos, SLA e avaliações anuais.
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md font-medium">
+            Sistema interno da Diretoria Operacional para a avaliação anual de desempenho dos contratos.
           </p>
         </div>
 
         {/* Rodapé do Painel Esquerdo: Mensagem de Acesso Restrito */}
         <div className="relative z-10 pt-6 border-t border-white/15">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-sky-200/90">
-            <ShieldCheck className="w-4 h-4 text-sky-400 flex-shrink-0" />
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-200">
+            <ShieldCheck className="w-4 h-4 text-slate-300 flex-shrink-0" />
             <span>Acesso restrito a usuários autorizados</span>
           </div>
         </div>
@@ -219,7 +219,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Alerta de Erro */}
             {errorMsg && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
+              <div className="p-3 bg-rose-50 border border-[#FECACA] text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
                 <AlertCircle className="w-4 h-4 text-[#B91C1C] flex-shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -302,8 +302,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     className="w-full p-3 bg-slate-50 hover:bg-slate-100/80 border border-[#CBD5E1] rounded-md text-left transition flex items-center justify-between group cursor-pointer"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-slate-600">
-                        <Building2 className="w-4 h-4 text-slate-600" />
+                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-[#475569]">
+                        <Building2 className="w-4 h-4 text-[#475569]" />
                       </div>
                       <div>
                         <span className="text-[10px] font-semibold text-[#475569] block">Conta autorizada</span>
@@ -311,7 +311,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                         <span className="text-[11px] text-[#475569] block truncate">{u.email}</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#172B4D]" />
                   </button>
                 ))}
             </div>
@@ -358,7 +358,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
               </div>
               <button
                 onClick={() => setIsForgotModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
+                className="text-slate-400 hover:text-[#172B4D] text-lg font-bold cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -367,18 +367,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
             {/* Stepper Visual (1 -> 2 -> 3) */}
             {!forgotSuccessMsg && (
               <div className="flex items-center justify-between px-4 py-2 bg-slate-50 rounded-md border border-[#CBD5E1] text-[11px]">
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 1 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>1</span>
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 1 ? 'text-[#123768] font-bold' : 'text-[#475569]'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 1 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-[#475569]'}`}>1</span>
                   <span>E-mail</span>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 2 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>2</span>
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 2 ? 'text-[#123768] font-bold' : 'text-[#475569]'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 2 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-[#475569]'}`}>2</span>
                   <span>Código</span>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                <div className={`flex items-center space-x-1.5 ${forgotStep >= 3 ? 'text-[#123768] font-bold' : 'text-slate-400'}`}>
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-slate-600'}`}>3</span>
+                <div className={`flex items-center space-x-1.5 ${forgotStep >= 3 ? 'text-[#123768] font-bold' : 'text-[#475569]'}`}>
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${forgotStep >= 3 ? 'bg-[#123768] text-white' : 'bg-slate-200 text-[#475569]'}`}>3</span>
                   <span>Nova Senha</span>
                 </div>
               </div>
@@ -396,7 +396,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
 
             {/* Sucesso Final */}
             {forgotSuccessMsg ? (
-              <div className="p-5 bg-[#ECFDF5] border border-emerald-200 text-[#047857] rounded-md space-y-3 text-center">
+              <div className="p-5 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] rounded-md space-y-3 text-center">
                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-[#047857]">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
@@ -438,7 +438,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       <button
                         type="button"
                         onClick={() => setIsForgotModalOpen(false)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold cursor-pointer"
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer"
                       >
                         Cancelar
                       </button>
@@ -488,7 +488,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                     <div className="flex items-center justify-between text-[11px] text-[#475569]">
                       <span>Não recebeu o código?</span>
                       {resendCooldown > 0 ? (
-                        <span className="text-slate-400 font-medium">Reenviar em {resendCooldown}s</span>
+                        <span className="text-[#475569] font-medium">Reenviar em {resendCooldown}s</span>
                       ) : (
                         <button
                           type="button"
@@ -506,7 +506,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       <button
                         type="button"
                         onClick={() => setForgotStep(1)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold cursor-pointer"
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer"
                       >
                         Voltar
                       </button>
@@ -542,7 +542,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                         <button
                           type="button"
                           onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+                          className="absolute right-3 top-3 text-slate-400 hover:text-[#475569] cursor-pointer"
                         >
                           {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -563,7 +563,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                         <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+                          className="absolute right-3 top-3 text-slate-400 hover:text-[#475569] cursor-pointer"
                         >
                           {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -574,7 +574,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                       <button
                         type="button"
                         onClick={() => setIsForgotModalOpen(false)}
-                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold cursor-pointer"
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer"
                       >
                         Cancelar
                       </button>

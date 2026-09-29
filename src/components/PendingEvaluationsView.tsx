@@ -231,7 +231,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
     switch (status) {
       case 'CONCLUIDA':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-emerald-300">
+          <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]">
             <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-[#047857]" />
             Concluída
           </span>
@@ -294,7 +294,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
           <p className="text-[11px] text-[#475569] mt-0.5">Sob responsabilidade da visão</p>
         </div>
 
-        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-emerald-200 shadow-sm">
+        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] shadow-sm">
           <div className="flex items-center justify-between text-xs font-bold text-[#047857]">
             <span>Avaliações Em Dia</span>
             <CheckCircle2 className="w-4 h-4 text-[#047857]" />
@@ -383,7 +383,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         </div>
 
         {/* Linha auxiliar de resultado do filtro */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-[#475569]">
           <div className="flex items-center space-x-2 font-medium">
             <Filter className="w-3.5 h-3.5 text-slate-400" />
             <span>Exibindo <strong>{filteredRows.length}</strong> fornecedores no matriz</span>
@@ -392,7 +392,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
           {(searchTerm || selectedSector !== 'ALL' || selectedGestor !== 'ALL' || selectedStatusFilter !== 'ALL') && (
             <button
               onClick={clearFilters}
-              className="text-rose-600 hover:text-rose-800 font-bold flex items-center cursor-pointer"
+              className="text-[#B91C1C] hover:text-[#991B1B] font-bold flex items-center cursor-pointer"
             >
               <X className="w-3.5 h-3.5 mr-0.5" /> Limpar Filtros
             </button>
@@ -405,7 +405,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         <div className="w-full overflow-x-auto overflow-y-visible">
           <table className="w-full text-left border-collapse text-xs min-w-[1300px]">
             <thead>
-              <tr className="bg-slate-50 text-slate-700 font-semibold text-xs border-b border-[#CBD5E1] uppercase tracking-wider">
+              <tr className="bg-slate-50 text-[#172B4D] font-semibold text-xs border-b border-[#CBD5E1] uppercase tracking-wider">
                 <th className="p-3.5 w-[260px] min-w-[260px] sticky left-0 bg-slate-50 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] border-r border-[#CBD5E1]">Fornecedor / Razão Social</th>
                 <th className="p-3.5 w-[130px] min-w-[130px]">Contrato</th>
                 <th className="p-3.5 w-[150px] min-w-[150px]">Setor</th>
@@ -438,7 +438,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                         {row.supplier.numeroContrato || 'N/A'}
                       </td>
 
-                      <td className="p-3.5 font-semibold text-slate-800 whitespace-nowrap">
+                      <td className="p-3.5 font-semibold text-[#172B4D] whitespace-nowrap">
                         {row.sector?.nome || 'Sem Setor'}
                       </td>
 
@@ -497,7 +497,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
                 })
               ) : (
                 <tr>
-                  <td colSpan={9} className="p-8 text-center text-slate-500">
+                  <td colSpan={9} className="p-8 text-center text-[#475569]">
                     Nenhuma pendência encontrada para os filtros selecionados.
                   </td>
                 </tr>
