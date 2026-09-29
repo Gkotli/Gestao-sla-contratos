@@ -4,6 +4,7 @@
 import type { SheetData, Cell } from 'write-excel-file/browser';
 import { ActionPlan, Evaluation, ScoreValue, Sector, SignStatus, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from './questions';
+import { QuestionnaireService } from './questionnaireService';
 import { getMetaBadgeDetails } from './evaluationCalculation';
 
 const SIGN_LABELS: Record<SignStatus, string> = {
@@ -33,8 +34,9 @@ function getEvaluationItems(evaluation: Evaluation): EvaluationItem[] {
     return evaluation.itensExcecao.map(item => ({ pergunta: item.pergunta, grupo: item.grupo, nota: item.nota }));
   }
   const respostas = evaluation.respostas || {};
-  if (evaluation.perguntasAvaliadas?.length) {
-    return evaluation.perguntasAvaliadas.map(q => ({
+  const perguntas = QuestionnaireService.resolveEvaluatedQuestions(evaluation);
+  if (perguntas) {
+    return perguntas.map(q => ({
       pergunta: q.pergunta,
       grupo: q.categoria,
       nota: respostas[q.id],

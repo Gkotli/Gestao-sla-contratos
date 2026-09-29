@@ -205,7 +205,11 @@ export class StorageService {
       }
     }
 
+    // `...ev` preserva os campos não listados abaixo (perguntasAvaliadas, nomeQuestionario,
+    // emailAvaliador...). Sem ele, o laudo perdia as perguntas específicas e a próxima
+    // gravação apagava esses campos também no banco compartilhado.
     return list.map((ev, idx) => ({
+      ...ev,
       id: ev?.id || `eval_${idx}_${Date.now()}`,
       fornecedorId: ev?.fornecedorId || 'sup_acquasuly',
       setorId: ev?.setorId || 'sec_manutencao',
