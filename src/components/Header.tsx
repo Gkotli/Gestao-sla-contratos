@@ -74,9 +74,9 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="flex items-center space-x-1.5">
                     <span className="font-bold text-white block">{currentUser.nome}</span>
                     <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
-                      currentUser.role === 'DIRETORIA' ? 'bg-amber-300 text-slate-950' :
-                      currentUser.role === 'GESTOR' ? 'bg-sky-200 text-slate-900' :
-                      'bg-emerald-200 text-emerald-950'
+                      currentUser.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF]' :
+                      currentUser.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857]' :
+                      'bg-[#FFFBEB] text-[#92400E]'
                     }`}>
                       {currentUser.role === 'DIRETORIA' ? 'Diretoria' : currentUser.role === 'GESTOR' ? 'Gestor' : 'Fornecedor'}
                     </span>
@@ -101,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onLogout}
               title="Encerrar sessão de acesso"
-              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-rose-100 bg-rose-600/30 hover:bg-rose-600 hover:text-white rounded-md border border-rose-400/30 transition cursor-pointer"
+              className="inline-flex items-center px-3 py-1.5 text-xs font-semibold text-white bg-rose-600/30 hover:bg-rose-600 hover:text-white rounded-md border border-rose-400/30 transition cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5 mr-1.5" />
               Sair
@@ -180,7 +180,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <AlertTriangle className="w-4 h-4 mr-2 text-amber-400" />
                 Planos de Ação
                 {pendingActionPlansCount > 0 && (
-                  <span className="ml-2 bg-amber-400 text-slate-950 font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
+                  <span className="ml-2 bg-amber-400 text-[#172B4D] font-extrabold text-[10px] px-1.5 py-0.2 rounded-full">
                     {pendingActionPlansCount}
                   </span>
                 )}

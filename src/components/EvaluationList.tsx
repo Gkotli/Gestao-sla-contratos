@@ -167,7 +167,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-700 text-[11px] font-bold uppercase tracking-wider border-b border-[#CBD5E1]">
+              <tr className="bg-slate-50 text-[#172B4D] text-[11px] font-bold uppercase tracking-wider border-b border-[#CBD5E1]">
                 <th className="py-3 px-4">Fornecedor / Razão Social</th>
                 <th className="py-3 px-4">Setor Responsável</th>
                 <th className="py-3 px-4 text-center">Ciclo</th>
@@ -201,11 +201,11 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                             {supplier?.nomeFantasia || 'Fornecedor'}
                           </strong>
                           {ev.tipoAvaliacao === 'EXCECAO' ? (
-                            <span className="inline-flex items-center text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300 uppercase">
+                            <span className="inline-flex items-center text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D] uppercase">
                               Exceção
                             </span>
                           ) : (
-                            <span className="inline-flex items-center text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-[#CBD5E1] uppercase">
+                            <span className="inline-flex items-center text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-[#475569] border border-[#CBD5E1] uppercase">
                               Padrão
                             </span>
                           )}
@@ -215,7 +215,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                         </span>
                       </td>
 
-                      <td className="py-2.5 px-4 font-medium text-slate-700">
+                      <td className="py-2.5 px-4 font-medium text-[#172B4D]">
                         {sector?.nome || 'Setor Hospitalar'}
                       </td>
 
@@ -242,7 +242,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                       </td>
 
                       <td className="py-2.5 px-4 text-center">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-slate-800'} border ${metaDetails?.borderClass || 'border-[#CBD5E1]'}`}>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${metaDetails?.bgClass || 'bg-slate-100'} ${metaDetails?.textClass || 'text-[#172B4D]'} border ${metaDetails?.borderClass || 'border-[#CBD5E1]'}`}>
                           {metaDetails?.label || 'Avaliado'}
                         </span>
                       </td>
@@ -269,7 +269,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {/* Visualizar / PDF */}
                           <button
                             onClick={() => onViewReport(ev.id)}
-                            className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
+                            className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
                             title="Visualizar Laudo e Imprimir"
                           >
                             <Printer className="w-4 h-4" />
@@ -278,7 +278,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {/* Assinatura / Ciência */}
                           <button
                             onClick={() => onOpenSignatureModal(ev)}
-                            className="p-1.5 text-slate-600 hover:text-[#047857] hover:bg-emerald-50 rounded-md transition cursor-pointer"
+                            className="p-1.5 text-[#475569] hover:text-[#047857] hover:bg-emerald-50 rounded-md transition cursor-pointer"
                             title="Registrar Ciência do Fornecedor"
                           >
                             <PenTool className="w-4 h-4" />
@@ -299,7 +299,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           {!isFornecedor && (
                             <button
                               onClick={() => onEditEvaluation(ev)}
-                              className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
+                              className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
                               title="Editar Avaliação"
                             >
                               <Edit3 className="w-4 h-4" />
@@ -327,11 +327,11 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                 })
               ) : (
                 <tr>
-                  <td colSpan={10} className="py-12 text-center text-slate-500">
+                  <td colSpan={10} className="py-12 text-center text-[#475569]">
                     <div className="max-w-xs mx-auto space-y-2">
                       <Search className="w-8 h-8 text-slate-300 mx-auto" />
-                      <strong className="text-sm font-bold text-slate-700 block">Nenhuma avaliação encontrada</strong>
-                      <p className="text-xs text-slate-400">Verifique os termos da busca ou altere os filtros de ano e status acima.</p>
+                      <strong className="text-sm font-bold text-[#172B4D] block">Nenhuma avaliação encontrada</strong>
+                      <p className="text-xs text-[#475569]">Verifique os termos da busca ou altere os filtros de ano e status acima.</p>
                     </div>
                   </td>
                 </tr>

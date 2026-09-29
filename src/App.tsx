@@ -20,7 +20,7 @@ const SupplierSignatureModal = lazy(() => import('./components/SupplierSignature
 const PendingEvaluationsView = lazy(() => import('./components/PendingEvaluationsView').then(m => ({ default: m.PendingEvaluationsView })));
 
 const TabFallback = () => (
-  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#64748B]">
+  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#475569]">
     Carregando…
   </div>
 );
@@ -536,7 +536,7 @@ export default function App() {
             <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
           </div>
           <div className="flex flex-col sm:items-end gap-1">
-            <p className="text-[11px] text-[#64748B]">
+            <p className="text-[11px] text-[#475569]">
               Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
             </p>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#475569]" title="Status do armazenamento de dados">

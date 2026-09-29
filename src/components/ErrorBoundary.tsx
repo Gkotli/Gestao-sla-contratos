@@ -69,7 +69,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
               <button
                 onClick={this.handleResetAllData}
-                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg transition cursor-pointer"
+                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-[#123768] border border-white/20 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg transition cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Restaurar Base & Limpar

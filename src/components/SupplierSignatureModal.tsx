@@ -158,7 +158,7 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
         {/* Header */}
         <div className="bg-[#123768] text-white p-5 flex items-center justify-between border-b border-[#0B2850]">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-white/10 text-teal-300 rounded-md border border-white/20">
+            <div className="p-2 bg-white/10 text-white rounded-md border border-white/20">
               <PenTool className="w-6 h-6" />
             </div>
             <div>
@@ -253,7 +253,7 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
               <button
                 type="button"
                 onClick={clearCanvas}
-                className="text-xs text-[#B91C1C] hover:text-rose-800 font-semibold flex items-center cursor-pointer"
+                className="text-xs text-[#B91C1C] hover:text-[#991B1B] font-semibold flex items-center cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3 mr-1" /> Limpar Assinatura
               </button>
@@ -272,7 +272,7 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
                 onTouchEnd={stopDrawing}
                 className="w-full bg-white rounded border border-[#CBD5E1] cursor-crosshair"
               />
-              <p className="text-[10px] text-slate-400 text-center mt-1">Desenhe a assinatura com o mouse ou na tela sensível ao toque</p>
+              <p className="text-[10px] text-[#475569] text-center mt-1">Desenhe a assinatura com o mouse ou na tela sensível ao toque</p>
             </div>
           </div>
 
@@ -281,7 +281,7 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50 cursor-pointer"
+              className="px-4 py-2 text-xs font-medium text-[#172B4D] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50 cursor-pointer"
             >
               Cancelar
             </button>
