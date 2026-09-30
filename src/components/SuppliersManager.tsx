@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Sector, Supplier } from '../types';
+import { SupplierContactsImport } from './SupplierContactsImport';
 import { 
   Building2, 
   Plus, 
@@ -14,13 +15,15 @@ import {
   Clock, 
   AlertTriangle, 
   X,
-  Layers
+  Layers,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface SuppliersManagerProps {
   suppliers: Supplier[];
   sectors: Sector[];
   onSaveSupplier: (supplier: Supplier) => void;
+  onBulkSaveSuppliers?: (suppliers: Supplier[]) => void;
   onDeleteSupplier: (supplierId: string) => void;
   onStartEvaluation: (supplierId: string) => void;
 }
@@ -29,6 +32,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   suppliers,
   sectors,
   onSaveSupplier,
+  onBulkSaveSuppliers,
   onDeleteSupplier,
   onStartEvaluation
 }) => {
@@ -37,6 +41,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('ALL');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContactsImportOpen, setIsContactsImportOpen] = useState(false);
+  const semEmail = suppliers.filter(s => !s.contatoEmail).length;
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
 
   // Form State
@@ -262,13 +268,26 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           <p className="text-xs text-[#475569]">Gestão dos prestadores de serviço terceirizados e vinculação aos setores hospitalares</p>
         </div>
 
-        <button
-          onClick={openNewModal}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Cadastrar Fornecedor
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          {onBulkSaveSuppliers && (
+            <button
+              onClick={() => setIsContactsImportOpen(true)}
+              title="Preencher contatos (nome, e-mail e telefone) de vários fornecedores de uma vez"
+              className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer"
+            >
+              <FileSpreadsheet className="w-4 h-4 mr-2" />
+              Contatos por Planilha
+              {semEmail > 0 && <span className="ml-2 px-1.5 py-0.5 text-[10px] rounded bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]">{semEmail} sem e-mail</span>}
+            </button>
+          )}
+          <button
+            onClick={openNewModal}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Cadastrar Fornecedor
+          </button>
+        </div>
       </div>
 
       {/* CARDS DE RESUMO CLICÁVEIS E DINÂMICOS CONFORME O SETOR SELECIONADO */}
@@ -690,6 +709,19 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
             </form>
           </div>
         </div>
+      )}
+
+      {isContactsImportOpen && onBulkSaveSuppliers && (
+        <SupplierContactsImport
+          suppliers={suppliers}
+          sectors={sectors}
+          onApply={(updated) => {
+            onBulkSaveSuppliers(updated);
+            setIsContactsImportOpen(false);
+            alert(`${updated.length} fornecedor(es) atualizado(s).`);
+          }}
+          onClose={() => setIsContactsImportOpen(false)}
+        />
       )}
     </div>
   );

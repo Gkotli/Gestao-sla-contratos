@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Sector, Supplier, User, UserRole } from '../types';
 import { mustChangePassword, validateNewPassword, withNewPassword } from '../services/passwordService';
-import { UserPlus, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, EyeOff } from 'lucide-react';
+import { downloadFullBackup } from '../services/exportService';
+import { UserPlus, Download, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, EyeOff } from 'lucide-react';
 
 interface UsersManagerProps {
   users: User[];
@@ -107,13 +108,26 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
           <p className="text-xs text-[#475569]">Cadastre gestores hospitalares e defina permissões individuais com criptografia de dados</p>
         </div>
 
-        <button
-          onClick={openNewModal}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
-        >
-          <UserPlus className="w-4 h-4 mr-2" />
-          Cadastrar Novo Usuário
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => {
+              const { total } = downloadFullBackup();
+              alert(`Backup gerado com ${total} registros. Guarde o arquivo em uma pasta segura da rede (ele contém dados pessoais).`);
+            }}
+            title="Baixa uma cópia completa dos dados (usuários, setores, fornecedores, avaliações e planos)"
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Baixar Backup
+          </button>
+          <button
+            onClick={openNewModal}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            Cadastrar Novo Usuário
+          </button>
+        </div>
       </div>
 
       {/* Aviso de Segurança e Privacidade LGPD */}

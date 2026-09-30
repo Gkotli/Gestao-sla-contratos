@@ -184,6 +184,14 @@ export default function App() {
     setSuppliers(updated);
   };
 
+  const handleBulkSaveSuppliers = (updated: Supplier[]) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para alterar fornecedores.');
+      return;
+    }
+    setSuppliers(StorageService.saveSuppliers(updated));
+  };
+
   const handleDeleteSupplier = (supplierId: string) => {
     if (currentUser?.role !== 'DIRETORIA') {
       alert('Acesso negado: Apenas a Diretoria possui permissão para excluir fornecedores.');
@@ -523,6 +531,7 @@ export default function App() {
             suppliers={suppliers}
             sectors={sectors}
             onSaveSupplier={handleSaveSupplier}
+            onBulkSaveSuppliers={handleBulkSaveSuppliers}
             onDeleteSupplier={handleDeleteSupplier}
             onStartEvaluation={(supId) => handleStartNewEvaluation(supId)}
           />

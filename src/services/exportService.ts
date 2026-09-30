@@ -5,6 +5,7 @@ import type { SheetData, Cell } from 'write-excel-file/browser';
 import { ActionPlan, Evaluation, ScoreValue, Sector, SignStatus, Supplier } from '../types';
 import { EVALUATION_QUESTIONS } from './questions';
 import { QuestionnaireService } from './questionnaireService';
+import { StorageService } from './storageService';
 import { formatDateTime, getLastEnvio } from './laudoEnvioService';
 import { getMetaBadgeDetails } from './evaluationCalculation';
 
@@ -246,4 +247,27 @@ export async function exportEvaluationsListToExcel(
     ],
     stickyRowsCount: 1
   }).toFile(`Avaliacoes_SLA_${today}.xlsx`);
+}
+
+// ---------------------------------------------------------------------------
+// Backup completo (JSON) para o administrador guardar fora do sistema
+// ---------------------------------------------------------------------------
+export function downloadFullBackup(): { total: number } {
+  const collections = {
+    users: StorageService.getUsers().map(({ senha: _textoAntigo, ...u }) => u),
+    sectors: StorageService.getSectors(),
+    suppliers: StorageService.getSuppliers(),
+    evaluations: StorageService.getEvaluations(),
+    action_plans: StorageService.getActionPlans()
+  };
+  const total = Object.values(collections).reduce((sum, list) => sum + list.length, 0);
+  const backup = { sistema: "SLA de Fornecedores - Rede D'Or", geradoEm: new Date().toISOString(), versao: 1, total, collections };
+
+  const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Backup_SLA_Fornecedores_${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return { total };
 }

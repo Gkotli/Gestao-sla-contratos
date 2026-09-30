@@ -183,6 +183,13 @@ export class StorageService {
     return suppliers;
   }
 
+  static saveSuppliers(updated: Supplier[]): Supplier[] {
+    const byId = new Map(updated.map(s => [s.id, s]));
+    const suppliers = this.getSuppliers().map(s => byId.get(s.id) || s);
+    this.persist(KEYS.SUPPLIERS, suppliers);
+    return suppliers;
+  }
+
   static deleteSupplier(supplierId: string): Supplier[] {
     const suppliers = this.getSuppliers().filter(s => s.id !== supplierId);
     this.persist(KEYS.SUPPLIERS, suppliers);
