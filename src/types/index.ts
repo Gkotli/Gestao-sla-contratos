@@ -8,7 +8,10 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  senha?: string;
+  senha?: string;          // legado: senha em texto (removida ao criar a primeira senha própria)
+  senhaHash?: string;      // hash SHA-256 da senha (ver passwordService)
+  precisaTrocarSenha?: boolean; // senha provisória definida pelo administrador
+  sessaoAlternadaPor?: string;  // só na sessão: administrador que entrou como este usuário
   cargo: string;
   role: UserRole;
   setorId?: string;       // Vinculado se for GESTOR

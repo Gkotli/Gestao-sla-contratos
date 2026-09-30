@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Sector, Supplier, User, UserRole } from '../types';
-import { UserPlus, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, EyeOff } from 'lucide-react';
+import { mustChangePassword, validateNewPassword, withNewPassword } from '../services/passwordService';
+import { downloadFullBackup } from '../services/exportService';
+import { UserPlus, Download, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, EyeOff } from 'lucide-react';
 
 interface UsersManagerProps {
   users: User[];
@@ -28,6 +30,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [formError, setFormError] = useState('');
   const [cargo, setCargo] = useState('');
   const [role, setRole] = useState<UserRole>('GESTOR');
   const [setorId, setSetorId] = useState(sectors[0]?.id || '');
@@ -35,6 +38,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
 
   const openNewModal = () => {
     setEditingUser(null);
+    setFormError('');
     setNome('');
     setEmail('');
     setSenha('');
@@ -47,6 +51,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
 
   const openEditModal = (u: User) => {
     setEditingUser(u);
+    setFormError('');
     setNome(u.nome);
     setEmail(u.email);
     setSenha(''); // Não carrega senha para privacidade
@@ -57,21 +62,40 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
 
+    const emailNormalizado = email.trim().toLowerCase();
+    const emailMudou = Boolean(editingUser && editingUser.email.trim().toLowerCase() !== emailNormalizado);
+
+    // A senha é criptografada junto com o e-mail: trocar o e-mail exige definir nova senha provisória
+    if (emailMudou && !senha) {
+      setFormError('Ao alterar o e-mail, defina uma nova senha provisória para o usuário.');
+      return;
+    }
+    if (senha) {
+      const problema = validateNewPassword(senha, emailNormalizado);
+      if (problema) {
+        setFormError(problema);
+        return;
+      }
+    }
+
+    const { senha: _senhaTexto, ...dadosAnteriores } = editingUser || ({} as User);
     const userData: User = {
+      ...dadosAnteriores,
       id: editingUser?.id || `user_${Date.now()}`,
       nome,
-      email,
-      senha: senha ? senha : (editingUser?.senha || '123'),
+      email: emailNormalizado,
       cargo,
       role,
       setorId: role === 'GESTOR' ? setorId : undefined,
       fornecedorId: role === 'FORNECEDOR' ? fornecedorId : undefined
     };
 
-    onSaveUser(userData);
+    // Senha digitada pelo administrador é provisória: o usuário cria a própria no primeiro acesso
+    onSaveUser(senha ? await withNewPassword(userData, senha, true) : { ...userData, senha: editingUser?.senha });
     setIsModalOpen(false);
   };
 
@@ -84,13 +108,26 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
           <p className="text-xs text-[#475569]">Cadastre gestores hospitalares e defina permissões individuais com criptografia de dados</p>
         </div>
 
-        <button
-          onClick={openNewModal}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
-        >
-          <UserPlus className="w-4 h-4 mr-2" />
-          Cadastrar Novo Usuário
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={() => {
+              const { total } = downloadFullBackup();
+              alert(`Backup gerado com ${total} registros. Guarde o arquivo em uma pasta segura da rede (ele contém dados pessoais).`);
+            }}
+            title="Baixa uma cópia completa dos dados (usuários, setores, fornecedores, avaliações e planos)"
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Baixar Backup
+          </button>
+          <button
+            onClick={openNewModal}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
+          >
+            <UserPlus className="w-4 h-4 mr-2" />
+            Cadastrar Novo Usuário
+          </button>
+        </div>
       </div>
 
       {/* Aviso de Segurança e Privacidade LGPD */}
@@ -98,7 +135,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
         <ShieldCheck className="w-6 h-6 text-[#047857] flex-shrink-0" />
         <div>
           <strong className="font-bold block text-[#047857]">Proteção de Privacidade & LGPD:</strong>
-          <span>As senhas dos usuários são criptografadas e protegidas. Ninguém (nem os administradores) tem acesso visual às senhas pessoais dos gestores.</span>
+          <span>As senhas são guardadas criptografadas (hash SHA-256): ninguém, nem os administradores, consegue vê-las. Senhas definidas aqui são provisórias e precisam ser trocadas pelo usuário no primeiro acesso.</span>
         </div>
       </div>
 
@@ -184,7 +221,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   </div>
                   <div className="flex items-center text-[#475569]">
                     <Lock className="w-3.5 h-3.5 mr-2 text-slate-400" />
-                    <span>Senha: <span className="font-mono bg-slate-100 px-1 rounded text-[#172B4D]">•••••••• (Protegida)</span></span>
+                    {mustChangePassword(u) ? (
+                      <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]">
+                        {u.precisaTrocarSenha ? 'Senha provisória: aguardando troca' : 'Senha padrão: aguardando troca'}
+                      </span>
+                    ) : (
+                      <span>Senha: <span className="font-mono bg-slate-100 px-1 rounded text-[#172B4D]">•••••••• (criptografada)</span></span>
+                    )}
                   </div>
                   {u.role === 'GESTOR' && sector && (
                     <div className="flex items-center">
@@ -251,6 +294,12 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+              {formError && (
+                <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] rounded-md font-semibold">{formError}</div>
+              )}
+              <p className="text-[11px] text-[#475569]">
+                A senha informada aqui é provisória: no primeiro acesso, o usuário é obrigado a criar a própria senha.
+              </p>
               <div>
                 <label className="block font-bold text-[#172B4D] mb-1">Nome Completo *</label>
                 <input
@@ -278,14 +327,14 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-bold text-[#172B4D] mb-1">
-                    {editingUser ? 'Nova Senha (opcional)' : 'Senha de Acesso *'}
+                    {editingUser ? 'Nova Senha Provisória (opcional)' : 'Senha Provisória *'}
                   </label>
                   <input
                     type="password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
                     required={!editingUser}
-                    placeholder={editingUser ? 'Manter senha atual' : 'Digite a senha'}
+                    placeholder={editingUser ? 'Manter senha atual' : 'Mín. 8 caracteres, letras e números'}
                     className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
                 </div>

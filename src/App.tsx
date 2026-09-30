@@ -6,6 +6,8 @@ import { isSystemAdmin } from './utils/security';
 import { computeLaudoCode, registerValidacaoFornecedor, registerVisualizacaoFornecedor } from './services/laudoEnvioService';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
+import { ForcePasswordChange } from './components/ForcePasswordChange';
+import { mustChangePassword } from './services/passwordService';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Telas carregadas sob demanda: cada aba vira um arquivo JS separado,
@@ -143,8 +145,11 @@ export default function App() {
   };
 
   const handleSelectUser = (user: User) => {
-    setCurrentUser(user);
-    StorageService.setCurrentUser(user);
+    // Entrar como outro usuário fica marcado: não vale como ação do próprio usuário (ex.: validar laudo)
+    const administrador = currentUser?.sessaoAlternadaPor || currentUser?.nome;
+    const sessao: User = isSystemAdmin(user) ? user : { ...user, sessaoAlternadaPor: administrador };
+    setCurrentUser(sessao);
+    StorageService.setCurrentUser(sessao);
     if (user.role === 'FORNECEDOR') {
       setActiveTab('eval-list');
     }
@@ -177,6 +182,14 @@ export default function App() {
     }
     const updated = StorageService.saveSupplier(supplier);
     setSuppliers(updated);
+  };
+
+  const handleBulkSaveSuppliers = (updated: Supplier[]) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para alterar fornecedores.');
+      return;
+    }
+    setSuppliers(StorageService.saveSuppliers(updated));
   };
 
   const handleDeleteSupplier = (supplierId: string) => {
@@ -323,7 +336,7 @@ export default function App() {
 
   // --- Signature Handler ---
   const handleSaveSignature = async (updatedEval: Evaluation) => {
-    const finalEval = currentUser?.role === 'FORNECEDOR'
+    const finalEval = currentUser?.role === 'FORNECEDOR' && !currentUser.sessaoAlternadaPor
       ? registerValidacaoFornecedor(updatedEval, currentUser, await computeLaudoCode(updatedEval), updatedEval.parecerFornecedor)
       : updatedEval;
     const updatedEvaluations = StorageService.saveEvaluation(finalEval);
@@ -333,7 +346,7 @@ export default function App() {
 
   // --- Validação do laudo pelo fornecedor no site ---
   const handleSupplierValidate = (updatedEval: Evaluation) => {
-    if (currentUser?.role !== 'FORNECEDOR') return;
+    if (currentUser?.role !== 'FORNECEDOR' || currentUser.sessaoAlternadaPor) return;
     setEvaluations(StorageService.saveEvaluation(updatedEval));
   };
 
@@ -360,7 +373,7 @@ export default function App() {
 
   React.useEffect(() => {
     const ev = selectedReportEvaluation;
-    if (!ev || !currentUser || currentUser.role !== 'FORNECEDOR') return;
+    if (!ev || !currentUser || currentUser.role !== 'FORNECEDOR' || currentUser.sessaoAlternadaPor) return;
     if (ev.visualizacaoFornecedor || ev.fornecedorId !== currentUser.fornecedorId) return;
     let cancelled = false;
     computeLaudoCode(ev).then(codigo => {
@@ -401,6 +414,22 @@ export default function App() {
         users={users}
         onLoginSuccess={handleLoginSuccess}
         onPasswordReset={handlePasswordReset}
+      />
+    );
+  }
+
+  // Usa o cadastro atual (sincronizado), não a cópia guardada na sessão
+  const sessionUser = users.find(u => u.id === currentUser.id);
+  if (sessionUser && !currentUser.sessaoAlternadaPor && mustChangePassword(sessionUser)) {
+    return (
+      <ForcePasswordChange
+        user={sessionUser}
+        onPasswordChanged={(updatedUser) => {
+          setUsers(StorageService.saveUser(updatedUser));
+          setCurrentUser(updatedUser);
+          StorageService.setCurrentUser(updatedUser);
+        }}
+        onLogout={handleLogout}
       />
     );
   }
@@ -502,6 +531,7 @@ export default function App() {
             suppliers={suppliers}
             sectors={sectors}
             onSaveSupplier={handleSaveSupplier}
+            onBulkSaveSuppliers={handleBulkSaveSuppliers}
             onDeleteSupplier={handleDeleteSupplier}
             onStartEvaluation={(supId) => handleStartNewEvaluation(supId)}
           />
@@ -542,7 +572,7 @@ export default function App() {
           actionPlan={selectedReportActionPlan}
           onOpenSendModal={currentUser.role !== 'FORNECEDOR' ? handleOpenSendModal : undefined}
           currentUser={currentUser}
-          onSupplierValidate={currentUser.role === 'FORNECEDOR' ? handleSupplierValidate : undefined}
+          onSupplierValidate={currentUser.role === 'FORNECEDOR' && !currentUser.sessaoAlternadaPor ? handleSupplierValidate : undefined}
           onClose={handleCloseReportModal}
         />
       )}

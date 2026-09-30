@@ -93,14 +93,13 @@ export class StorageService {
     } catch {}
   }
 
-  static updateUserPassword(email: string, newPassword: string): User | null {
+  // Recebe o hash já calculado (passwordService.hashPassword); a senha em texto é descartada
+  static updateUserPassword(email: string, senhaHash: string): User | null {
     const users = this.getUsers();
     const idx = users.findIndex(u => u.email.toLowerCase().trim() === email.toLowerCase().trim());
     if (idx >= 0) {
-      users[idx] = {
-        ...users[idx],
-        senha: newPassword
-      };
+      const { senha: _textoAntigo, ...rest } = users[idx];
+      users[idx] = { ...rest, senhaHash, precisaTrocarSenha: false };
       this.persist(KEYS.USERS, users);
       this.clearPasswordResetCode(email);
       return users[idx];
@@ -180,6 +179,13 @@ export class StorageService {
     } else {
       suppliers.push(supplier);
     }
+    this.persist(KEYS.SUPPLIERS, suppliers);
+    return suppliers;
+  }
+
+  static saveSuppliers(updated: Supplier[]): Supplier[] {
+    const byId = new Map(updated.map(s => [s.id, s]));
+    const suppliers = this.getSuppliers().map(s => byId.get(s.id) || s);
     this.persist(KEYS.SUPPLIERS, suppliers);
     return suppliers;
   }
