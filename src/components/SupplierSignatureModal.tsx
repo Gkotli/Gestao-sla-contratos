@@ -144,9 +144,11 @@ export const SupplierSignatureModal: React.FC<SupplierSignatureModalProps> = ({
       parecerFornecedor,
       assinaturaBase64: finalSignature,
       assinaturaDigitalUrl: finalSignature,
-      cienciaRegistradaPor: currentUser
-        ? `${currentUser.nome}${currentUser.role === 'FORNECEDOR' ? '' : ' (em nome do fornecedor)'}`
-        : evaluation.cienciaRegistradaPor
+      cienciaRegistradaPor: !currentUser
+        ? evaluation.cienciaRegistradaPor
+        : currentUser.sessaoAlternadaPor
+          ? `${currentUser.sessaoAlternadaPor} (em nome do fornecedor, sessão alternada)`
+          : `${currentUser.nome}${currentUser.role === 'FORNECEDOR' ? '' : ' (em nome do fornecedor)'}`
     };
 
     const callback = onSaveSignature || onSave;

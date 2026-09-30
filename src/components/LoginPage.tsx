@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { Building2, Lock, Mail, ArrowRight, ShieldCheck, ChevronRight, AlertCircle, HelpCircle, CheckCircle2, X, KeyRound, Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { Lock, Mail, ArrowRight, ShieldCheck, ChevronRight, AlertCircle, HelpCircle, CheckCircle2, X, KeyRound, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { StorageService } from '../services/storageService';
 import { EmailService } from '../services/emailService';
+import { hashPassword, validateNewPassword, verifyPassword } from '../services/passwordService';
 
 interface LoginPageProps {
   users: User[];
@@ -35,25 +36,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
     return () => clearInterval(timer);
   }, [resendCooldown]);
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
-    const foundUser = users.find(
-      u => u.email.toLowerCase().trim() === email.toLowerCase().trim() && (u.senha || '123') === senha
-    );
+    const foundUser = users.find(u => u.email.toLowerCase().trim() === email.toLowerCase().trim());
 
-    if (foundUser) {
+    if (foundUser && await verifyPassword(foundUser, senha)) {
       onLoginSuccess(foundUser);
     } else {
       setErrorMsg('E-mail ou senha incorretos. Por favor, verifique as credenciais informadas.');
     }
-  };
-
-  const handleQuickLogin = (user: User) => {
-    setEmail(user.email);
-    setSenha(user.senha || '123');
-    onLoginSuccess(user);
   };
 
   const handleOpenForgot = () => {
@@ -123,12 +116,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
   };
 
   // Etapa 3: Redefinir Senha
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setForgotError('');
 
-    if (newPassword.length < 4) {
-      setForgotError('A nova senha deve ter pelo menos 4 caracteres.');
+    const passwordError = validateNewPassword(newPassword, forgotEmail);
+    if (passwordError) {
+      setForgotError(passwordError);
       return;
     }
 
@@ -137,7 +131,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
       return;
     }
 
-    const updatedUser = StorageService.updateUserPassword(forgotEmail, newPassword);
+    const updatedUser = StorageService.updateUserPassword(forgotEmail, await hashPassword(forgotEmail, newPassword));
 
     if (updatedUser) {
       onPasswordReset?.(updatedUser);
@@ -278,43 +272,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLoginSuccess, onP
                 Entrar
               </button>
             </form>
-
-            {/* Divisor Visual de Acesso Rápido */}
-            <div className="relative pt-2">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#CBD5E1]" />
-              </div>
-              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider">
-                <span className="bg-white px-3 text-[#475569]">ACESSO RÁPIDO</span>
-              </div>
-            </div>
-
-            {/* Bloco Discreto de Acesso Rápido para Desenvolvimento/Testes */}
-            <div className="space-y-2">
-              {users
-                .filter(u => u.id === 'usr_gabriel' || u.id === 'usr_vo2_preposto' || (u.role === 'DIRETORIA' && u.email.includes('gabriel')))
-                .slice(0, 1)
-                .map((u) => (
-                  <button
-                    key={u.id}
-                    type="button"
-                    onClick={() => handleQuickLogin(u)}
-                    className="w-full p-3 bg-slate-50 hover:bg-slate-100/80 border border-[#CBD5E1] rounded-md text-left transition flex items-center justify-between group cursor-pointer"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-[#475569]">
-                        <Building2 className="w-4 h-4 text-[#475569]" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] font-semibold text-[#475569] block">Conta autorizada</span>
-                        <strong className="text-[#172B4D] text-xs font-bold block">{u.nome}</strong>
-                        <span className="text-[11px] text-[#475569] block truncate">{u.email}</span>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#172B4D]" />
-                  </button>
-                ))}
-            </div>
           </div>
         </div>
 

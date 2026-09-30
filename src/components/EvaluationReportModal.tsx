@@ -192,6 +192,14 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
           </div>
         </div>
 
+        {isFornecedor && currentUser?.sessaoAlternadaPor && (
+          <div className="no-print border-b border-[#CBD5E1] px-6 py-3 text-xs">
+            <div className="bg-[#FFFBEB] border border-[#FCD34D] text-[#92400E] p-3 rounded-md">
+              Sessão alternada por <strong>{currentUser.sessaoAlternadaPor}</strong>: a validação do laudo só pode ser feita pelo próprio fornecedor, com a conta dele.
+            </div>
+          </div>
+        )}
+
         {/* Validação do laudo pelo próprio fornecedor (oculta na impressão) */}
         {isFornecedor && onSupplierValidate && (
           <div className="no-print border-b border-[#CBD5E1] px-6 py-4 text-xs space-y-2">

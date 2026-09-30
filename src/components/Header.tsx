@@ -79,6 +79,9 @@ export const Header: React.FC<HeaderProps> = ({
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-300 block">{currentUser.cargo}</span>
+                  {currentUser.sessaoAlternadaPor && (
+                    <span className="text-[10px] font-semibold text-amber-300 block">Sessão alternada por {currentUser.sessaoAlternadaPor}</span>
+                  )}
                 </div>
               </div>
             )}
