@@ -221,7 +221,14 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           <strong className="text-[#172B4D] font-bold text-xs">
                             {supplier?.nomeFantasia || 'Fornecedor'}
                           </strong>
-                          {ev.tipoAvaliacao === 'EXCECAO' ? (
+                          {ev.origemRegistro === 'PAPEL_HISTORICO' ? (
+                            <span
+                              className="inline-flex items-center text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE] uppercase"
+                              title={ev.fonteDocumento ? `Transcrita de: ${ev.fonteDocumento}` : 'Transcrita de formulário em papel'}
+                            >
+                              Histórico (papel)
+                            </span>
+                          ) : ev.tipoAvaliacao === 'EXCECAO' ? (
                             <span className="inline-flex items-center text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D] uppercase">
                               Exceção
                             </span>

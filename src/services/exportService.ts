@@ -63,7 +63,7 @@ export function evaluationFileName(evaluation: Evaluation, supplier?: Supplier):
 }
 
 const score = (value: number | undefined): Cell =>
-  typeof value === 'number' && Number.isFinite(value) ? { value, type: Number, format: '0.00' } : '-';
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? { value, type: Number, format: '0.00' } : 'N/A';
 
 const notaCell = (nota: ScoreValue | undefined): Cell =>
   nota === 'NA' ? 'N/A' : typeof nota === 'number' ? { value: nota, type: Number } : '-';
