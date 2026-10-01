@@ -142,6 +142,10 @@ export interface Evaluation {
   historicoEnvios?: EnvioLaudo[];
   visualizacaoFornecedor?: AcaoFornecedorSite;   // primeira vez que o fornecedor abriu o laudo no site
   validacaoFornecedor?: AcaoFornecedorSite;      // fornecedor validou o laudo no site
+
+  // Avaliação de anos anteriores transcrita de formulário em papel
+  origemRegistro?: 'PAPEL_HISTORICO';
+  fonteDocumento?: string;                       // ex.: "SLA - Manutenção 2024.pdf, p. 3"
 }
 
 export interface ActionPlan {

@@ -287,6 +287,15 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </p>
           </div>
 
+          {/* Registro histórico transcrito de papel (aparece também na impressão) */}
+          {evaluation.origemRegistro === 'PAPEL_HISTORICO' && (
+            <div className="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] p-3 rounded-lg print-avoid-break text-xs">
+              <strong className="block uppercase text-[10px]">Registro histórico</strong>
+              Avaliação de {evaluation.ano} transcrita do formulário original em papel
+              {evaluation.fonteDocumento ? ` (${evaluation.fonteDocumento})` : ''}. As perguntas e notas são as aplicadas na época.
+            </div>
+          )}
+
           {/* Banner de Justificativa para Avaliação por Exceção */}
           {evaluation.tipoAvaliacao === 'EXCECAO' && (
             <div className="bg-[#FFFBEB] border border-[#FCD34D] p-3 rounded-lg space-y-1 print-avoid-break text-xs">
