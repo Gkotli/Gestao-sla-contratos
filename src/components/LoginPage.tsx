@@ -7,7 +7,7 @@ const MIN_PASSWORD_LENGTH = 8;
 
 interface SetPasswordRequest {
   email: string;
-  reason: 'invite' | 'recovery';
+  reason: 'invite' | 'recovery' | 'temporary';
   onCancel: () => void;
 }
 
@@ -84,6 +84,10 @@ const SetPasswordForm: React.FC<SetPasswordRequest> = ({ email, reason, onCancel
       setError(`A senha deve ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres.`);
       return;
     }
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setError('A senha deve ter letras e números.');
+      return;
+    }
     if (password !== confirm) {
       setError('As senhas digitadas não coincidem.');
       return;
@@ -99,10 +103,12 @@ const SetPasswordForm: React.FC<SetPasswordRequest> = ({ email, reason, onCancel
     <>
       <div>
         <h2 className="text-xl sm:text-2xl font-bold text-[#172B4D] tracking-tight">
-          {reason === 'invite' ? 'Criar senha de acesso' : 'Redefinir senha'}
+          {reason === 'recovery' ? 'Redefinir senha' : 'Crie a sua senha pessoal'}
         </h2>
         <p className="text-xs text-[#475569] mt-1">
-          {reason === 'invite' ? 'Bem-vindo(a)! Defina a senha que você usará para entrar.' : 'Crie uma nova senha para o seu acesso.'}
+          {reason === 'temporary'
+            ? 'Você entrou com uma senha provisória. Defina agora a senha que só você vai saber; a provisória deixa de valer.'
+            : reason === 'invite' ? 'Bem-vindo(a)! Defina a senha que você usará para entrar.' : 'Crie uma nova senha para o seu acesso.'}
           <br />
           <strong className="text-[#172B4D]">{email}</strong>
         </p>
@@ -122,6 +128,7 @@ const SetPasswordForm: React.FC<SetPasswordRequest> = ({ email, reason, onCancel
         <button type="submit" disabled={loading} className={primaryButtonClass}>
           {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : 'Salvar senha e entrar'}
         </button>
+        <p className="text-[11px] text-[#475569]">Mínimo de {MIN_PASSWORD_LENGTH} caracteres, com letras e números.</p>
       </form>
 
       <button
@@ -141,19 +148,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Modal "Esqueci minha senha": o Supabase envia um link para criar a nova senha
+  // "Esqueci minha senha": por enquanto nenhum e-mail é enviado; a Diretoria define uma senha provisória
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [forgotLoading, setForgotLoading] = useState(false);
-  const [forgotError, setForgotError] = useState('');
-  const [forgotSent, setForgotSent] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
-
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = setInterval(() => setResendCooldown(prev => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,26 +172,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
     // Sucesso: o App recebe a sessão pelo AuthService e abre o sistema
   };
 
-  const handleOpenForgot = () => {
-    setIsForgotModalOpen(true);
-    setForgotEmail(email.trim());
-    setForgotError('');
-    setForgotSent(false);
-  };
-
-  const handleSendResetLink = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    setForgotError('');
-    setForgotLoading(true);
-    const error = await AuthService.sendPasswordReset(forgotEmail);
-    setForgotLoading(false);
-    if (error) {
-      setForgotError(error);
-      return;
-    }
-    setForgotSent(true);
-    setResendCooldown(60);
-  };
+  const handleOpenForgot = () => setIsForgotModalOpen(true);
 
   const renderCardContent = () => {
     if (setPassword) return <SetPasswordForm {...setPassword} />;
@@ -391,116 +368,29 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
         </div>
       </div>
 
-      {/* Modal de Esqueci Minha Senha (link enviado pelo Supabase Auth) */}
+      {/* Esqueci minha senha: orientação (sem envio de e-mail) */}
       {isForgotModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-lg shadow-2xl border border-[#CBD5E1] p-6 space-y-4 text-xs text-[#172B4D]">
-            {/* Header do Modal */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center justify-between border-b border-[#CBD5E1] pb-3">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-full bg-[#123768]/10 flex items-center justify-center text-[#123768]">
                   <KeyRound className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-[#172B4D]">Recuperação de Senha</h3>
-                  <p className="text-[11px] text-[#475569]">Autoatendimento seguro via e-mail</p>
-                </div>
+                <h3 className="font-bold text-sm text-[#172B4D]">Esqueci minha senha</h3>
               </div>
-              <button
-                onClick={() => setIsForgotModalOpen(false)}
-                className="text-slate-400 hover:text-[#172B4D] text-lg font-bold cursor-pointer"
-              >
+              <button onClick={() => setIsForgotModalOpen(false)} className="text-slate-400 hover:text-[#172B4D] cursor-pointer" title="Fechar">
                 <X className="w-5 h-5" />
               </button>
             </div>
-
-            {forgotError && (
-              <div className="p-3 bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] rounded-md flex items-start space-x-2 text-xs">
-                <AlertCircle className="w-4 h-4 text-[#B91C1C] mt-0.5 flex-shrink-0" />
-                <span className="leading-relaxed">{forgotError}</span>
-              </div>
-            )}
-
-            {forgotSent ? (
-              <div className="p-5 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] rounded-md space-y-3 text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-[#047857]">
-                  <CheckCircle2 className="w-7 h-7" />
-                </div>
-                <h4 className="font-bold text-sm text-[#047857]">Verifique seu e-mail</h4>
-                <p className="text-xs leading-relaxed text-[#172B4D]">
-                  Se <strong>{forgotEmail}</strong> estiver cadastrado, você receberá um link para criar uma nova senha.
-                  Confira também a caixa de spam. O link vale por tempo limitado e só pode ser usado uma vez.
-                </p>
-                <div className="flex items-center justify-between text-[11px] text-[#475569] pt-1">
-                  <span>Não recebeu?</span>
-                  {resendCooldown > 0 ? (
-                    <span className="text-[#475569] font-medium">Reenviar em {resendCooldown}s</span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleSendResetLink()}
-                      disabled={forgotLoading}
-                      className="text-[#123768] font-bold hover:underline cursor-pointer flex items-center space-x-1"
-                    >
-                      <RefreshCw className="w-3 h-3" />
-                      <span>Reenviar link</span>
-                    </button>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsForgotModalOpen(false)}
-                  className="w-full py-2.5 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow transition cursor-pointer"
-                >
-                  Voltar ao login
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSendResetLink} className="space-y-4">
-                <p className="text-[#475569] leading-relaxed">
-                  Informe seu e-mail corporativo cadastrado. Enviaremos um link seguro para você criar uma nova senha.
-                </p>
-
-                <div>
-                  <label className="block font-bold text-[#172B4D] mb-1">E-mail Corporativo *</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                    <input
-                      type="email"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      required
-                      placeholder="seu.nome@hospital.com.br"
-                      className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md pl-9 pr-3 py-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setIsForgotModalOpen(false)}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={forgotLoading}
-                    className="px-5 py-2 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow flex items-center space-x-2 disabled:opacity-60 cursor-pointer"
-                  >
-                    {forgotLoading ? (
-                      <>
-                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        <span>Enviando...</span>
-                      </>
-                    ) : (
-                      <span>Enviar link</span>
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
+            <InfoAlert message="Procure a Diretoria Operacional (administrador do sistema). Ela define uma senha provisória para você e, no próximo acesso, o sistema pede que você crie a sua nova senha." />
+            <button
+              type="button"
+              onClick={() => setIsForgotModalOpen(false)}
+              className="w-full py-2.5 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow transition cursor-pointer"
+            >
+              Voltar ao login
+            </button>
           </div>
         </div>
       )}

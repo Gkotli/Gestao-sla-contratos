@@ -123,7 +123,9 @@ export const AuthService = {
           listener({ status: 'no_profile', email: session.user.email || '' });
           return;
         }
-        const linkType = pendingAuthLink();
+        // Senha provisória (definida pela Diretoria) obriga a criar a senha pessoal antes de entrar
+        const linkType: AuthLinkType | null = pendingAuthLink()
+          || (session.user.user_metadata?.precisaTrocarSenha ? 'temporary' : null);
         listener(linkType
           ? { status: 'set_password', reason: linkType, user }
           : { status: 'signed_in', user, authUserId: session.user.id });
@@ -180,22 +182,11 @@ export const AuthService = {
     }
   },
 
-  // Envia o link de redefinição. Não informa se o e-mail existe (evita descobrir contas).
-  async sendPasswordReset(email: string): Promise<string | null> {
-    try {
-      const db = await getSupabase();
-      const { error } = await db.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: appUrl() });
-      return error ? translateAuthError(error) : null;
-    } catch (err: any) {
-      return translateAuthError(err);
-    }
-  },
-
   // Define a senha depois de abrir o link de convite ou de recuperação
   async updatePassword(password: string): Promise<string | null> {
     try {
       const db = await getSupabase();
-      const { error } = await db.auth.updateUser({ password });
+      const { error } = await db.auth.updateUser({ password, data: { precisaTrocarSenha: false } });
       if (error) return translateAuthError(error);
       clearAuthLink();
       resolveCurrentSession?.();
@@ -246,31 +237,26 @@ export const AuthService = {
     return { ok: true, message: `Usuário ${user.nome} excluído.${warning}` };
   },
 
-  // Convite para quem ainda não tem login; link de nova senha para quem já tem.
-  async sendAccessEmail(user: User): Promise<ActionResult> {
+  // Cria o login (ou troca a senha) com uma senha provisória. Nenhum e-mail é enviado:
+  // a Diretoria entrega a senha à pessoa, que cria a própria no primeiro acesso.
+  async setTemporaryPassword(user: User, password: string): Promise<ActionResult> {
     const db = await getSupabase();
-    if (!user.acessoAtivo) {
-      const { error } = await db.functions.invoke(FUNCTION_NAME, {
-        body: { action: 'invite', profileId: user.id, redirectTo: appUrl() }
-      });
-      if (!error) return { ok: true, message: `Convite enviado para ${user.email}.` };
-
-      const { status, code } = await functionError(error);
-      if (code !== 'already_registered') {
-        const detail = status === 404 || status === 0
-          ? 'A função de convites (admin-users) não está publicada no Supabase.'
-          : code || error.message;
-        return {
-          ok: false,
-          message: `Não foi possível enviar o convite para ${user.email}: ${detail}\n\n`
-            + 'Alternativa: no painel do Supabase, abra Authentication > Users > "Invite user" e informe este e-mail. '
-            + 'O login é vinculado ao perfil automaticamente.'
-        };
-      }
+    const { error } = await db.functions.invoke(FUNCTION_NAME, {
+      body: { action: 'set_password', profileId: user.id, password }
+    });
+    if (!error) {
+      return {
+        ok: true,
+        message: user.acessoAtivo
+          ? `Nova senha provisória definida para ${user.nome}. No próximo acesso, o sistema pedirá que crie a senha pessoal.`
+          : `Acesso criado para ${user.nome}. Entregue a senha provisória pessoalmente; no primeiro acesso, o sistema pedirá que crie a senha pessoal.`
+      };
     }
-    const resetError = await this.sendPasswordReset(user.email);
-    return resetError
-      ? { ok: false, message: resetError }
-      : { ok: true, message: `${user.email} já possui login: enviamos um link para definir uma nova senha.` };
+    const { status, code } = await functionError(error);
+    const detail = status === 404 || status === 0
+      ? 'a função admin-users não está publicada no Supabase (veja supabase/README.md).'
+      : code === 'weak_password' ? 'a senha provisória precisa ter pelo menos 8 caracteres.' : code || error.message;
+    return { ok: false, message: `Não foi possível definir a senha de ${user.nome}: ${detail}` };
   }
+
 };

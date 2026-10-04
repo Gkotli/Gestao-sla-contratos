@@ -9,7 +9,8 @@ const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.V
 
 export const SUPABASE_CONFIGURED = Boolean(SUPABASE_URL && SUPABASE_KEY);
 
-export type AuthLinkType = 'invite' | 'recovery';
+// 'temporary' = primeiro acesso com senha provisória definida pela Diretoria (sem e-mail)
+export type AuthLinkType = 'invite' | 'recovery' | 'temporary';
 
 // Links de convite e de "esqueci minha senha" voltam para o site com
 // #access_token=...&type=invite|recovery. O supabase-js consome esse trecho ao iniciar,

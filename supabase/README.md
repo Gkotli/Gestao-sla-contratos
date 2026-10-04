@@ -11,7 +11,7 @@ Este documento é para quem vai aplicar a mudança no projeto Supabase de produ�
 | Login conferido no navegador (qualquer um podia ler as senhas pela API) | Login pelo Supabase Auth (e-mail + senha) |
 | Política RLS `using (true)` para `anon`: quem tinha o link lia e gravava tudo | `anon` sem acesso; cada perfil só lê/grava o que lhe cabe (tabela abaixo) |
 | Filtro de setor/fornecedor só na tela | Filtro aplicado pelo banco (RLS), inclusive no tempo real |
-| Recuperação de senha por EmailJS + código salvo no navegador | Link de redefinição enviado pelo próprio Supabase |
+| Recuperação de senha por EmailJS + código salvo no navegador | Nenhum e-mail: a Diretoria define uma senha provisória |
 | Botão "Acesso rápido" e "Entrar como este usuário" sem senha | Existem apenas no modo local de demonstração |
 
 ### Permissões por perfil (aplicadas pelo banco)
@@ -30,9 +30,25 @@ A tela "Gestão de Usuários" continua visível só para o administrador do sist
 
 - `schema.sql` — tabela `sla_records` (base). Só é necessário em projeto novo.
 - `migrations/002_auth_rls.sql` — perfis, migração dos usuários, RLS, gatilhos e `registrar_ciencia`. Idempotente.
-- `functions/admin-users/index.ts` — Edge Function para convidar/excluir logins (usa a chave service_role no servidor).
+- `functions/admin-users/index.ts` — Edge Function para criar logins com senha provisória (sem e-mail) e excluir logins (usa a chave service_role no servidor).
 
 ---
+
+## Sem envio de e-mails (decisão atual)
+
+Por enquanto **o sistema não envia nenhum e-mail** aos usuários: não há convite, link de
+recuperação nem confirmação. O acesso funciona assim:
+
+1. A Diretoria cadastra a pessoa em **Gestão de Usuários** e define uma **senha provisória**
+   (o botão "Gerar" cria uma). O login é criado direto no Supabase, já confirmado.
+2. A Diretoria entrega a senha provisória pessoalmente.
+3. No primeiro acesso, o sistema obriga a pessoa a **criar a própria senha** (mín. 8 caracteres,
+   com letras e números). A provisória deixa de valer.
+4. Esqueceu a senha? O login orienta a procurar a Diretoria, que define uma nova senha
+   provisória no cartão do usuário ("Nova senha provisória").
+
+Não é preciso configurar SMTP. Se um dia quiserem convites e "Esqueci minha senha" por e-mail,
+será preciso configurar um SMTP próprio (o padrão do Supabase só entrega para a equipe do projeto).
 
 ## Antes da produção: ensaio num projeto de teste (recomendado)
 
@@ -41,156 +57,89 @@ sem acesso, por isso ensaie antes num projeto separado (o plano gratuito permite
 
 1. No Supabase, crie um projeto novo (ex.: `gesta-sla-teste`, região São Paulo).
 2. No SQL Editor dele rode, nesta ordem: `schema.sql`, `backup.sql` e `migrations/002_auth_rls.sql`.
-3. Faça os passos 2, 4 e 6 abaixo nesse projeto (o SMTP padrão serve para o teste: ele só
-   entrega para e-mails da equipe do projeto, ou seja, o seu).
+3. Faça os passos 2, 4 e 5 abaixo nesse projeto.
 4. Na Vercel, em **Settings → Environment Variables**, edite `VITE_SUPABASE_URL` e
    `VITE_SUPABASE_PUBLISHABLE_KEY` **só para o ambiente Preview** com os dados do projeto de teste.
-5. Abra o pull request: o link de prévia da Vercel usará o banco de teste. Convide a si mesmo
-   (passo 7), entre, crie um perfil de Gestor e um de Fornecedor com e-mails seus
-   (ex.: `seunome+gestor@gmail.com`) e confira o que cada um vê e consegue gravar.
+5. Abra o pull request: o link de prévia da Vercel usará o banco de teste. Entre como Diretoria
+   (passo 5), cadastre um Gestor e um Fornecedor com senhas provisórias e confira, entrando
+   com cada um, o que cada perfil vê e consegue gravar.
 6. Deu tudo certo? Siga o passo a passo abaixo no projeto de produção.
 
 ## Passo a passo (produção)
 
-> Faça os passos 1 a 6 **antes** de publicar o novo frontend. Entre o passo 5 (SQL) e o passo 8
+> Faça os passos 1 a 4 **antes** de publicar o novo frontend. Entre o passo 3 (SQL) e o passo 6
 > (deploy) o site antigo deixa de funcionar — faça-os em sequência, em horário de pouco uso.
 
 ### 1. Backup
 
 O backup automático (`backup.sql`) já guarda uma cópia diária e o histórico de alterações.
 Antes de migrar, baixe também uma cópia manual: no site, **Gestão de Usuários → Baixar Backup**.
-Em **Database → Backups** confira que existe um backup recente. Opcional, para guardar a lista
-de usuários atual (sem as senhas) antes da migração, rode no **SQL Editor**:
-
-```sql
-select id, data - 'senha' as usuario from public.sla_records where collection = 'users';
-```
 
 ### 2. Autenticação
 
-**Authentication → Sign In / Providers**
+**Authentication → Sign In / Providers → Email**
 - **Email**: habilitado.
-- **Allow new users to sign up**: **desligado** (só entra quem for convidado).
-- **Confirm email**: ligado.
-- **Minimum password length**: 8 (o app já exige 8).
+- **Allow new users to sign up**: **desligado** (ninguém se cadastra sozinho).
+- **Minimum password length**: 8.
 
 **Authentication → URL Configuration**
 - **Site URL**: `https://www.slarededor.com.br`
-- **Redirect URLs** (adicione):
-  - `https://www.slarededor.com.br/**`
-  - `https://slarededor.com.br/**`
-  - `http://localhost:3000/**` (desenvolvimento)
 
-### 3. Envio de e-mails (SMTP)
+### 3. Rodar a migração
 
-O servidor de e-mail padrão do Supabase só entrega para membros da equipe do projeto e tem
-limite de poucos e-mails por hora — **não serve para produção**. Em
-**Authentication → Emails → SMTP Settings**, habilite **Custom SMTP** com o SMTP corporativo
-(ou um serviço como Resend, SendGrid, Amazon SES). Opção mais simples: uma conta Gmail própria do
-sistema com "senha de app" (Conta Google → Segurança → Verificação em duas etapas → Senhas de app):
-host `smtp.gmail.com`, porta `465`, usuário = o e-mail, senha = a senha de app (limite de ~500 e-mails/dia). Remetente sugerido:
-`nao-responda@slarededor.com.br`, nome "SLA de Fornecedores — Rede D'Or".
-
-Depois, em **Authentication → Rate Limits**, ajuste "emails sent per hour" para comportar o
-convite inicial de todos os usuários (ex.: 60).
-
-### 4. Modelos de e-mail em português
-
-Em **Authentication → Emails → Templates**:
-
-**Invite user** — Assunto: `Convite: SLA de Fornecedores`
-```html
-<h2>Você foi convidado(a) para o sistema SLA de Fornecedores</h2>
-<p>A Diretoria Operacional liberou seu acesso ao sistema de SLA de Fornecedores.</p>
-<p><a href="{{ .ConfirmationURL }}">Clique aqui para criar sua senha e entrar</a></p>
-<p>O link é pessoal, vale por tempo limitado e só pode ser usado uma vez.</p>
-```
-
-**Reset Password** — Assunto: `Redefinição de senha — SLA de Fornecedores`
-```html
-<h2>Redefinição de senha</h2>
-<p>Recebemos um pedido para redefinir a senha do seu acesso ao sistema SLA de Fornecedores.</p>
-<p><a href="{{ .ConfirmationURL }}">Clique aqui para criar uma nova senha</a></p>
-<p>Se você não fez este pedido, ignore este e-mail: sua senha atual continua valendo.</p>
-```
-
-### 5. Rodar a migração
-
-No **SQL Editor**, cole e execute todo o conteúdo de `migrations/002_auth_rls.sql`
-(projeto novo: rode antes `schema.sql`). Ela roda dentro de uma transação: se algo falhar,
-nada é alterado.
-
-Confira o resultado:
+No **SQL Editor**, cole e execute todo o conteúdo de `migrations/002_auth_rls.sql`.
+Ela roda dentro de uma transação: se algo falhar, nada é alterado. Confira:
 
 ```sql
 -- Perfis migrados (não há coluna de senha)
 select id, email, role, setor_id, fornecedor_id, auth_user_id is not null as tem_login
 from public.profiles order by role, nome;
 
--- Deve retornar 0: a coleção com senhas foi apagada
+-- Deve retornar 0: a coleção antiga de usuários foi apagada
 select count(*) from public.sla_records where collection = 'users';
 
--- Políticas ativas (não deve existir nenhuma "to anon")
+-- Políticas ativas (nenhuma deve ser "to anon")
 select policyname, roles, cmd from pg_policies where tablename in ('sla_records', 'profiles');
 ```
 
-Usuários da coleção antiga com e-mail repetido ou perfil inválido são ignorados — compare a
-lista com o backup do passo 1 e cadastre manualmente o que faltar.
+### 4. Publicar a Edge Function `admin-users`
 
-### 6. Publicar a Edge Function `admin-users`
-
-Ela envia os convites e apaga logins, usando a chave service_role **no servidor**.
-
-**Opção A — pelo painel:** **Edge Functions → Deploy a new function → Via Editor**, nome
+Ela cria logins e troca senhas provisórias (sem enviar e-mail) e apaga logins, usando a chave
+service_role **no servidor**. Em **Edge Functions → Deploy a new function → Via Editor**, nome
 `admin-users`, cole o conteúdo de `functions/admin-users/index.ts` e publique. Mantenha
-**Verify JWT** ligado.
+**Verify JWT** ligado. As variáveis `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` já existem
+nas funções.
 
-**Opção B — pela CLI:**
-```bash
-npx supabase login
-npx supabase functions deploy admin-users --project-ref <ref-do-projeto>
-```
+### 5. Primeiro acesso da Diretoria
 
-As variáveis `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` já existem nas funções; não é
-preciso configurar nada. Sem a função o sistema funciona, mas os convites precisam ser
-enviados à mão (Authentication → Users → Invite user).
+Em **Authentication → Users → Add user → Create new user**: e-mail do administrador
+(`gabriel.kotliarenko@vilanovastar.com.br`), uma senha forte e **Auto Confirm User** marcado.
+Nenhum e-mail é enviado. O login é ligado ao perfil automaticamente (pelo e-mail).
 
-### 7. Primeiro acesso da Diretoria
+### 6. Publicar o frontend
 
-Em **Authentication → Users → Add user → Send invitation**, informe o e-mail do administrador
-(`gabriel.kotliarenko@vilanovastar.com.br`). O login é vinculado ao perfil automaticamente
-(pelo e-mail). Abra o convite, crie a senha e confirme que entra como Diretoria.
-
-### 8. Publicar o frontend
-
-- Faça o merge/deploy desta versão na Vercel.
+- Faça o merge do pull request (a Vercel publica sozinha).
 - Em **Vercel → Settings → Environment Variables**: mantenha `VITE_SUPABASE_URL` e
-  `VITE_SUPABASE_ANON_KEY` (ou `VITE_SUPABASE_PUBLISHABLE_KEY`); **remova** as
-  `VITE_EMAILJS_*`, que não são mais usadas (a recuperação de senha agora é enviada pelo Supabase). Nunca coloque a chave service_role/secret ali.
+  `VITE_SUPABASE_PUBLISHABLE_KEY`; **remova** as `VITE_EMAILJS_*`, que não são mais usadas.
+  Nunca coloque a chave service_role/secret na Vercel.
 
-### 9. Convidar os demais usuários
+### 7. Criar o acesso dos demais usuários
 
-Logado como administrador, abra **Gestão de Usuários**. Cada perfil mostra
-"Login: ativo" ou "convite pendente". Clique em **Convidar pendentes (N)** para enviar todos os
-convites de uma vez (ou "Enviar convite" em cada um). Avise os gestores que chegará um e-mail
-para criarem a própria senha — as senhas antigas ("123") deixam de existir.
-
-Se o envio pela tela falhar, a mensagem explica o motivo; o caminho manual é sempre
-**Authentication → Users → Add user → Send invitation** com o e-mail do perfil.
+Entre como administrador e abra **Gestão de Usuários**. Cada cartão mostra "Login: ativo" ou
+"sem acesso". Clique em **Criar acesso**, confirme a senha provisória sugerida (ou digite outra)
+e entregue-a à pessoa. As senhas antigas ("123") deixam de existir.
 
 ---
 
 ## Operação no dia a dia
 
-- **Novo usuário:** Gestão de Usuários → Cadastrar Novo Usuário. O convite sai ao salvar.
-- **Esqueceu a senha:** o próprio usuário usa "Esqueci minha senha" no login; ou o
-  administrador clica em "Enviar link de nova senha" no cartão do usuário.
+- **Novo usuário:** Gestão de Usuários → Cadastrar Novo Usuário, com senha provisória.
+- **Esqueceu a senha:** o administrador clica em "Nova senha provisória" no cartão do usuário.
 - **Remover acesso:** excluir o usuário na tela. O perfil é apagado (o acesso acaba na hora) e
-  a Edge Function apaga o login. Se a função não estiver publicada, o login fica em
-  Authentication → Users sem acesso a nada; apague-o por lá se quiser.
+  a Edge Function apaga o login.
 - **Trocar perfil/setor:** editar o usuário. Vale no próximo carregamento da página dele.
-- **Trocar e-mail:** editar o usuário e enviar convite para o novo e-mail. O perfil passa a
-  valer para o login que tiver o e-mail novo.
+- **Trocar e-mail:** editar o usuário e definir uma nova senha provisória (cria o login do
+  e-mail novo).
 
 ## Modo local de demonstração
 
@@ -203,7 +152,6 @@ demonstração e desenvolvimento — **não use com dados reais**. Um aviso apar
 | Sintoma | Causa provável |
 |---|---|
 | "Seu login não está vinculado a um perfil" | O e-mail do login é diferente do cadastrado em `profiles`. Corrija o e-mail do perfil (o vínculo é refeito sozinho). |
-| Convite/recuperação não chega | SMTP customizado não configurado (passo 3) ou limite de e-mails por hora. Veja **Authentication → Logs**. |
-| O link do e-mail abre e volta para o login com "link inválido ou expirado" | Link já usado ou expirado, ou a URL do site não está em Redirect URLs (passo 2). |
+| "A função admin-users não está publicada" | Faça o passo 4. Enquanto isso, crie logins em Authentication → Users → Create new user. |
 | "N alteração(ões) não foram salvas por falta de permissão" | O banco recusou uma gravação fora do perfil do usuário; a tela é recarregada com os dados do banco. |
 | Gestor não vê nada | Perfil GESTOR sem `setor_id`, ou setor com id diferente do usado nos fornecedores. |

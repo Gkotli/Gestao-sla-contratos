@@ -37,7 +37,7 @@ const REMOTE = SUPABASE_CONFIGURED;
 StorageService.cleanupLegacyData();
 
 const INITIAL_NOTICE = AUTH_LINK_ERROR
-  ? 'O link de acesso é inválido ou expirou. Solicite um novo em "Esqueci minha senha" ou peça um novo convite à Diretoria.'
+  ? 'O link de acesso é inválido ou expirou. Peça à Diretoria Operacional uma nova senha provisória.'
   : null;
 if (AUTH_LINK_ERROR) clearAuthLink();
 
@@ -222,7 +222,7 @@ export default function App() {
 
   // --- User Handlers ---
   // No Supabase a permissão é conferida de novo pelo banco (RLS em profiles).
-  const handleSaveUser = async (user: User, isNew: boolean): Promise<boolean> => {
+  const handleSaveUser = async (user: User, isNew: boolean, senhaProvisoria?: string): Promise<boolean> => {
     if (currentUser?.role !== 'DIRETORIA') {
       alert('Acesso negado: Apenas a Diretoria possui permissão para gerenciar usuários.');
       return false;
@@ -236,9 +236,9 @@ export default function App() {
       alert(error);
       return false;
     }
-    if (isNew) {
-      const result = await AuthService.sendAccessEmail(user);
-      alert(result.ok ? `Usuário cadastrado. ${result.message}` : `Usuário cadastrado, mas o convite falhou.\n\n${result.message}`);
+    if (senhaProvisoria) {
+      const result = await AuthService.setTemporaryPassword(user, senhaProvisoria);
+      alert(result.ok ? `Usuário salvo. ${result.message}` : `Usuário salvo, mas o acesso não foi criado.\n\n${result.message}`);
     }
     refreshProfiles();
     return true;
@@ -258,25 +258,12 @@ export default function App() {
     refreshProfiles();
   };
 
-  // Convite (sem login ainda) ou link de nova senha (já tem login)
-  const handleSendAccess = async (user: User) => {
-    const result = await AuthService.sendAccessEmail(user);
+  // Cria o login ou troca a senha com uma senha provisória (nenhum e-mail é enviado)
+  const handleSetTemporaryPassword = async (user: User, senhaProvisoria: string) => {
+    if (currentUser?.role !== 'DIRETORIA') return;
+    const result = await AuthService.setTemporaryPassword(user, senhaProvisoria);
     alert(result.message);
     refreshProfiles();
-  };
-
-  // Migração: convida de uma vez todos os perfis que ainda não têm login
-  const handleInvitePending = async () => {
-    const pending = users.filter(u => !u.acessoAtivo);
-    const failures: string[] = [];
-    for (const user of pending) {
-      const result = await AuthService.sendAccessEmail(user);
-      if (!result.ok) failures.push(result.message);
-    }
-    refreshProfiles();
-    alert(failures.length === 0
-      ? `${pending.length} convite(s) enviado(s).`
-      : `${pending.length - failures.length} de ${pending.length} convite(s) enviado(s).\n\n${failures.join('\n\n')}`);
   };
 
   // --- Supplier Handlers ---
@@ -654,8 +641,7 @@ export default function App() {
             remote={REMOTE}
             onSaveUser={handleSaveUser}
             onDeleteUser={(u) => void handleDeleteUser(u)}
-            onSendAccess={REMOTE ? (u) => void handleSendAccess(u) : undefined}
-            onInvitePending={REMOTE ? () => void handleInvitePending() : undefined}
+            onSetTemporaryPassword={REMOTE ? (u, senha) => void handleSetTemporaryPassword(u, senha) : undefined}
             onSelectUser={REMOTE ? undefined : handleSelectUser}
           />
         )}

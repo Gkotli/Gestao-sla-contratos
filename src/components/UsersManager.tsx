@@ -8,15 +8,22 @@ interface UsersManagerProps {
   sectors: Sector[];
   suppliers: Supplier[];
   currentUser: User | null;
-  // true = usuários em public.profiles e login pelo Supabase Auth (convite por e-mail)
+  // true = usuários em public.profiles e login pelo Supabase Auth (senha provisória, sem e-mail)
   remote: boolean;
   // Retorna false quando o salvamento falhou (o formulário continua aberto)
-  onSaveUser: (user: User, isNew: boolean) => Promise<boolean> | void;
+  onSaveUser: (user: User, isNew: boolean, senhaProvisoria?: string) => Promise<boolean> | void;
   onDeleteUser: (user: User) => void;
-  onSendAccess?: (user: User) => void;
-  onInvitePending?: () => void;
+  // Cria o login ou troca a senha com uma senha provisória (nenhum e-mail é enviado)
+  onSetTemporaryPassword?: (user: User, senhaProvisoria: string) => void;
   // Troca de sessão sem senha: só existe no modo local de demonstração
   onSelectUser?: (user: User) => void;
+}
+
+// Senha provisória legível (sem caracteres que confundem, como 0/O e 1/l)
+function gerarSenhaProvisoria(): string {
+  const letras = 'abcdefghjkmnpqrstuvwxyz', numeros = '23456789';
+  const sortear = (chars: string, n: number) => Array.from(crypto.getRandomValues(new Uint32Array(n)), v => chars[v % chars.length]).join('');
+  return `Sla-${sortear(letras, 4)}${sortear(numeros, 4)}`;
 }
 
 export const UsersManager: React.FC<UsersManagerProps> = ({
@@ -27,8 +34,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
   remote,
   onSaveUser,
   onDeleteUser,
-  onSendAccess,
-  onInvitePending,
+  onSetTemporaryPassword,
   onSelectUser
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,12 +45,14 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [cargo, setCargo] = useState('');
+  const [senhaProvisoria, setSenhaProvisoria] = useState('');
   const [role, setRole] = useState<UserRole>('GESTOR');
   const [setorId, setSetorId] = useState(sectors[0]?.id || '');
   const [fornecedorId, setFornecedorId] = useState(suppliers[0]?.id || '');
 
   const openNewModal = () => {
     setEditingUser(null);
+    setSenhaProvisoria('');
     setNome('');
     setEmail('');
     setCargo('Gestor Hospitalar');
@@ -56,6 +64,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
 
   const openEditModal = (u: User) => {
     setEditingUser(u);
+    setSenhaProvisoria('');
     setNome(u.nome);
     setEmail(u.email);
     setCargo(u.cargo);
@@ -65,10 +74,12 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
     setIsModalOpen(true);
   };
 
-  const pendingCount = users.filter(u => !u.acessoAtivo).length;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (senhaProvisoria && (senhaProvisoria.length < 8 || !/[A-Za-z]/.test(senhaProvisoria) || !/[0-9]/.test(senhaProvisoria))) {
+      alert('A senha provisória deve ter pelo menos 8 caracteres, com letras e números.');
+      return;
+    }
 
     const userData: User = {
       id: editingUser?.id || `user_${Date.now()}`,
@@ -83,7 +94,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
     };
 
     setSaving(true);
-    const ok = await onSaveUser(userData, !editingUser);
+    const ok = await onSaveUser(userData, !editingUser, senhaProvisoria || undefined);
     setSaving(false);
     if (ok !== false) setIsModalOpen(false);
   };
@@ -98,17 +109,6 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
         </div>
 
         <div className="flex flex-wrap gap-2 self-start sm:self-auto">
-          {remote && onInvitePending && pendingCount > 0 && (
-            <button
-              onClick={() => {
-                if (confirm(`Enviar convite por e-mail para ${pendingCount} usuário(s) que ainda não têm login?`)) onInvitePending();
-              }}
-              className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white border border-[#123768] hover:bg-slate-50 rounded-md shadow-sm transition cursor-pointer"
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Convidar pendentes ({pendingCount})
-            </button>
-          )}
           <button
             onClick={() => {
               const { total } = downloadFullBackup(users);
@@ -137,7 +137,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
           <strong className="font-bold block text-[#047857]">Proteção de Privacidade & LGPD:</strong>
           <span>
             {remote
-              ? 'O sistema não armazena senhas. Cada usuário recebe um convite por e-mail e cria a própria senha no Supabase Auth; ninguém (nem os administradores) tem acesso a ela.'
+              ? 'O sistema não armazena senhas e não envia e-mails. A Diretoria define uma senha provisória, entrega à pessoa e, no primeiro acesso, ela cria a própria senha no Supabase Auth; ninguém (nem os administradores) tem acesso a ela.'
               : 'Modo local de demonstração: não há senhas e os dados ficam apenas neste navegador.'}
           </span>
         </div>
@@ -235,7 +235,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                       ) : (
                         <>
                           <Clock className="w-3.5 h-3.5 mr-2 text-amber-500" />
-                          <span>Login: <strong className="text-[#92400E]">convite pendente</strong></span>
+                          <span>Login: <strong className="text-[#92400E]">sem acesso (defina uma senha provisória)</strong></span>
                         </>
                       )}
                     </div>
@@ -263,14 +263,20 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   >
                     Entrar como este Usuário
                   </button>
-                ) : onSendAccess ? (
+                ) : onSetTemporaryPassword ? (
                   <button
-                    onClick={() => onSendAccess(u)}
-                    title={u.acessoAtivo ? 'Envia um link para o usuário criar uma nova senha' : 'Envia o convite de acesso por e-mail'}
+                    onClick={() => {
+                      const senha = window.prompt(
+                        `${u.acessoAtivo ? 'Nova senha provisória' : 'Senha provisória para criar o acesso'} de ${u.nome}.\n\nCopie e entregue à pessoa (nenhum e-mail é enviado). No primeiro acesso ela criará a própria senha.`,
+                        gerarSenhaProvisoria()
+                      );
+                      if (senha) onSetTemporaryPassword(u, senha.trim());
+                    }}
+                    title="Define uma senha provisória (nenhum e-mail é enviado)"
                     className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-[#172B4D] bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition cursor-pointer"
                   >
-                    <Send className="w-3.5 h-3.5 mr-1.5" />
-                    {u.acessoAtivo ? 'Enviar link de nova senha' : 'Enviar convite'}
+                    <KeyRound className="w-3.5 h-3.5 mr-1.5" />
+                    {u.acessoAtivo ? 'Nova senha provisória' : 'Criar acesso'}
                   </button>
                 ) : <span />}
 
@@ -397,10 +403,33 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 </div>
               )}
 
-              {remote && !editingUser && (
-                <p className="text-[11px] text-[#475569] bg-slate-50 border border-[#CBD5E1] rounded-md p-2.5 leading-relaxed">
-                  Ao salvar, o usuário recebe um convite no e-mail informado para criar a própria senha.
-                </p>
+              {remote && (
+                <div>
+                  <label className="block font-bold text-[#172B4D] mb-1">
+                    {editingUser?.acessoAtivo ? 'Nova senha provisória (opcional)' : 'Senha provisória (opcional)'}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={senhaProvisoria}
+                      onChange={(e) => setSenhaProvisoria(e.target.value)}
+                      autoComplete="off"
+                      placeholder="Mín. 8 caracteres, letras e números"
+                      className="flex-1 bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 font-mono focus:ring-2 focus:ring-[#123768] focus:border-[#123768] placeholder:text-[#94A3B8]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setSenhaProvisoria(gerarSenhaProvisoria())}
+                      className="px-3 py-2 text-xs font-bold text-[#123768] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50 cursor-pointer"
+                    >
+                      Gerar
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-[#475569] mt-1 leading-relaxed">
+                    Nenhum e-mail é enviado. Entregue a senha provisória pessoalmente; no primeiro acesso o sistema pede que a pessoa crie a própria senha.
+                    {!editingUser && ' Sem senha provisória, o usuário é cadastrado sem acesso (dá para criar depois).'}
+                  </p>
+                </div>
               )}
 
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-[#CBD5E1]">
