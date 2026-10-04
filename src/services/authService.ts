@@ -182,6 +182,31 @@ export const AuthService = {
     }
   },
 
+  // "Primeiro acesso / esqueci minha senha": envia ao próprio e-mail o link para criar a senha.
+  // A resposta não informa se o e-mail está cadastrado (evita descobrir contas).
+  async requestAccessEmail(email: string): Promise<string | null> {
+    try {
+      const db = await getSupabase();
+      const normalized = email.trim().toLowerCase();
+      const { error } = await db.functions.invoke(FUNCTION_NAME, {
+        body: { action: 'request_access', email: normalized, redirectTo: appUrl() }
+      });
+      if (!error) return null;
+      const { status, code } = await functionError(error);
+      if (status === 429 || code === 'over_email_send_rate_limit') {
+        return translateAuthError({ code: 'over_email_send_rate_limit' });
+      }
+      // Função ainda não publicada: quem já tem login recebe pelo menos o link de redefinição
+      if (status === 404 || status === 0) {
+        const { error: resetError } = await db.auth.resetPasswordForEmail(normalized, { redirectTo: appUrl() });
+        return resetError ? translateAuthError(resetError) : null;
+      }
+      return translateAuthError(error);
+    } catch (err: any) {
+      return translateAuthError(err);
+    }
+  },
+
   // Define a senha depois de abrir o link de convite ou de recuperação
   async updatePassword(password: string): Promise<string | null> {
     try {

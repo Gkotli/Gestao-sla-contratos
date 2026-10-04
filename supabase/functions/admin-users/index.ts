@@ -1,11 +1,20 @@
 // Edge Function "admin-users": operações de login que exigem a chave service_role,
-// que nunca pode ir para o navegador. Só atende usuários com perfil DIRETORIA.
+// que nunca pode ir para o navegador.
 //
+// Pública (quem ainda não entrou no sistema):
+//   { action: 'request_access', email, redirectTo } → "Primeiro acesso / esqueci minha senha":
+//        se o e-mail tem perfil e ainda não tem login, envia o convite para criar a senha;
+//        se já tem login, envia o link de redefinição. Só e-mails cadastrados pela Diretoria
+//        recebem algo, e a resposta é sempre a mesma (não revela quem está cadastrado).
+//        O e-mail vai apenas para o próprio usuário; a Diretoria não é notificada.
+//
+// Somente DIRETORIA (confere o login de quem chama):
 //   { action: 'set_password', profileId, password } → cria o login (se não existir) ou troca a
 //                                                     senha, marcando-a como provisória. NÃO envia e-mail.
 //   { action: 'delete', profileId }              → apaga o login (auth.users) do perfil
 //
-// Deploy: veja supabase/README.md (CLI ou editor do painel). Mantenha "Verify JWT" ligado.
+// Deploy: veja supabase/README.md. "Verify JWT" DESLIGADO: a ação pública não tem login, e as
+// ações de Diretoria conferem o token de quem chama aqui dentro.
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
@@ -30,6 +39,36 @@ Deno.serve(async req => {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 
+  let body: { action?: string; profileId?: string; password?: string; email?: string; redirectTo?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return reply(400, { error: 'Requisição inválida' });
+  }
+
+  // Ação pública: primeiro acesso / esqueci minha senha
+  if (body.action === 'request_access') {
+    const email = String(body.email || '').trim().toLowerCase();
+    const generic = reply(200, { ok: true });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return generic;
+    const { data: perfil } = await admin
+      .from('profiles')
+      .select('id, auth_user_id')
+      .eq('email', email) // e-mails dos perfis são gravados em minúsculas (gatilho do banco)
+      .maybeSingle();
+    if (!perfil) return generic;
+    const redirectTo = body.redirectTo || undefined;
+    const { error } = perfil.auth_user_id
+      ? await admin.auth.resetPasswordForEmail(email, { redirectTo })
+      : await admin.auth.admin.inviteUserByEmail(email, { redirectTo });
+    if (error) {
+      console.error('[admin-users] request_access:', error.message);
+      // Limite de envio: a pessoa precisa saber que deve aguardar
+      if (/rate limit/i.test(error.message)) return reply(429, { error: 'over_email_send_rate_limit' });
+    }
+    return generic;
+  }
+
   // Quem está chamando: valida o token do usuário logado e confere o perfil
   const token = (req.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
   const { data: caller, error: callerError } = await admin.auth.getUser(token);
@@ -41,13 +80,6 @@ Deno.serve(async req => {
     .eq('auth_user_id', caller.user.id)
     .maybeSingle();
   if (callerProfile?.role !== 'DIRETORIA') return reply(403, { error: 'Apenas a Diretoria gerencia usuários' });
-
-  let body: { action?: string; profileId?: string; password?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return reply(400, { error: 'Requisição inválida' });
-  }
 
   const { data: profile } = await admin
     .from('profiles')

@@ -37,7 +37,7 @@ const REMOTE = SUPABASE_CONFIGURED;
 StorageService.cleanupLegacyData();
 
 const INITIAL_NOTICE = AUTH_LINK_ERROR
-  ? 'O link de acesso é inválido ou expirou. Peça à Diretoria Operacional uma nova senha provisória.'
+  ? 'O link de acesso é inválido ou expirou. Peça um novo em "Primeiro acesso ou esqueci a senha".'
   : null;
 if (AUTH_LINK_ERROR) clearAuthLink();
 

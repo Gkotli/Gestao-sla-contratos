@@ -8,12 +8,12 @@ interface UsersManagerProps {
   sectors: Sector[];
   suppliers: Supplier[];
   currentUser: User | null;
-  // true = usuários em public.profiles e login pelo Supabase Auth (senha provisória, sem e-mail)
+  // true = usuários em public.profiles e login pelo Supabase Auth
   remote: boolean;
   // Retorna false quando o salvamento falhou (o formulário continua aberto)
   onSaveUser: (user: User, isNew: boolean, senhaProvisoria?: string) => Promise<boolean> | void;
   onDeleteUser: (user: User) => void;
-  // Cria o login ou troca a senha com uma senha provisória (nenhum e-mail é enviado)
+  // Alternativa ao e-mail: cria o login ou troca a senha com uma senha provisória
   onSetTemporaryPassword?: (user: User, senhaProvisoria: string) => void;
   // Troca de sessão sem senha: só existe no modo local de demonstração
   onSelectUser?: (user: User) => void;
@@ -137,7 +137,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
           <strong className="font-bold block text-[#047857]">Proteção de Privacidade & LGPD:</strong>
           <span>
             {remote
-              ? 'O sistema não armazena senhas e não envia e-mails. A Diretoria define uma senha provisória, entrega à pessoa e, no primeiro acesso, ela cria a própria senha no Supabase Auth; ninguém (nem os administradores) tem acesso a ela.'
+              ? 'O sistema não armazena senhas. No primeiro acesso, a pessoa clica em "Primeiro acesso ou esqueci a senha" no login e recebe no próprio e-mail o link para criar a senha; ninguém (nem os administradores) tem acesso a ela. A Diretoria não recebe e-mails de aviso.'
               : 'Modo local de demonstração: não há senhas e os dados ficam apenas neste navegador.'}
           </span>
         </div>
@@ -235,7 +235,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                       ) : (
                         <>
                           <Clock className="w-3.5 h-3.5 mr-2 text-amber-500" />
-                          <span>Login: <strong className="text-[#92400E]">sem acesso (defina uma senha provisória)</strong></span>
+                          <span>Login: <strong className="text-[#92400E]">aguardando primeiro acesso</strong></span>
                         </>
                       )}
                     </div>
@@ -267,16 +267,16 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   <button
                     onClick={() => {
                       const senha = window.prompt(
-                        `${u.acessoAtivo ? 'Nova senha provisória' : 'Senha provisória para criar o acesso'} de ${u.nome}.\n\nCopie e entregue à pessoa (nenhum e-mail é enviado). No primeiro acesso ela criará a própria senha.`,
+                        `${u.acessoAtivo ? 'Nova senha provisória' : 'Senha provisória para criar o acesso'} de ${u.nome}.\n\nUse só se o link por e-mail não chegar. Copie e entregue à pessoa; no primeiro acesso ela criará a própria senha.`,
                         gerarSenhaProvisoria()
                       );
                       if (senha) onSetTemporaryPassword(u, senha.trim());
                     }}
-                    title="Define uma senha provisória (nenhum e-mail é enviado)"
+                    title="Alternativa ao e-mail: define uma senha provisória"
                     className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-[#172B4D] bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition cursor-pointer"
                   >
                     <KeyRound className="w-3.5 h-3.5 mr-1.5" />
-                    {u.acessoAtivo ? 'Nova senha provisória' : 'Criar acesso'}
+                    {u.acessoAtivo ? 'Senha provisória' : 'Criar acesso com senha provisória'}
                   </button>
                 ) : <span />}
 
@@ -426,8 +426,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     </button>
                   </div>
                   <p className="text-[11px] text-[#475569] mt-1 leading-relaxed">
-                    Nenhum e-mail é enviado. Entregue a senha provisória pessoalmente; no primeiro acesso o sistema pede que a pessoa crie a própria senha.
-                    {!editingUser && ' Sem senha provisória, o usuário é cadastrado sem acesso (dá para criar depois).'}
+                    Normalmente não é preciso: no login, a pessoa usa "Primeiro acesso ou esqueci a senha" e recebe o link no próprio e-mail.
+                    Use a senha provisória só se o e-mail não chegar; no primeiro acesso o sistema pede que a pessoa crie a própria senha.
                   </p>
                 </div>
               )}

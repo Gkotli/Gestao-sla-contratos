@@ -148,8 +148,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // "Esqueci minha senha": por enquanto nenhum e-mail é enviado; a Diretoria define uma senha provisória
+  // "Primeiro acesso / esqueci minha senha": link enviado ao e-mail cadastrado
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => setResendCooldown(prev => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +183,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
     // Sucesso: o App recebe a sessão pelo AuthService e abre o sistema
   };
 
-  const handleOpenForgot = () => setIsForgotModalOpen(true);
+  const handleOpenForgot = () => {
+    setIsForgotModalOpen(true);
+    setForgotEmail(email.trim());
+    setForgotError('');
+    setForgotSent(false);
+  };
+
+  const handleSendAccessLink = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setForgotError('');
+    setForgotLoading(true);
+    const error = await AuthService.requestAccessEmail(forgotEmail);
+    setForgotLoading(false);
+    if (error) {
+      setForgotError(error);
+      return;
+    }
+    setForgotSent(true);
+    setResendCooldown(60);
+  };
 
   const renderCardContent = () => {
     if (setPassword) return <SetPasswordForm {...setPassword} />;
@@ -227,7 +257,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                   onClick={handleOpenForgot}
                   className="text-[11px] font-semibold text-[#123768] hover:underline cursor-pointer"
                 >
-                  Esqueci minha senha
+                  Primeiro acesso ou esqueci a senha
                 </button>
               </div>
               <PasswordInput value={senha} onChange={setSenha} placeholder="••••••••••••" autoComplete="current-password" />
@@ -368,7 +398,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
         </div>
       </div>
 
-      {/* Esqueci minha senha: orientação (sem envio de e-mail) */}
+      {/* Primeiro acesso / esqueci minha senha: link enviado ao e-mail cadastrado */}
       {isForgotModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-lg shadow-2xl border border-[#CBD5E1] p-6 space-y-4 text-xs text-[#172B4D]">
@@ -377,20 +407,78 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                 <div className="w-8 h-8 rounded-full bg-[#123768]/10 flex items-center justify-center text-[#123768]">
                   <KeyRound className="w-4 h-4" />
                 </div>
-                <h3 className="font-bold text-sm text-[#172B4D]">Esqueci minha senha</h3>
+                <div>
+                  <h3 className="font-bold text-sm text-[#172B4D]">Primeiro acesso ou esqueci a senha</h3>
+                  <p className="text-[11px] text-[#475569]">Link enviado ao seu e-mail cadastrado</p>
+                </div>
               </div>
               <button onClick={() => setIsForgotModalOpen(false)} className="text-slate-400 hover:text-[#172B4D] cursor-pointer" title="Fechar">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <InfoAlert message="Procure a Diretoria Operacional (administrador do sistema). Ela define uma senha provisória para você e, no próximo acesso, o sistema pede que você crie a sua nova senha." />
-            <button
-              type="button"
-              onClick={() => setIsForgotModalOpen(false)}
-              className="w-full py-2.5 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow transition cursor-pointer"
-            >
-              Voltar ao login
-            </button>
+
+            {forgotError && <ErrorAlert message={forgotError} />}
+
+            {forgotSent ? (
+              <div className="p-5 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] rounded-md space-y-3 text-center">
+                <CheckCircle2 className="w-8 h-8 mx-auto" />
+                <h4 className="font-bold text-sm">Verifique seu e-mail</h4>
+                <p className="leading-relaxed text-[#172B4D]">
+                  Se <strong>{forgotEmail}</strong> estiver cadastrado no sistema, você receberá um link para criar a sua senha.
+                  Confira também a caixa de spam. O link vale por tempo limitado e só pode ser usado uma vez.
+                </p>
+                <div className="flex items-center justify-between text-[11px] text-[#475569]">
+                  <span>Não recebeu?</span>
+                  {resendCooldown > 0 ? (
+                    <span>Reenviar em {resendCooldown}s</span>
+                  ) : (
+                    <button type="button" onClick={() => handleSendAccessLink()} disabled={forgotLoading} className="text-[#123768] font-bold hover:underline cursor-pointer">
+                      Reenviar link
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsForgotModalOpen(false)}
+                  className="w-full py-2.5 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow transition cursor-pointer"
+                >
+                  Voltar ao login
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSendAccessLink} className="space-y-4">
+                <p className="text-[#475569] leading-relaxed">
+                  Informe o seu e-mail corporativo cadastrado pela Diretoria. Enviaremos para ele um link seguro para você
+                  criar a sua senha (no primeiro acesso ou se tiver esquecido).
+                </p>
+                <div>
+                  <label className="block font-bold text-[#172B4D] mb-1">E-mail corporativo *</label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="email"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      required
+                      placeholder="seu.nome@hospital.com.br"
+                      className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md pl-9 pr-3 py-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768] placeholder:text-[#94A3B8]"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#CBD5E1]">
+                  <button type="button" onClick={() => setIsForgotModalOpen(false)} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer">
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={forgotLoading}
+                    className="px-5 py-2 bg-[#123768] hover:bg-[#0B2850] text-white font-bold rounded-md shadow flex items-center space-x-2 disabled:opacity-60 cursor-pointer"
+                  >
+                    {forgotLoading ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /><span>Enviando...</span></> : <span>Enviar link</span>}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
