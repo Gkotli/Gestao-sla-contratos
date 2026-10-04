@@ -34,6 +34,22 @@ A tela "Gestão de Usuários" continua visível só para o administrador do sist
 
 ---
 
+## Antes da produção: ensaio num projeto de teste (recomendado)
+
+A migração tira o acesso público ao banco e troca o login. Um erro no meio deixaria todos
+sem acesso, por isso ensaie antes num projeto separado (o plano gratuito permite 2 projetos):
+
+1. No Supabase, crie um projeto novo (ex.: `gesta-sla-teste`, região São Paulo).
+2. No SQL Editor dele rode, nesta ordem: `schema.sql`, `backup.sql` e `migrations/002_auth_rls.sql`.
+3. Faça os passos 2, 4 e 6 abaixo nesse projeto (o SMTP padrão serve para o teste: ele só
+   entrega para e-mails da equipe do projeto, ou seja, o seu).
+4. Na Vercel, em **Settings → Environment Variables**, edite `VITE_SUPABASE_URL` e
+   `VITE_SUPABASE_PUBLISHABLE_KEY` **só para o ambiente Preview** com os dados do projeto de teste.
+5. Abra o pull request: o link de prévia da Vercel usará o banco de teste. Convide a si mesmo
+   (passo 7), entre, crie um perfil de Gestor e um de Fornecedor com e-mails seus
+   (ex.: `seunome+gestor@gmail.com`) e confira o que cada um vê e consegue gravar.
+6. Deu tudo certo? Siga o passo a passo abaixo no projeto de produção.
+
 ## Passo a passo (produção)
 
 > Faça os passos 1 a 6 **antes** de publicar o novo frontend. Entre o passo 5 (SQL) e o passo 8
@@ -41,6 +57,8 @@ A tela "Gestão de Usuários" continua visível só para o administrador do sist
 
 ### 1. Backup
 
+O backup automático (`backup.sql`) já guarda uma cópia diária e o histórico de alterações.
+Antes de migrar, baixe também uma cópia manual: no site, **Gestão de Usuários → Baixar Backup**.
 Em **Database → Backups** confira que existe um backup recente. Opcional, para guardar a lista
 de usuários atual (sem as senhas) antes da migração, rode no **SQL Editor**:
 
@@ -68,8 +86,10 @@ select id, data - 'senha' as usuario from public.sla_records where collection = 
 O servidor de e-mail padrão do Supabase só entrega para membros da equipe do projeto e tem
 limite de poucos e-mails por hora — **não serve para produção**. Em
 **Authentication → Emails → SMTP Settings**, habilite **Custom SMTP** com o SMTP corporativo
-(ou um serviço como Resend, SendGrid, Amazon SES). Remetente sugerido:
-`nao-responda@slarededor.com.br`, nome "Gestão de SLA — Rede D'Or".
+(ou um serviço como Resend, SendGrid, Amazon SES). Opção mais simples: uma conta Gmail própria do
+sistema com "senha de app" (Conta Google → Segurança → Verificação em duas etapas → Senhas de app):
+host `smtp.gmail.com`, porta `465`, usuário = o e-mail, senha = a senha de app (limite de ~500 e-mails/dia). Remetente sugerido:
+`nao-responda@slarededor.com.br`, nome "SLA de Fornecedores — Rede D'Or".
 
 Depois, em **Authentication → Rate Limits**, ajuste "emails sent per hour" para comportar o
 convite inicial de todos os usuários (ex.: 60).
@@ -78,18 +98,18 @@ convite inicial de todos os usuários (ex.: 60).
 
 Em **Authentication → Emails → Templates**:
 
-**Invite user** — Assunto: `Convite: Gestão de SLA e Avaliação de Contratos`
+**Invite user** — Assunto: `Convite: SLA de Fornecedores`
 ```html
-<h2>Você foi convidado(a) para o sistema de Gestão de SLA</h2>
-<p>A Diretoria Operacional liberou seu acesso ao sistema de Gestão de SLA e Avaliação de Contratos.</p>
+<h2>Você foi convidado(a) para o sistema SLA de Fornecedores</h2>
+<p>A Diretoria Operacional liberou seu acesso ao sistema de SLA de Fornecedores.</p>
 <p><a href="{{ .ConfirmationURL }}">Clique aqui para criar sua senha e entrar</a></p>
 <p>O link é pessoal, vale por tempo limitado e só pode ser usado uma vez.</p>
 ```
 
-**Reset Password** — Assunto: `Redefinição de senha — Gestão de SLA`
+**Reset Password** — Assunto: `Redefinição de senha — SLA de Fornecedores`
 ```html
 <h2>Redefinição de senha</h2>
-<p>Recebemos um pedido para redefinir a senha do seu acesso ao sistema de Gestão de SLA.</p>
+<p>Recebemos um pedido para redefinir a senha do seu acesso ao sistema SLA de Fornecedores.</p>
 <p><a href="{{ .ConfirmationURL }}">Clique aqui para criar uma nova senha</a></p>
 <p>Se você não fez este pedido, ignore este e-mail: sua senha atual continua valendo.</p>
 ```
@@ -146,7 +166,7 @@ Em **Authentication → Users → Add user → Send invitation**, informe o e-ma
 - Faça o merge/deploy desta versão na Vercel.
 - Em **Vercel → Settings → Environment Variables**: mantenha `VITE_SUPABASE_URL` e
   `VITE_SUPABASE_ANON_KEY` (ou `VITE_SUPABASE_PUBLISHABLE_KEY`); **remova** as
-  `VITE_EMAILJS_*`, que não são mais usadas. Nunca coloque a chave service_role/secret ali.
+  `VITE_EMAILJS_*`, que não são mais usadas (a recuperação de senha agora é enviada pelo Supabase). Nunca coloque a chave service_role/secret ali.
 
 ### 9. Convidar os demais usuários
 
