@@ -95,6 +95,12 @@ export default function App() {
     return suppliers;
   }, [suppliers, currentUser, isDiretoria, isGestor, isFornecedor]);
 
+  // Contratos encerrados continuam no histórico, mas não entram em avaliações novas nem em pendências
+  const activeScopedSuppliers = useMemo(
+    () => scopedSuppliers.filter(s => s.situacao !== 'ENCERRADO'),
+    [scopedSuppliers]
+  );
+
   const scopedEvaluations = useMemo(() => {
     if (!currentUser) return [];
     if (isDiretoria) return evaluations;
@@ -471,7 +477,7 @@ export default function App() {
 
         {activeTab === 'new-eval' && currentUser.role !== 'FORNECEDOR' && (
           <EvaluationForm
-            suppliers={scopedSuppliers}
+            suppliers={activeScopedSuppliers}
             sectors={scopedSectors}
             currentUser={currentUser}
             initialEvaluation={editingEvaluation}
@@ -485,7 +491,7 @@ export default function App() {
 
         {activeTab === 'pending-evals' && currentUser.role !== 'FORNECEDOR' && (
           <PendingEvaluationsView
-            suppliers={scopedSuppliers}
+            suppliers={activeScopedSuppliers}
             sectors={scopedSectors}
             evaluations={scopedEvaluations}
             users={users}

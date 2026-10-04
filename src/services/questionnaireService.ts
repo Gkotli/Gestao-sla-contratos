@@ -18,6 +18,17 @@ export class QuestionnaireService {
       return this.getStandardFallback('Fornecedor não selecionado');
     }
 
+    // 0. Vínculo fixo do cadastro (não depende do nome exibido)
+    if (supplier.questionarioId && SUPPLIER_QUESTIONNAIRES_DATA[supplier.questionarioId]) {
+      const qs = SUPPLIER_QUESTIONNAIRES_DATA[supplier.questionarioId];
+      return {
+        questions: qs.map(q => ({ ...q })),
+        isCustom: true,
+        label: `Questionário padrão de ${supplier.nomeFantasia} - ${qs.length} perguntas`,
+        supplierKey: supplier.questionarioId
+      };
+    }
+
     // 1. Busca por nomeFantasia exato
     if (supplier.nomeFantasia && SUPPLIER_QUESTIONNAIRES_DATA[supplier.nomeFantasia]) {
       const qs = SUPPLIER_QUESTIONNAIRES_DATA[supplier.nomeFantasia];

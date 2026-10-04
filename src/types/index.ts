@@ -50,6 +50,11 @@ export interface Supplier {
   contatoTelefone: string;
   numeroContrato: string;
   vigenciaFim: string;
+  vigenciaInicio?: string;
+  // Questionário específico (chave em supplierQuestionnairesData). Fixo: não muda se o nome mudar.
+  questionarioId?: string;
+  // Contrato encerrado: sai das avaliações novas, mas continua no histórico e nos laudos
+  situacao?: 'ATIVO' | 'ENCERRADO';
 }
 
 export interface EvaluationAnswers {
