@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sector, Supplier, User, UserRole } from '../types';
-import { UserPlus, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, Send, Clock } from 'lucide-react';
+import { downloadFullBackup } from '../services/exportService';
+import { UserPlus, Download, KeyRound, ShieldCheck, Mail, Building2, User as UserIcon, Trash2, Edit3, Lock, CheckCircle2, Send, Clock } from 'lucide-react';
 
 interface UsersManagerProps {
   users: User[];
@@ -109,6 +110,17 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
             </button>
           )}
           <button
+            onClick={() => {
+              const { total } = downloadFullBackup(users);
+              alert(`Backup gerado com ${total} registros. Guarde o arquivo em uma pasta segura da rede (ele contém dados pessoais).`);
+            }}
+            title="Baixa uma cópia completa dos dados (usuários, setores, fornecedores, avaliações e planos)"
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            Baixar Backup
+          </button>
+          <button
             onClick={openNewModal}
             className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
           >
@@ -119,10 +131,10 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
       </div>
 
       {/* Aviso de Segurança e Privacidade LGPD */}
-      <div className="bg-[#ECFDF5] border border-emerald-200 p-4 rounded-lg flex items-center space-x-3 text-xs text-[#047857]">
+      <div className="bg-[#ECFDF5] border border-[#A7F3D0] p-4 rounded-lg flex items-center space-x-3 text-xs text-[#047857]">
         <ShieldCheck className="w-6 h-6 text-[#047857] flex-shrink-0" />
         <div>
-          <strong className="font-bold block text-emerald-950">Proteção de Privacidade & LGPD:</strong>
+          <strong className="font-bold block text-[#047857]">Proteção de Privacidade & LGPD:</strong>
           <span>
             {remote
               ? 'O sistema não armazena senhas. Cada usuário recebe um convite por e-mail e cria a própria senha no Supabase Auth; ninguém (nem os administradores) tem acesso a ela.'
@@ -133,13 +145,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
 
       {/* Troca Rápida de Sessão Demo (apenas modo local) */}
       {onSelectUser && (
-      <div className="bg-[#F5F7FA] p-5 rounded-lg shadow-sm border border-[#D0D5DD] space-y-3">
+      <div className="bg-slate-50 p-5 rounded-lg shadow-sm border border-[#CBD5E1] space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <KeyRound className="w-5 h-5 text-[#0052CC]" />
-            <h3 className="font-bold text-sm text-[#101828]">Alternar Sessão Ativa de Usuário</h3>
+            <KeyRound className="w-5 h-5 text-[#123768]" />
+            <h3 className="font-bold text-sm text-[#172B4D]">Alternar Sessão Ativa de Usuário</h3>
           </div>
-          <span className="text-xs text-[#667085]">Selecione o usuário autenticado</span>
+          <span className="text-xs text-[#475569]">Selecione o usuário autenticado</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 pt-1">
@@ -151,25 +163,25 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 onClick={() => onSelectUser(u)}
                 className={`p-3 rounded-md border text-left transition flex flex-col justify-between cursor-pointer ${
                   isSelected
-                    ? 'bg-white border-2 border-[#10B981] shadow-md ring-2 ring-[#10B981]/20 text-[#101828]'
-                    : 'bg-white border-[#D0D5DD] text-[#101828] shadow-sm hover:border-[#0052CC] hover:shadow-md'
+                    ? 'bg-white border-2 border-[#047857] shadow-md ring-2 ring-[#047857]/20 text-[#172B4D]'
+                    : 'bg-white border-[#CBD5E1] text-[#172B4D] shadow-sm hover:border-[#123768] hover:shadow-md'
                 }`}
               >
                 <div>
                   <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border ${
-                    u.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#0052CC] border-[#BFDBFE]' :
-                    u.role === 'GESTOR' ? 'bg-[#F3F4F6] text-[#667085] border-[#E5E7EB]' :
-                    'bg-[#F1F5F9] text-[#64748B] border-[#CBD5E1]'
+                    u.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]' :
+                    u.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]' :
+                    'bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]'
                   }`}>
                     {u.role}
                   </span>
-                  <p className="font-bold text-xs mt-1.5 truncate text-[#101828]">{u.nome}</p>
-                  <p className="text-[11px] text-[#667085] truncate">{u.email}</p>
+                  <p className="font-bold text-xs mt-1.5 truncate text-[#172B4D]">{u.nome}</p>
+                  <p className="text-[11px] text-[#475569] truncate">{u.email}</p>
                 </div>
 
                 {isSelected && (
-                  <span className="mt-2 text-[10px] font-bold bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 rounded flex items-center w-fit">
-                    <CheckCircle2 className="w-3 h-3 mr-1 text-[#10B981]" /> Logado Agora
+                  <span className="mt-2 text-[10px] font-bold bg-[#ECFDF5] text-[#047857] px-2 py-0.5 rounded flex items-center w-fit">
+                    <CheckCircle2 className="w-3 h-3 mr-1 text-[#047857]" /> Logado Agora
                   </span>
                 )}
               </button>
@@ -192,8 +204,8 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   <div className="space-y-0.5">
                     <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                       u.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]' :
-                      u.role === 'GESTOR' ? 'bg-teal-50 text-teal-800 border-teal-200' :
-                      'bg-amber-50 text-amber-800 border-amber-200'
+                      u.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]' :
+                      'bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]'
                     }`}>
                       {u.role === 'DIRETORIA' ? 'Diretoria Operacional (Admin)' :
                        u.role === 'GESTOR' ? 'Gestor de Setor Hospitalar' :
@@ -203,7 +215,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     <p className="text-xs text-[#475569]">{u.cargo}</p>
                   </div>
 
-                  <div className="p-2.5 bg-slate-100 text-slate-700 rounded-md">
+                  <div className="p-2.5 bg-slate-100 text-[#172B4D] rounded-md">
                     <UserIcon className="w-5 h-5" />
                   </div>
                 </div>
@@ -223,7 +235,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                       ) : (
                         <>
                           <Clock className="w-3.5 h-3.5 mr-2 text-amber-500" />
-                          <span>Login: <strong className="text-amber-700">convite pendente</strong></span>
+                          <span>Login: <strong className="text-[#92400E]">convite pendente</strong></span>
                         </>
                       )}
                     </div>
@@ -247,7 +259,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 {onSelectUser ? (
                   <button
                     onClick={() => onSelectUser(u)}
-                    className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition"
+                    className="px-3 py-1.5 text-xs font-bold text-[#172B4D] bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition"
                   >
                     Entrar como este Usuário
                   </button>
@@ -255,7 +267,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   <button
                     onClick={() => onSendAccess(u)}
                     title={u.acessoAtivo ? 'Envia um link para o usuário criar uma nova senha' : 'Envia o convite de acesso por e-mail'}
-                    className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-slate-700 bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition cursor-pointer"
+                    className="inline-flex items-center px-3 py-1.5 text-xs font-bold text-[#172B4D] bg-white border border-[#CBD5E1] hover:bg-slate-100 rounded-md transition cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5 mr-1.5" />
                     {u.acessoAtivo ? 'Enviar link de nova senha' : 'Enviar convite'}
@@ -265,7 +277,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={() => openEditModal(u)}
-                    className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-200 rounded-md transition"
+                    className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-200 rounded-md transition"
                     title="Editar Usuário"
                   >
                     <Edit3 className="w-4 h-4" />
@@ -395,7 +407,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
+                  className="px-4 py-2 text-xs font-medium text-[#172B4D] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
                 >
                   Cancelar
                 </button>

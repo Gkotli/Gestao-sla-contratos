@@ -25,14 +25,14 @@ const inputClass = 'w-full pl-10 pr-3 py-2.5 bg-white border border-[#CBD5E1] te
 const primaryButtonClass = 'w-full py-3 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition-colors cursor-pointer flex items-center justify-center disabled:opacity-60';
 
 const ErrorAlert: React.FC<{ message: string }> = ({ message }) => (
-  <div className="p-3 bg-rose-50 border border-rose-200 text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
+  <div className="p-3 bg-rose-50 border border-[#FECACA] text-[#B91C1C] text-xs rounded-md flex items-center space-x-2">
     <AlertCircle className="w-4 h-4 text-[#B91C1C] flex-shrink-0" />
     <span>{message}</span>
   </div>
 );
 
 const InfoAlert: React.FC<{ message: string }> = ({ message }) => (
-  <div className="p-3 bg-sky-50 border border-sky-200 text-[#123768] text-xs rounded-md flex items-start space-x-2">
+  <div className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] text-xs rounded-md flex items-start space-x-2">
     <Info className="w-4 h-4 text-[#123768] flex-shrink-0 mt-0.5" />
     <span className="leading-relaxed">{message}</span>
   </div>
@@ -61,7 +61,7 @@ const PasswordInput: React.FC<{
       <button
         type="button"
         onClick={() => setVisible(!visible)}
-        className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+        className="absolute right-3 top-3 text-slate-400 hover:text-[#475569] cursor-pointer"
         title={visible ? 'Ocultar senha' : 'Mostrar senha'}
       >
         {visible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -287,8 +287,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                     className="w-full p-3 bg-slate-50 hover:bg-slate-100/80 border border-[#CBD5E1] rounded-md text-left transition flex items-center justify-between group cursor-pointer"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-slate-600">
-                        <Building2 className="w-4 h-4 text-slate-600" />
+                      <div className="p-2 bg-white rounded border border-[#CBD5E1] text-[#475569]">
+                        <Building2 className="w-4 h-4 text-[#475569]" />
                       </div>
                       <div>
                         <span className="text-[10px] font-semibold text-[#475569] block">Conta de demonstração</span>
@@ -296,7 +296,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                         <span className="text-[11px] text-[#475569] block truncate">{u.email}</span>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#172B4D]" />
                   </button>
                 ))}
             </div>
@@ -307,7 +307,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] flex flex-col md:flex-row font-sans text-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F1F5F9] flex flex-col md:flex-row font-sans text-[#172B4D] overflow-x-hidden">
 
       {/* ================================================== */}
       {/* 1. LADO ESQUERDO: PAINEL INSTITUCIONAL AZUL (40%)  */}
@@ -326,21 +326,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
 
         {/* Centro: Título e Descrição Institucional */}
         <div className="relative z-10 my-8 md:my-auto space-y-4">
-          <div className="w-12 h-1 bg-sky-400 rounded-full" />
+          <div className="w-12 h-1 bg-white/70 rounded-full" />
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Gestão de SLA e<br />Avaliação de Contratos
+            SLA de<br />Fornecedores
           </h1>
 
-          <p className="text-xs sm:text-sm text-sky-100/90 leading-relaxed max-w-md font-medium">
-            Sistema interno da Diretoria Operacional para acompanhamento de contratos, SLA e avaliações anuais.
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md font-medium">
+            Sistema interno da Diretoria Operacional para a avaliação anual de desempenho dos contratos.
           </p>
         </div>
 
         {/* Rodapé do Painel Esquerdo: Mensagem de Acesso Restrito */}
         <div className="relative z-10 pt-6 border-t border-white/15">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-sky-200/90">
-            <ShieldCheck className="w-4 h-4 text-sky-400 flex-shrink-0" />
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-200">
+            <ShieldCheck className="w-4 h-4 text-slate-300 flex-shrink-0" />
             <span>Acesso restrito a usuários autorizados</span>
           </div>
         </div>
@@ -408,7 +408,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
               </div>
               <button
                 onClick={() => setIsForgotModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold cursor-pointer"
+                className="text-slate-400 hover:text-[#172B4D] text-lg font-bold cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -422,7 +422,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
             )}
 
             {forgotSent ? (
-              <div className="p-5 bg-[#ECFDF5] border border-emerald-200 text-[#047857] rounded-md space-y-3 text-center">
+              <div className="p-5 bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] rounded-md space-y-3 text-center">
                 <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-[#047857]">
                   <CheckCircle2 className="w-7 h-7" />
                 </div>
@@ -434,7 +434,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                 <div className="flex items-center justify-between text-[11px] text-[#475569] pt-1">
                   <span>Não recebeu?</span>
                   {resendCooldown > 0 ? (
-                    <span className="text-slate-400 font-medium">Reenviar em {resendCooldown}s</span>
+                    <span className="text-[#475569] font-medium">Reenviar em {resendCooldown}s</span>
                   ) : (
                     <button
                       type="button"
@@ -480,7 +480,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ remote, users = [], onLoca
                   <button
                     type="button"
                     onClick={() => setIsForgotModalOpen(false)}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md font-semibold cursor-pointer"
+                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-[#172B4D] rounded-md font-semibold cursor-pointer"
                   >
                     Cancelar
                   </button>

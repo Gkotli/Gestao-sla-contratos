@@ -1,4 +1,4 @@
-import { Supplier, SupplierQuestionItem } from '../types';
+import { Evaluation, Supplier, SupplierQuestionItem } from '../types';
 import { SUPPLIER_QUESTIONNAIRES_DATA } from '../data/supplierQuestionnairesData';
 import { EVALUATION_QUESTIONS } from './questions';
 
@@ -74,6 +74,39 @@ export class QuestionnaireService {
   /**
    * Agrupa uma lista de perguntas por sua respectiva categoria.
    */
+  /**
+   * Perguntas efetivamente avaliadas: as salvas na avaliação ou, se esse campo se perdeu,
+   * reconstruídas a partir dos códigos das respostas (ex.: MANAIR001). Retorna null quando
+   * a avaliação usa as 15 perguntas padrão.
+   */
+  static resolveEvaluatedQuestions(evaluation: Evaluation): SupplierQuestionItem[] | null {
+    if (evaluation.perguntasAvaliadas && evaluation.perguntasAvaliadas.length > 0) {
+      return evaluation.perguntasAvaliadas;
+    }
+
+    const answeredIds = Object.keys(evaluation.respostas || {});
+    const standardIds = new Set(EVALUATION_QUESTIONS.map(q => q.id));
+    if (answeredIds.length === 0 || answeredIds.every(id => standardIds.has(id))) return null;
+
+    const byId = new Map<string, SupplierQuestionItem>();
+    Object.values(SUPPLIER_QUESTIONNAIRES_DATA).forEach(list => list.forEach(q => byId.set(q.id, q)));
+
+    // Usa o questionário completo do fornecedor (inclui perguntas não respondidas)
+    const owner = answeredIds.map(id => byId.get(id)).find(Boolean);
+    const fullList = owner ? SUPPLIER_QUESTIONNAIRES_DATA[owner.fornecedor] : undefined;
+    const rebuilt = fullList
+      ? fullList.map(q => ({ ...q }))
+      : answeredIds.map(id => byId.get(id)).filter((q): q is SupplierQuestionItem => Boolean(q));
+
+    // Garante que nenhuma resposta fique de fora
+    answeredIds.forEach(id => {
+      if (!rebuilt.some(q => q.id === id)) {
+        rebuilt.push(byId.get(id) || { id, fornecedor: '', categoria: 'OUTROS', pergunta: `Pergunta ${id}`, obrigatoria: false, peso: 1 });
+      }
+    });
+    return rebuilt;
+  }
+
   static groupByCategory(questions: SupplierQuestionItem[]): Record<string, SupplierQuestionItem[]> {
     const groups: Record<string, SupplierQuestionItem[]> = {};
 

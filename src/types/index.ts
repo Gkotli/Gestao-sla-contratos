@@ -8,6 +8,7 @@ export interface User {
   id: string;
   nome: string;
   email: string;
+  sessaoAlternadaPor?: string;  // só na sessão: administrador que entrou como este usuário
   cargo: string;
   role: UserRole;
   setorId?: string;       // Vinculado se for GESTOR
@@ -73,6 +74,28 @@ export interface SupplierQuestionItem {
   justificativaAdicao?: string;
 }
 
+// Registro de que o laudo foi encaminhado ao fornecedor (comprovação de comunicação)
+export interface EnvioLaudo {
+  id: string;
+  dataHora: string;          // ISO
+  enviadoPor: string;
+  enviadoPorEmail?: string;
+  destinatario: string;
+  assunto: string;
+  meio: 'OUTLOOK';
+  codigoLaudo: string;       // código de verificação do conteúdo enviado
+}
+
+// Ação feita pelo próprio fornecedor, logado com a conta dele no site
+export interface AcaoFornecedorSite {
+  dataHora: string;          // ISO
+  usuarioId: string;
+  nome: string;
+  email: string;
+  codigoLaudo: string;       // versão do laudo vista/validada
+  navegador?: string;
+}
+
 export interface Evaluation {
   id: string;
   fornecedorId: string;
@@ -112,6 +135,15 @@ export interface Evaluation {
   parecerFornecedor?: string;
   assinaturaBase64?: string;
   assinaturaDigitalUrl?: string;
+  cienciaRegistradaPor?: string;   // usuário que registrou a ciência (fornecedor ou gestor em nome dele)
+
+  historicoEnvios?: EnvioLaudo[];
+  visualizacaoFornecedor?: AcaoFornecedorSite;   // primeira vez que o fornecedor abriu o laudo no site
+  validacaoFornecedor?: AcaoFornecedorSite;      // fornecedor validou o laudo no site
+
+  // Avaliação de anos anteriores transcrita de formulário em papel
+  origemRegistro?: 'PAPEL_HISTORICO';
+  fonteDocumento?: string;                       // ex.: "SLA - Manutenção 2024.pdf, p. 3"
 }
 
 export interface ActionPlan {

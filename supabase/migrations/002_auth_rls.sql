@@ -311,22 +311,31 @@ create policy profiles_delete on public.profiles
   using ((select private.user_role()) = 'DIRETORIA');
 
 -- ---------------------------------------------------------------------
--- 8. Ciência / assinatura do fornecedor
+-- 8. Ciência, visualização e validação do fornecedor
 -- ---------------------------------------------------------------------
--- O fornecedor só altera estes campos, e só em avaliações do próprio fornecedorId.
--- Qualquer outro campo enviado é ignorado.
+-- O fornecedor não grava direto na tabela: tudo passa por esta função, que
+--   - só aceita avaliações do próprio fornecedorId;
+--   - copia apenas os campos de ciência/assinatura (os demais são ignorados);
+--   - registra visualização e validação com data/hora do SERVIDOR e a identidade
+--     da conta logada (nome/e-mail do perfil), sem confiar no que o navegador envia.
+-- Do navegador só se aproveitam o código de verificação do laudo e o navegador usado.
 create or replace function public.registrar_ciencia(p_evaluation_id text, p_ciencia jsonb)
 returns jsonb
 language plpgsql security definer set search_path = ''
 as $$
 declare
   v_fornecedor text := private.user_fornecedor();
+  v_perfil public.profiles%rowtype;
   v_patch jsonb;
   v_data jsonb;
+  v_agora text := to_char(now() at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');
+  v_acao jsonb;
 begin
   if private.user_role() is distinct from 'FORNECEDOR' or v_fornecedor is null then
     raise exception 'Somente o fornecedor registra ciência por esta função.' using errcode = '42501';
   end if;
+
+  select * into v_perfil from public.profiles where auth_user_id = auth.uid();
 
   select data into v_data
     from public.sla_records
@@ -350,6 +359,45 @@ begin
     raise exception 'Status de assinatura inválido para o fornecedor.' using errcode = '42501';
   end if;
 
+  -- Registro montado pelo servidor (data/hora e identidade não vêm do navegador)
+  v_acao := jsonb_build_object(
+    'dataHora', v_agora,
+    'usuarioId', v_perfil.id,
+    'nome', v_perfil.nome,
+    'email', v_perfil.email,
+    'codigoLaudo', left(coalesce(p_ciencia->'validacaoFornecedor'->>'codigoLaudo',
+                                 p_ciencia->'visualizacaoFornecedor'->>'codigoLaudo', ''), 20),
+    'navegador', left(coalesce(p_ciencia->'validacaoFornecedor'->>'navegador',
+                               p_ciencia->'visualizacaoFornecedor'->>'navegador', ''), 300)
+  );
+
+  -- Primeira visualização: só é gravada uma vez
+  if p_ciencia ? 'visualizacaoFornecedor' and not (v_data ? 'visualizacaoFornecedor') then
+    v_patch := v_patch || jsonb_build_object('visualizacaoFornecedor', v_acao);
+  end if;
+
+  -- Validação no site (pode ser refeita quando o laudo muda): vale como ciência do fornecedor
+  if p_ciencia ? 'validacaoFornecedor'
+     and (p_ciencia->'validacaoFornecedor'->>'codigoLaudo') is distinct from (v_data->'validacaoFornecedor'->>'codigoLaudo') then
+    v_patch := v_patch || jsonb_build_object(
+      'validacaoFornecedor', v_acao,
+      'statusAssinatura', 'ASSINADO_CIENTE',
+      'dataCiencia', left(v_agora, 10)
+    );
+    if not (v_data ? 'visualizacaoFornecedor') then
+      v_patch := v_patch || jsonb_build_object('visualizacaoFornecedor', v_acao);
+    end if;
+  end if;
+
+  -- Quem registrou a ciência é sempre a conta logada
+  if v_patch ? 'statusAssinatura' or v_patch ? 'validacaoFornecedor' then
+    v_patch := v_patch || jsonb_build_object('cienciaRegistradaPor', v_perfil.nome);
+  end if;
+
+  if v_patch = '{}'::jsonb then
+    return v_data;
+  end if;
+
   update public.sla_records
      set data = data || v_patch
    where collection = 'evaluations'
@@ -361,5 +409,18 @@ end $$;
 
 revoke all on function public.registrar_ciencia(text, jsonb) from public, anon;
 grant execute on function public.registrar_ciencia(text, jsonb) to authenticated;
+
+-- ---------------------------------------------------------------------
+-- 9. Backups (supabase/backup.sql): retira cópias da antiga coleção de usuários
+-- ---------------------------------------------------------------------
+do $$
+begin
+  if to_regclass('public.sla_records_historico') is not null then
+    delete from public.sla_records_historico where collection = 'users';
+  end if;
+  if to_regclass('public.sla_records_backup') is not null then
+    delete from public.sla_records_backup where collection = 'users';
+  end if;
+end $$;
 
 commit;

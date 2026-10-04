@@ -202,8 +202,10 @@ async function sendOp(db: SupabaseClient, role: UserRole, op: OutboxOp) {
     if (op.collection !== 'evaluations' || op.data === null) {
       throw { code: '42501', message: 'Fornecedor só pode registrar ciência de avaliações.' };
     }
-    const { error } = await db.rpc('registrar_ciencia', { p_evaluation_id: op.id, p_ciencia: op.data });
+    const { data, error } = await db.rpc('registrar_ciencia', { p_evaluation_id: op.id, p_ciencia: op.data });
     if (error) throw error;
+    // A data/hora e a identidade da validação são definidas pelo servidor: mostra a versão gravada
+    if (data && applyToCache('evaluations', op.id, data)) notifyData();
     return;
   }
   if (op.data === null) {

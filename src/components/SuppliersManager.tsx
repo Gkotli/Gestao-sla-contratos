@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Sector, Supplier } from '../types';
+import { SupplierContactsImport } from './SupplierContactsImport';
 import { 
   Building2, 
   Plus, 
@@ -14,13 +15,15 @@ import {
   Clock, 
   AlertTriangle, 
   X,
-  Layers
+  Layers,
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface SuppliersManagerProps {
   suppliers: Supplier[];
   sectors: Sector[];
   onSaveSupplier: (supplier: Supplier) => void;
+  onBulkSaveSuppliers?: (suppliers: Supplier[]) => void;
   onDeleteSupplier: (supplierId: string) => void;
   onStartEvaluation: (supplierId: string) => void;
 }
@@ -29,6 +32,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   suppliers,
   sectors,
   onSaveSupplier,
+  onBulkSaveSuppliers,
   onDeleteSupplier,
   onStartEvaluation
 }) => {
@@ -37,6 +41,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('ALL');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContactsImportOpen, setIsContactsImportOpen] = useState(false);
+  const semEmail = suppliers.filter(s => !s.contatoEmail).length;
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
 
   // Form State
@@ -262,13 +268,26 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           <p className="text-xs text-[#475569]">Gestão dos prestadores de serviço terceirizados e vinculação aos setores hospitalares</p>
         </div>
 
-        <button
-          onClick={openNewModal}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Cadastrar Fornecedor
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          {onBulkSaveSuppliers && (
+            <button
+              onClick={() => setIsContactsImportOpen(true)}
+              title="Preencher contatos (nome, e-mail e telefone) de vários fornecedores de uma vez"
+              className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md shadow-sm transition cursor-pointer"
+            >
+              <FileSpreadsheet className="w-4 h-4 mr-2" />
+              Contatos por Planilha
+              {semEmail > 0 && <span className="ml-2 px-1.5 py-0.5 text-[10px] rounded bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]">{semEmail} sem e-mail</span>}
+            </button>
+          )}
+          <button
+            onClick={openNewModal}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Cadastrar Fornecedor
+          </button>
+        </div>
       </div>
 
       {/* CARDS DE RESUMO CLICÁVEIS E DINÂMICOS CONFORME O SETOR SELECIONADO */}
@@ -284,7 +303,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
         >
           <div className="flex items-center justify-between text-xs font-semibold">
             <span>{selectedSectorFilter === 'ALL' ? 'TOTAL GERAL' : 'TOTAL DO SETOR'}</span>
-            <Layers className={`w-4 h-4 ${selectedStatusFilter === 'ALL' ? 'text-teal-400' : 'text-slate-400'}`} />
+            <Layers className={`w-4 h-4 ${selectedStatusFilter === 'ALL' ? 'text-slate-300' : 'text-slate-400'}`} />
           </div>
           <div className="text-2xl font-black mt-2">{sectorMetrics.total}</div>
           <p className={`text-[11px] truncate mt-0.5 ${selectedStatusFilter === 'ALL' ? 'opacity-80' : 'text-[#475569]'}`}>
@@ -408,7 +427,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           {(searchTerm || selectedSectorFilter !== 'ALL' || selectedStatusFilter !== 'ALL') && (
             <button
               onClick={clearAllFilters}
-              className="text-[#B91C1C] hover:text-rose-800 font-bold flex items-center cursor-pointer"
+              className="text-[#B91C1C] hover:text-[#991B1B] font-bold flex items-center cursor-pointer"
             >
               <X className="w-3.5 h-3.5 mr-0.5" /> Limpar Filtros
             </button>
@@ -434,8 +453,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                     <div className="space-y-1 truncate pr-1">
                       {/* Badge Padronizada para Todos os Setores */}
                       {sector ? (
-                        <span className="inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border bg-slate-100 text-slate-800 border-[#CBD5E1] uppercase">
-                          <Building2 className="w-3 h-3 mr-1 text-slate-500" />
+                        <span className="inline-flex items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded border bg-slate-100 text-[#172B4D] border-[#CBD5E1] uppercase">
+                          <Building2 className="w-3 h-3 mr-1 text-[#475569]" />
                           SETOR: {sector.nome}
                         </span>
                       ) : (
@@ -449,7 +468,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                       <p className="text-xs text-[#475569] font-mono truncate">{sup.cnpj}</p>
                     </div>
 
-                    <div className="p-2 rounded-md flex-shrink-0 bg-slate-100 text-slate-700">
+                    <div className="p-2 rounded-md flex-shrink-0 bg-slate-100 text-[#172B4D]">
                       <Building2 className="w-5 h-5" />
                     </div>
                   </div>
@@ -500,7 +519,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                   <div className="flex items-center space-x-1">
                     <button
                       onClick={() => openEditModal(sup)}
-                      className="p-1.5 text-slate-600 hover:text-[#123768] hover:bg-slate-200 rounded-md transition cursor-pointer"
+                      className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-200 rounded-md transition cursor-pointer"
                       title="Editar Cadastro"
                     >
                       <Edit3 className="w-4 h-4" />
@@ -676,7 +695,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
+                  className="px-4 py-2 text-xs font-medium text-[#172B4D] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-50"
                 >
                   Cancelar
                 </button>
@@ -690,6 +709,19 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
             </form>
           </div>
         </div>
+      )}
+
+      {isContactsImportOpen && onBulkSaveSuppliers && (
+        <SupplierContactsImport
+          suppliers={suppliers}
+          sectors={sectors}
+          onApply={(updated) => {
+            onBulkSaveSuppliers(updated);
+            setIsContactsImportOpen(false);
+            alert(`${updated.length} fornecedor(es) atualizado(s).`);
+          }}
+          onClose={() => setIsContactsImportOpen(false)}
+        />
       )}
     </div>
   );

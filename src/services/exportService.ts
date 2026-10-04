@@ -2,13 +2,16 @@
 // As bibliotecas pesadas (jsPDF, html2canvas, write-excel-file) só são baixadas no clique.
 
 import type { SheetData, Cell } from 'write-excel-file/browser';
-import { ActionPlan, Evaluation, ScoreValue, Sector, SignStatus, Supplier } from '../types';
+import { ActionPlan, Evaluation, ScoreValue, Sector, SignStatus, Supplier, User } from '../types';
 import { EVALUATION_QUESTIONS } from './questions';
+import { QuestionnaireService } from './questionnaireService';
+import { StorageService } from './storageService';
+import { formatDateTime, getLastEnvio } from './laudoEnvioService';
 import { getMetaBadgeDetails } from './evaluationCalculation';
 
 const SIGN_LABELS: Record<SignStatus, string> = {
   PENDENTE_ENVIO: 'Não enviado',
-  ENVIADO_FORNECEDOR: 'Aguardando ciência',
+  ENVIADO_FORNECEDOR: 'Enviado ao fornecedor',
   ASSINADO_CIENTE: 'Ciente / assinado',
   CONTESTADO: 'Contestado'
 };
@@ -33,8 +36,9 @@ function getEvaluationItems(evaluation: Evaluation): EvaluationItem[] {
     return evaluation.itensExcecao.map(item => ({ pergunta: item.pergunta, grupo: item.grupo, nota: item.nota }));
   }
   const respostas = evaluation.respostas || {};
-  if (evaluation.perguntasAvaliadas?.length) {
-    return evaluation.perguntasAvaliadas.map(q => ({
+  const perguntas = QuestionnaireService.resolveEvaluatedQuestions(evaluation);
+  if (perguntas) {
+    return perguntas.map(q => ({
       pergunta: q.pergunta,
       grupo: q.categoria,
       nota: respostas[q.id],
@@ -59,7 +63,7 @@ export function evaluationFileName(evaluation: Evaluation, supplier?: Supplier):
 }
 
 const score = (value: number | undefined): Cell =>
-  typeof value === 'number' && Number.isFinite(value) ? { value, type: Number, format: '0.00' } : '-';
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? { value, type: Number, format: '0.00' } : 'N/A';
 
 const notaCell = (nota: ScoreValue | undefined): Cell =>
   nota === 'NA' ? 'N/A' : typeof nota === 'number' ? { value: nota, type: Number } : '-';
@@ -132,6 +136,15 @@ export async function exportEvaluationToExcel(
     ['Ciência do fornecedor', SIGN_LABELS[evaluation.statusAssinatura] || evaluation.statusAssinatura],
     ['Signatário', evaluation.nomeSignatario ? `${evaluation.nomeSignatario} (${evaluation.cargoSignatario || ''})` : '-'],
     ['Data da ciência', evaluation.dataCiencia || '-'],
+    ['Ciência registrada por', evaluation.cienciaRegistradaPor || '-'],
+    ['Visualizado pelo fornecedor no site', evaluation.visualizacaoFornecedor
+      ? `${formatDateTime(evaluation.visualizacaoFornecedor.dataHora)} - ${evaluation.visualizacaoFornecedor.nome} (${evaluation.visualizacaoFornecedor.email})` : '-'],
+    ['Validado pelo fornecedor no site', evaluation.validacaoFornecedor
+      ? `${formatDateTime(evaluation.validacaoFornecedor.dataHora)} - ${evaluation.validacaoFornecedor.nome} (${evaluation.validacaoFornecedor.email}), código ${evaluation.validacaoFornecedor.codigoLaudo}` : '-'],
+    ...(evaluation.historicoEnvios || []).map((envio, i): Cell[] => [
+      `Envio ao fornecedor ${i + 1}`,
+      `${formatDateTime(envio.dataHora)} para ${envio.destinatario}, por ${envio.enviadoPor} (código ${envio.codigoLaudo})`
+    ]),
     ['Parecer do gestor', evaluation.parecerGeral || '-'],
     ['Parecer do fornecedor', evaluation.parecerFornecedor || '-'],
     ['Obs. legais', evaluation.observacoesLegais || '-'],
@@ -193,11 +206,13 @@ export async function exportEvaluationsListToExcel(
     header([
       'Ano', 'Fornecedor', 'CNPJ', 'Contrato', 'Setor', 'Avaliador', 'Data',
       'Legais', 'Comportamentais', 'Qualidade', 'Média Geral', 'Status da Meta',
-      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor'
+      'Plano de Ação', 'Status do Plano', 'Ciência do Fornecedor', 'Enviado ao Fornecedor em', 'E-mail de Envio',
+      'Visualizado no Site em', 'Validado no Site em', 'Validado por'
     ]),
     ...evaluations.map((ev): Cell[] => {
       const supplier = suppliers.find(s => s.id === ev.fornecedorId);
       const plan = actionPlans.find(p => p.evaluationId === ev.id);
+      const envio = getLastEnvio(ev);
       return [
         { value: ev.ano, type: Number },
         supplier?.nomeFantasia || ev.fornecedorId,
@@ -213,7 +228,12 @@ export async function exportEvaluationsListToExcel(
         getMetaBadgeDetails(ev.statusMeta, ev.mediaGeral)?.label || '',
         ev.necessitaPlanoAcao ? 'Obrigatório' : 'Não',
         plan ? PLAN_LABELS[plan.status] || plan.status : ev.necessitaPlanoAcao ? 'Não cadastrado' : '-',
-        SIGN_LABELS[ev.statusAssinatura] || ev.statusAssinatura
+        SIGN_LABELS[ev.statusAssinatura] || ev.statusAssinatura,
+        envio ? formatDateTime(envio.dataHora) : '-',
+        envio?.destinatario || '-',
+        ev.visualizacaoFornecedor ? formatDateTime(ev.visualizacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? formatDateTime(ev.validacaoFornecedor.dataHora) : '-',
+        ev.validacaoFornecedor ? `${ev.validacaoFornecedor.nome} (${ev.validacaoFornecedor.email})` : '-'
       ];
     })
   ];
@@ -223,8 +243,32 @@ export async function exportEvaluationsListToExcel(
     sheet: 'Avaliações',
     columns: [
       { width: 7 }, { width: 36 }, { width: 20 }, { width: 22 }, { width: 28 }, { width: 28 }, { width: 12 },
-      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }
+      { width: 10 }, { width: 16 }, { width: 11 }, { width: 12 }, { width: 16 }, { width: 14 }, { width: 16 }, { width: 20 }, { width: 18 }, { width: 32 }, { width: 18 }, { width: 18 }, { width: 36 }
     ],
     stickyRowsCount: 1
   }).toFile(`Avaliacoes_SLA_${today}.xlsx`);
+}
+
+// ---------------------------------------------------------------------------
+// Backup completo (JSON) para o administrador guardar fora do sistema
+// ---------------------------------------------------------------------------
+// Usuários vêm da tela (perfis do Supabase ou base local); senhas nunca entram no backup
+export function downloadFullBackup(users: User[]): { total: number } {
+  const collections = {
+    users: users.map(({ sessaoAlternadaPor: _sessao, ...u }) => u),
+    sectors: StorageService.getSectors(),
+    suppliers: StorageService.getSuppliers(),
+    evaluations: StorageService.getEvaluations(),
+    action_plans: StorageService.getActionPlans()
+  };
+  const total = Object.values(collections).reduce((sum, list) => sum + list.length, 0);
+  const backup = { sistema: "SLA de Fornecedores - Rede D'Or", geradoEm: new Date().toISOString(), versao: 1, total, collections };
+
+  const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Backup_SLA_Fornecedores_${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return { total };
 }

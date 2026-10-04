@@ -5,6 +5,7 @@ import { RemoteSync, SyncStatus } from './services/remoteSync';
 import { AuthService, AuthState } from './services/authService';
 import { AUTH_LINK_ERROR, SUPABASE_CONFIGURED, clearAuthLink } from './services/supabaseClient';
 import { isSystemAdmin } from './utils/security';
+import { computeLaudoCode, registerValidacaoFornecedor, registerVisualizacaoFornecedor } from './services/laudoEnvioService';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -19,10 +20,11 @@ const SuppliersManager = lazy(() => import('./components/SuppliersManager').then
 const UsersManager = lazy(() => import('./components/UsersManager').then(m => ({ default: m.UsersManager })));
 const EvaluationReportModal = lazy(() => import('./components/EvaluationReportModal').then(m => ({ default: m.EvaluationReportModal })));
 const SupplierSignatureModal = lazy(() => import('./components/SupplierSignatureModal').then(m => ({ default: m.SupplierSignatureModal })));
+const SendLaudoModal = lazy(() => import('./components/SendLaudoModal').then(m => ({ default: m.SendLaudoModal })));
 const PendingEvaluationsView = lazy(() => import('./components/PendingEvaluationsView').then(m => ({ default: m.PendingEvaluationsView })));
 
 const TabFallback = () => (
-  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#64748B]">
+  <div className="flex items-center justify-center py-24 text-xs font-semibold text-[#475569]">
     Carregando…
   </div>
 );
@@ -68,6 +70,7 @@ export default function App() {
   const [actionPlanTargetEval, setActionPlanTargetEval] = useState<Evaluation | undefined>(undefined);
   const [reportModalEvalId, setReportModalEvalId] = useState<string | null>(null);
   const [signatureModalEval, setSignatureModalEval] = useState<Evaluation | null>(null);
+  const [sendModalEval, setSendModalEval] = useState<Evaluation | null>(null);
 
   // --- FILTRAGEM RÍGIDA DE ACESSO POR SETOR / ROLE ---
   // Apenas a DIRETORIA enxerga todos os 11 setores e 83 fornecedores.
@@ -207,27 +210,13 @@ export default function App() {
 
   // Troca de sessão sem senha: só no modo local de demonstração
   const handleSelectUser = (user: User) => {
-    setCurrentUser(user);
-    StorageService.setCurrentUser(user);
+    // Entrar como outro usuário fica marcado: não vale como ação do próprio usuário (ex.: validar laudo)
+    const administrador = currentUser?.sessaoAlternadaPor || currentUser?.nome;
+    const sessao: User = isSystemAdmin(user) ? user : { ...user, sessaoAlternadaPor: administrador };
+    setCurrentUser(sessao);
+    StorageService.setCurrentUser(sessao);
     if (user.role === 'FORNECEDOR') {
       setActiveTab('eval-list');
-    }
-  };
-
-  // --- Reset de Dados ---
-  const handleResetData = () => {
-    if (RemoteSync.isEnabled()) {
-      alert('Com o banco compartilhado ativo, restaurar a base de demonstração apagaria as avaliações de todos os gestores. Esta ação está desabilitada.');
-      return;
-    }
-    if (window.confirm('Deseja restaurar a base de dados oficial com os 11 setores e 83 fornecedores do Vila Nova Star?')) {
-      StorageService.resetAllData();
-      setSectors(StorageService.getSectors());
-      setSuppliers(StorageService.getSuppliers());
-      setEvaluations(StorageService.getEvaluations());
-      setActionPlans(StorageService.getActionPlans());
-      setUsers(StorageService.getUsers());
-      alert('Base de dados restaurada com sucesso!');
     }
   };
 
@@ -298,6 +287,14 @@ export default function App() {
     }
     const updated = StorageService.saveSupplier(supplier);
     setSuppliers(updated);
+  };
+
+  const handleBulkSaveSuppliers = (updated: Supplier[]) => {
+    if (currentUser?.role !== 'DIRETORIA') {
+      alert('Acesso negado: Apenas a Diretoria possui permissão para alterar fornecedores.');
+      return;
+    }
+    setSuppliers(StorageService.saveSuppliers(updated));
   };
 
   const handleDeleteSupplier = (supplierId: string) => {
@@ -443,10 +440,31 @@ export default function App() {
   };
 
   // --- Signature Handler ---
-  const handleSaveSignature = (updatedEval: Evaluation) => {
-    const updatedEvaluations = StorageService.saveEvaluation(updatedEval);
+  const handleSaveSignature = async (updatedEval: Evaluation) => {
+    const finalEval = currentUser?.role === 'FORNECEDOR' && !currentUser.sessaoAlternadaPor
+      ? registerValidacaoFornecedor(updatedEval, currentUser, await computeLaudoCode(updatedEval), updatedEval.parecerFornecedor)
+      : updatedEval;
+    const updatedEvaluations = StorageService.saveEvaluation(finalEval);
     setEvaluations(updatedEvaluations);
     setSignatureModalEval(null);
+  };
+
+  // --- Validação do laudo pelo fornecedor no site ---
+  const handleSupplierValidate = (updatedEval: Evaluation) => {
+    if (currentUser?.role !== 'FORNECEDOR' || currentUser.sessaoAlternadaPor) return;
+    setEvaluations(StorageService.saveEvaluation(updatedEval));
+  };
+
+  // --- Envio do laudo ao fornecedor (Outlook do gestor) ---
+  const handleOpenSendModal = (evaluation: Evaluation) => {
+    if (currentUser?.role === 'FORNECEDOR') return;
+    setSendModalEval(evaluation);
+  };
+
+  const handleConfirmSent = (updatedEval: Evaluation) => {
+    const updatedEvaluations = StorageService.saveEvaluation(updatedEval);
+    setEvaluations(updatedEvaluations);
+    setSendModalEval(null);
   };
 
   // Evaluation targeted for report view modal (Busca pelo ID do estado ou pelo StorageService)
@@ -457,6 +475,18 @@ export default function App() {
     const allStorageEvals = StorageService.getEvaluations();
     return allStorageEvals.find(e => e.id === reportModalEvalId) || null;
   }, [reportModalEvalId, evaluations]);
+
+  React.useEffect(() => {
+    const ev = selectedReportEvaluation;
+    if (!ev || !currentUser || currentUser.role !== 'FORNECEDOR' || currentUser.sessaoAlternadaPor) return;
+    if (ev.visualizacaoFornecedor || ev.fornecedorId !== currentUser.fornecedorId) return;
+    let cancelled = false;
+    computeLaudoCode(ev).then(codigo => {
+      if (cancelled) return;
+      setEvaluations(StorageService.saveEvaluation(registerVisualizacaoFornecedor(ev, currentUser, codigo)));
+    });
+    return () => { cancelled = true; };
+  }, [selectedReportEvaluation, currentUser]);
 
   const selectedReportSupplier = useMemo(() => {
     if (!selectedReportEvaluation) return undefined;
@@ -480,7 +510,7 @@ export default function App() {
 
   if (REMOTE && authState.status === 'loading') {
     return (
-      <div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center text-xs font-semibold text-[#64748B]">
+      <div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center text-xs font-semibold text-[#475569]">
         Verificando sessão…
       </div>
     );
@@ -525,7 +555,6 @@ export default function App() {
           }
           setActiveTab(tab);
         }}
-        onResetData={handleResetData}
         pendingActionPlansCount={pendingActionPlansCount}
         currentUser={currentUser}
         users={users}
@@ -584,6 +613,7 @@ export default function App() {
             onEditEvaluation={handleEditEvaluation}
             onViewReport={handleViewReport}
             onOpenSignatureModal={(ev) => setSignatureModalEval(ev)}
+            onOpenSendModal={handleOpenSendModal}
             onOpenActionPlanModal={(ev) => {
               setActionPlanTargetEval(ev);
               setActiveTab('action-plans');
@@ -609,6 +639,7 @@ export default function App() {
             suppliers={suppliers}
             sectors={sectors}
             onSaveSupplier={handleSaveSupplier}
+            onBulkSaveSuppliers={handleBulkSaveSuppliers}
             onDeleteSupplier={handleDeleteSupplier}
             onStartEvaluation={(supId) => handleStartNewEvaluation(supId)}
           />
@@ -638,6 +669,7 @@ export default function App() {
           sector={sectors.find(s => s.id === signatureModalEval.setorId)}
           onSaveSignature={handleSaveSignature}
           onSave={handleSaveSignature}
+          currentUser={currentUser}
           onClose={() => setSignatureModalEval(null)}
         />
       )}
@@ -649,7 +681,22 @@ export default function App() {
           supplier={selectedReportSupplier}
           sector={selectedReportSector}
           actionPlan={selectedReportActionPlan}
+          onOpenSendModal={currentUser.role !== 'FORNECEDOR' ? handleOpenSendModal : undefined}
+          currentUser={currentUser}
+          onSupplierValidate={currentUser.role === 'FORNECEDOR' && !currentUser.sessaoAlternadaPor ? handleSupplierValidate : undefined}
           onClose={handleCloseReportModal}
+        />
+      )}
+
+      {/* Envio do laudo ao fornecedor (renderizado depois do laudo para ficar por cima) */}
+      {sendModalEval && (
+        <SendLaudoModal
+          evaluation={sendModalEval}
+          supplier={suppliers.find(s => s.id === sendModalEval.fornecedorId)}
+          sector={sectors.find(s => s.id === sendModalEval.setorId)}
+          currentUser={currentUser}
+          onConfirmSent={handleConfirmSent}
+          onClose={() => setSendModalEval(null)}
         />
       )}
       </Suspense>
@@ -665,8 +712,8 @@ export default function App() {
             <span className="font-medium">© 2026 Rede D'Or Hospitais | Todos os direitos reservados</span>
           </div>
           <div className="flex flex-col sm:items-end gap-1">
-            <p className="text-[11px] text-[#64748B]">
-              Hospital Vila Nova Star • Diretoria Operacional • Gestão de Contratos e SLA
+            <p className="text-[11px] text-[#475569]">
+              Hospital Vila Nova Star • Diretoria Operacional • SLA de Fornecedores
             </p>
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#475569]" title="Status do armazenamento de dados">
               <span

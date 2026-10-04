@@ -150,6 +150,13 @@ export class StorageService {
     return suppliers;
   }
 
+  static saveSuppliers(updated: Supplier[]): Supplier[] {
+    const byId = new Map(updated.map(s => [s.id, s]));
+    const suppliers = this.getSuppliers().map(s => byId.get(s.id) || s);
+    this.persist(KEYS.SUPPLIERS, suppliers);
+    return suppliers;
+  }
+
   static deleteSupplier(supplierId: string): Supplier[] {
     const suppliers = this.getSuppliers().filter(s => s.id !== supplierId);
     this.persist(KEYS.SUPPLIERS, suppliers);
@@ -159,7 +166,11 @@ export class StorageService {
   static getEvaluations(): Evaluation[] {
     const list = this.load(KEYS.EVALUATIONS, INITIAL_EVALUATIONS);
 
+    // `...ev` preserva os campos não listados abaixo (perguntasAvaliadas, nomeQuestionario,
+    // emailAvaliador...). Sem ele, o laudo perdia as perguntas específicas e a próxima
+    // gravação apagava esses campos também no banco compartilhado.
     return list.map((ev, idx) => ({
+      ...ev,
       id: ev?.id || `eval_${idx}_${Date.now()}`,
       fornecedorId: ev?.fornecedorId || 'sup_acquasuly',
       setorId: ev?.setorId || 'sec_manutencao',
@@ -237,11 +248,9 @@ export class StorageService {
     return plans;
   }
 
-  static resetAllData(): void {
-    this.persist(KEYS.SECTORS, INITIAL_SECTORS);
-    this.persist(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
-    this.persist(KEYS.EVALUATIONS, INITIAL_EVALUATIONS);
-    this.persist(KEYS.ACTION_PLANS, INITIAL_ACTION_PLANS);
-    this.persist(KEYS.USERS, INITIAL_USERS);
+  // Apaga só a cópia local (sem enviar nada ao banco); ao recarregar, os dados vêm do banco.
+  static clearLocalCache(): void {
+    [KEYS.USERS, KEYS.SECTORS, KEYS.SUPPLIERS, KEYS.EVALUATIONS, KEYS.ACTION_PLANS, KEYS.SYNC_OUTBOX]
+      .forEach(key => localStorage.removeItem(key));
   }
 }

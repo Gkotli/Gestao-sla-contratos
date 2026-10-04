@@ -1,6 +1,7 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertCircle, RotateCcw, RefreshCw } from 'lucide-react';
 import { StorageService } from '../services/storageService';
+import { RemoteSync } from '../services/remoteSync';
 
 interface Props {
   children: ReactNode;
@@ -30,8 +31,10 @@ export class ErrorBoundary extends Component<Props, State> {
     window.location.reload();
   };
 
-  private handleResetAllData = () => {
-    StorageService.resetAllData();
+  private handleClearLocalCache = () => {
+    // Descarta só a cópia deste navegador (nada é apagado no banco); ao recarregar,
+    // os dados são baixados de novo do banco compartilhado.
+    StorageService.clearLocalCache();
     this.setState({ hasError: false, error: null });
     window.location.reload();
   };
@@ -39,21 +42,21 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-white font-sans">
-          <div className="bg-slate-800 max-w-xl w-full p-8 rounded-2xl border border-slate-700 shadow-2xl space-y-6 text-center">
-            <div className="p-4 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+        <div className="min-h-screen bg-[#F1F5F9] flex flex-col items-center justify-center p-6 text-[#172B4D] font-sans">
+          <div className="bg-white max-w-xl w-full p-8 rounded-lg border border-[#CBD5E1] shadow-sm space-y-6 text-center">
+            <div className="p-4 bg-[#FEF2F2] border border-[#FECACA] text-[#B91C1C] rounded-full w-16 h-16 mx-auto flex items-center justify-center">
               <AlertCircle className="w-8 h-8" />
             </div>
 
             <div>
-              <h2 className="text-xl font-bold text-white">Inconsistência de Dados Identificada</h2>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              <h2 className="text-xl font-bold text-[#172B4D]">Inconsistência de Dados Identificada</h2>
+              <p className="text-xs text-[#475569] mt-2 leading-relaxed">
                 Foi detectada uma diferença no formato dos registros armazenados no navegador. O sistema evitou o travamento da página.
               </p>
             </div>
 
             {this.state.error?.message && (
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-700/80 text-left text-[11px] font-mono text-rose-400 overflow-x-auto">
+              <div className="bg-slate-50 p-3 rounded-md border border-[#CBD5E1] text-left text-[11px] font-mono text-[#B91C1C] overflow-x-auto">
                 <strong>Detalhe técnico:</strong> {this.state.error.message}
               </div>
             )}
@@ -61,18 +64,18 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <button
                 onClick={this.handleResetState}
-                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-slate-200 bg-slate-700 hover:bg-slate-600 rounded-xl transition cursor-pointer"
+                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-[#172B4D] bg-white border border-[#CBD5E1] hover:bg-slate-50 rounded-md transition cursor-pointer"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Recarregar Página
               </button>
 
               <button
-                onClick={this.handleResetAllData}
-                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-slate-950 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 rounded-xl shadow-lg transition cursor-pointer"
+                onClick={this.handleClearLocalCache}
+                className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
-                Restaurar Base & Limpar
+                {RemoteSync.isEnabled() ? 'Baixar Dados do Banco' : 'Limpar Dados Locais'}
               </button>
             </div>
           </div>

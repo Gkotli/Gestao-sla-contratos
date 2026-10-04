@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
-import { ActionPlan, Evaluation, Sector, Supplier } from '../types';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { EVALUATION_QUESTIONS } from '../services/questions';
+import { QuestionnaireService } from '../services/questionnaireService';
 import { evaluationFileName, exportElementToPdf, exportEvaluationToExcel } from '../services/exportService';
+import { computeLaudoCode, formatDateTime, registerValidacaoFornecedor } from '../services/laudoEnvioService';
 import { safeFormatScore } from '../utils/formatters';
 import {
   Printer,
@@ -9,7 +11,11 @@ import {
   FileCheck2,
   AlertCircle,
   FileDown,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Mail,
+  AlertTriangle,
+  ShieldCheck,
+  Eye
 } from 'lucide-react';
 
 interface EvaluationReportModalProps {
@@ -17,6 +23,9 @@ interface EvaluationReportModalProps {
   supplier?: Supplier;
   sector?: Sector;
   actionPlan?: ActionPlan;
+  onOpenSendModal?: (evaluation: Evaluation) => void;
+  currentUser?: User | null;
+  onSupplierValidate?: (updatedEval: Evaluation) => void;
   onClose: () => void;
 }
 
@@ -25,10 +34,20 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   supplier,
   sector,
   actionPlan,
+  onOpenSendModal,
+  currentUser,
+  onSupplierValidate,
   onClose
 }) => {
   const reportRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState<'pdf' | 'excel' | null>(null);
+  const [codigoAtual, setCodigoAtual] = useState('');
+  const [cienteMarcado, setCienteMarcado] = useState(false);
+  const [consideracoes, setConsideracoes] = useState('');
+
+  useEffect(() => {
+    if (evaluation) computeLaudoCode(evaluation).then(setCodigoAtual);
+  }, [evaluation]);
 
   const handlePrint = () => {
     window.print();
@@ -57,10 +76,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
   if (!evaluation) {
     return (
       <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-slate-200 space-y-4 text-center">
-          <AlertCircle className="w-12 h-12 text-rose-500 mx-auto" />
-          <h3 className="text-lg font-bold text-slate-900">Avaliação Não Encontrada</h3>
-          <p className="text-xs text-slate-500">Não foi possível localizar os registros desta avaliação no momento.</p>
+        <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-[#CBD5E1] space-y-4 text-center">
+          <AlertCircle className="w-12 h-12 text-[#B91C1C] mx-auto" />
+          <h3 className="text-lg font-bold text-[#172B4D]">Avaliação Não Encontrada</h3>
+          <p className="text-xs text-[#475569]">Não foi possível localizar os registros desta avaliação no momento.</p>
           <button
             onClick={onClose}
             className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl"
@@ -74,16 +93,27 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
   // Acesso ultrasseguro às respostas e médias
   const respostas = evaluation.respostas || {};
+  const envios = evaluation.historicoEnvios || [];
+  const ultimoEnvio = envios[envios.length - 1];
+  const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  const validacao = evaluation.validacaoFornecedor;
+  const visualizacao = evaluation.visualizacaoFornecedor;
+  const validacaoDesatualizada = Boolean(validacao && codigoAtual && validacao.codigoLaudo !== codigoAtual);
+
+  const handleValidar = () => {
+    if (!currentUser || !onSupplierValidate || !codigoAtual || !cienteMarcado) return;
+    onSupplierValidate(registerValidacaoFornecedor(evaluation, currentUser, codigoAtual, consideracoes.trim() || undefined));
+    setCienteMarcado(false);
+  };
   const mediaLegais = safeFormatScore(evaluation.mediaLegais);
   const mediaComportamentais = safeFormatScore(evaluation.mediaComportamentais);
   const mediaQualidade = safeFormatScore(evaluation.mediaQualidade);
   const mediaGeralVal = typeof evaluation.mediaGeral === 'number' ? evaluation.mediaGeral : parseFloat(String(evaluation.mediaGeral || 0));
   const mediaGeralFormatted = safeFormatScore(evaluation.mediaGeral);
 
-  // Garante a lista de perguntas: avaliadas salvas, ou fallback para as 15 padrão
-  const evaluatedQuestions = evaluation.perguntasAvaliadas && evaluation.perguntasAvaliadas.length > 0
-    ? evaluation.perguntasAvaliadas
-    : null;
+  // Garante a lista de perguntas: avaliadas salvas (ou reconstruídas pelos códigos das respostas),
+  // ou fallback para as 15 padrão
+  const evaluatedQuestions = QuestionnaireService.resolveEvaluatedQuestions(evaluation);
 
   const criteriaList = evaluatedQuestions
     ? evaluatedQuestions.map(q => ({
@@ -105,17 +135,27 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-auto printable-laudo-container">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-[#CBD5E1] overflow-hidden my-auto printable-laudo-container">
         {/* Barra de Ações Superior (Oculta na Impressão no-print) */}
         <div className="bg-[#123768] text-white px-6 py-3 flex items-center justify-between no-print border-b border-[#0B2850]">
           <div className="flex items-center space-x-2">
-            <FileCheck2 className="w-5 h-5 text-teal-400" />
+            <FileCheck2 className="w-5 h-5 text-white" />
             <h3 className="font-bold text-sm text-white">
               Visualização do Laudo Oficial — Impressão Formal A4 Multipáginas ({criteriaList.length} Perguntas)
             </h3>
           </div>
 
           <div className="flex items-center flex-wrap justify-end gap-2">
+            {onOpenSendModal && (
+              <button
+                onClick={() => onOpenSendModal(evaluation)}
+                className="inline-flex items-center px-3 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-md border border-white/20 transition cursor-pointer"
+              >
+                <Mail className="w-4 h-4 mr-1.5" />
+                {envios.length ? 'Reenviar ao Fornecedor' : 'Enviar ao Fornecedor'}
+              </button>
+            )}
+
             <button
               onClick={() => runExport('pdf')}
               disabled={exporting !== null}
@@ -136,7 +176,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
 
             <button
               onClick={handlePrint}
-              className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
+              className="inline-flex items-center px-4 py-2 bg-[#047857] hover:bg-[#065F46] text-white font-bold text-xs rounded-md shadow transition cursor-pointer"
             >
               <Printer className="w-4 h-4 mr-2" />
               Imprimir
@@ -151,6 +191,56 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
             </button>
           </div>
         </div>
+
+        {isFornecedor && currentUser?.sessaoAlternadaPor && (
+          <div className="no-print border-b border-[#CBD5E1] px-6 py-3 text-xs">
+            <div className="bg-[#FFFBEB] border border-[#FCD34D] text-[#92400E] p-3 rounded-md">
+              Sessão alternada por <strong>{currentUser.sessaoAlternadaPor}</strong>: a validação do laudo só pode ser feita pelo próprio fornecedor, com a conta dele.
+            </div>
+          </div>
+        )}
+
+        {/* Validação do laudo pelo próprio fornecedor (oculta na impressão) */}
+        {isFornecedor && onSupplierValidate && (
+          <div className="no-print border-b border-[#CBD5E1] px-6 py-4 text-xs space-y-2">
+            {validacao && (
+              <div className="flex items-start bg-[#ECFDF5] border border-[#A7F3D0] text-[#047857] p-3 rounded-md">
+                <ShieldCheck className="w-5 h-5 mr-2 flex-shrink-0" />
+                <div>
+                  <strong className="block">Você validou este laudo no site em {formatDateTime(validacao.dataHora)}.</strong>
+                  {validacaoDesatualizada && (
+                    <span className="block mt-1 text-[#92400E] font-semibold">O laudo foi alterado pelo hospital depois da sua validação. Revise e valide novamente.</span>
+                  )}
+                </div>
+              </div>
+            )}
+            {(!validacao || validacaoDesatualizada) && (
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-4 rounded-md space-y-3">
+                <div className="flex items-center text-[#1E40AF] font-bold">
+                  <ShieldCheck className="w-4 h-4 mr-1.5" /> Validação do laudo pelo fornecedor
+                </div>
+                <textarea
+                  value={consideracoes}
+                  onChange={(e) => setConsideracoes(e.target.value)}
+                  rows={2}
+                  placeholder="Considerações sobre a avaliação (opcional)"
+                  className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768] placeholder:text-[#94A3B8]"
+                />
+                <label className="flex items-start text-[#172B4D] cursor-pointer">
+                  <input type="checkbox" checked={cienteMarcado} onChange={(e) => setCienteMarcado(e.target.checked)} className="mt-0.5 mr-2" />
+                  Li este laudo e estou ciente do seu conteúdo.
+                </label>
+                <button
+                  onClick={handleValidar}
+                  disabled={!cienteMarcado || !codigoAtual}
+                  className="inline-flex items-center px-5 py-2 text-xs font-bold text-white bg-[#047857] hover:bg-[#065F46] rounded-md shadow-sm transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ShieldCheck className="w-4 h-4 mr-1.5" /> Validar laudo
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* --- CONTAINER EXCLUSIVO DO RELATÓRIO IMPRIMÍVEL (#printable-report) --- */}
         <div id="printable-report" ref={reportRef} className="p-6 sm:p-8 space-y-6 text-[#172B4D] bg-white">
@@ -196,6 +286,15 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               {evaluation.tipoAvaliacao === 'EXCECAO' && ' • (AVALIAÇÃO POR EXCEÇÃO)'}
             </p>
           </div>
+
+          {/* Registro histórico transcrito de papel (aparece também na impressão) */}
+          {evaluation.origemRegistro === 'PAPEL_HISTORICO' && (
+            <div className="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] p-3 rounded-lg print-avoid-break text-xs">
+              <strong className="block uppercase text-[10px]">Registro histórico</strong>
+              Avaliação de {evaluation.ano} transcrita do formulário original em papel
+              {evaluation.fonteDocumento ? ` (${evaluation.fonteDocumento})` : ''}. As perguntas e notas são as aplicadas na época.
+            </div>
+          )}
 
           {/* Banner de Justificativa para Avaliação por Exceção */}
           {evaluation.tipoAvaliacao === 'EXCECAO' && (
@@ -282,8 +381,8 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                 <strong className="text-base font-black text-[#172B4D]">{mediaQualidade}</strong>
               </div>
               <div className="p-2 bg-[#123768] text-white rounded-md border border-[#123768]">
-                <span className="text-[10px] text-teal-300 font-bold uppercase block">MÉDIA GERAL SLA</span>
-                <strong className="text-lg font-black text-teal-300">{mediaGeralFormatted}</strong>
+                <span className="text-[10px] text-slate-300 font-bold uppercase block">MÉDIA GERAL SLA</span>
+                <strong className="text-lg font-black text-white">{mediaGeralFormatted}</strong>
               </div>
             </div>
 
@@ -291,7 +390,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <span className="font-bold text-[#172B4D]">Classificação da Meta (Mínimo 4.00):</span>
               <span className={`font-black px-3 py-1 rounded uppercase ${
                 mediaGeralVal >= 4.0 
-                  ? 'bg-[#ECFDF5] text-[#047857] border border-emerald-300' 
+                  ? 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]' 
                   : 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
               }`}>
                 {mediaGeralVal >= 4.0 ? `Dentro da Meta (${mediaGeralFormatted})` : `Abaixo da Meta (${mediaGeralFormatted})`}
@@ -341,7 +440,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                             <div className="flex flex-col">
                               <span>{c.pergunta}</span>
                               {c.isManualAddition && (
-                                <span className="text-[10px] text-amber-700 italic mt-0.5">
+                                <span className="text-[10px] text-[#92400E] italic mt-0.5">
                                   * Adição manual: {c.justificativaAdicao}
                                 </span>
                               )}
@@ -375,7 +474,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               <div className="border-t-2 border-[#123768] pt-2 text-center space-y-1">
                 <strong className="text-[#172B4D] font-bold block text-xs">{evaluation.gestorAvaliador || 'Gestor do Contrato'}</strong>
                 <span className="text-[11px] text-[#475569] block">Gestor do Contrato / Diretoria Operacional</span>
-                <span className="text-[10px] text-slate-400 block">REDE D'OR – HOSPITAL VILA NOVA STAR</span>
+                <span className="text-[10px] text-[#475569] block">REDE D'OR – HOSPITAL VILA NOVA STAR</span>
               </div>
 
               {/* Assinatura/Representante do Fornecedor */}
@@ -396,10 +495,81 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                       {evaluation.nomeSignatario || (supplier?.contatoNome ? supplier.contatoNome : 'Preposto / Representante Legal (A definir)')}
                     </strong>
                     <span className="text-[11px] text-[#475569] block">{evaluation.cargoSignatario || 'Representante do Fornecedor'}</span>
-                    <span className="text-[10px] text-slate-500 block">
-                      {evaluation.statusAssinatura === 'ASSINADO_CIENTE' ? `Ciência Registrada em ${evaluation.dataCiencia}` : 'Assinatura PENDENTE de Envio'}
+                    <span className="text-[10px] text-[#475569] block">
+                      {evaluation.statusAssinatura === 'ASSINADO_CIENTE'
+                        ? `Ciência Registrada em ${evaluation.dataCiencia}`
+                        : ultimoEnvio
+                          ? `Laudo encaminhado por e-mail em ${formatDateTime(ultimoEnvio.dataHora)}`
+                          : 'Laudo ainda não encaminhado ao fornecedor'}
                     </span>
                   </div>
+                )}
+                {validacao && (
+                  <span className="inline-flex items-center text-[10px] text-[#047857] font-bold">
+                    <ShieldCheck className="w-3 h-3 mr-1" /> Validado pelo fornecedor no site em {formatDateTime(validacao.dataHora)}
+                  </span>
+                )}
+                {!validacao && evaluation.statusAssinatura === 'ASSINADO_CIENTE' && evaluation.cienciaRegistradaPor && (
+                  <span className="text-[10px] text-[#475569] block">Registrada por {evaluation.cienciaRegistradaPor}</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 10. Comprovação de comunicação ao fornecedor */}
+          <div className="border-t border-[#CBD5E1] pt-3 space-y-2 print-avoid-break text-xs">
+            <h4 className="font-bold text-xs text-[#172B4D] uppercase">Comunicação ao Fornecedor</h4>
+            {envios.length > 0 ? (
+              <>
+                <table className="w-full text-left border border-[#CBD5E1] text-[11px] border-collapse">
+                  <thead className="bg-slate-100 text-[#172B4D] font-bold uppercase text-[10px]">
+                    <tr>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Data / Hora</th>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Destinatário</th>
+                      <th className="py-1.5 px-2 border-r border-[#CBD5E1]">Enviado por</th>
+                      <th className="py-1.5 px-2 whitespace-nowrap">Código do laudo</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#CBD5E1] text-[#172B4D]">
+                    {envios.map(envio => (
+                      <tr key={envio.id}>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1] whitespace-nowrap">{formatDateTime(envio.dataHora)}</td>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1]">{envio.destinatario}</td>
+                        <td className="py-1.5 px-2 border-r border-[#CBD5E1]">{envio.enviadoPor}{envio.enviadoPorEmail ? ` (${envio.enviadoPorEmail})` : ''}</td>
+                        <td className="py-1.5 px-2 font-mono whitespace-nowrap">{envio.codigoLaudo}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p className="text-[10px] text-[#475569]">
+                  Laudo encaminhado pelo e-mail corporativo do gestor (Outlook). Código de verificação desta versão:{' '}
+                  <strong className="font-mono text-[#172B4D]">{codigoAtual || '…'}</strong>
+                </p>
+                {codigoAtual && ultimoEnvio && ultimoEnvio.codigoLaudo !== codigoAtual && (
+                  <p className="flex items-center text-[10px] font-semibold text-[#92400E]">
+                    <AlertTriangle className="w-3.5 h-3.5 mr-1" /> Este laudo foi alterado depois do último envio ao fornecedor.
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-[11px] text-[#475569]">Nenhum envio registrado. Código de verificação desta versão: <strong className="font-mono text-[#172B4D]">{codigoAtual || '…'}</strong></p>
+            )}
+
+            {/* Segunda validação: ações do fornecedor logado no site */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <div className={`p-2 rounded-md border text-[11px] ${visualizacao ? 'bg-slate-50 border-[#CBD5E1]' : 'bg-white border-dashed border-[#CBD5E1]'}`}>
+                <span className="flex items-center font-bold text-[#172B4D]"><Eye className="w-3.5 h-3.5 mr-1" /> Visualizado pelo fornecedor no site</span>
+                {visualizacao
+                  ? <span className="text-[#475569]">{formatDateTime(visualizacao.dataHora)} — {visualizacao.nome} ({visualizacao.email})</span>
+                  : <span className="text-[#475569]">Ainda não visualizado</span>}
+              </div>
+              <div className={`p-2 rounded-md border text-[11px] ${validacao ? 'bg-[#ECFDF5] border-[#A7F3D0]' : 'bg-white border-dashed border-[#CBD5E1]'}`}>
+                <span className={`flex items-center font-bold ${validacao ? 'text-[#047857]' : 'text-[#172B4D]'}`}><ShieldCheck className="w-3.5 h-3.5 mr-1" /> Validado pelo fornecedor no site</span>
+                {validacao
+                  ? <span className="text-[#172B4D]">{formatDateTime(validacao.dataHora)} — {validacao.nome} ({validacao.email}) · código <span className="font-mono">{validacao.codigoLaudo}</span></span>
+                  : <span className="text-[#475569]">Ainda não validado</span>}
+                {validacaoDesatualizada && (
+                  <span className="block font-semibold text-[#92400E]">Validação feita em versão anterior do laudo.</span>
                 )}
               </div>
             </div>

@@ -278,7 +278,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "DIRFRE005",
       "fornecedor": "Fresenius Terapia Renal",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Nos casos de procedimentos de urgência, o responsável disponibiliza alguém da equipe para atendimento imedialo?",
+      "pergunta": "Nos casos de procedimentos de urgência, o responsável disponibiliza alguém da equipe para atendimento imediato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -302,7 +302,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "DIRFRE008",
       "fornecedor": "Fresenius Terapia Renal",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "PPRA e o PCMSO estao atualizados?",
+      "pergunta": "PPRA e o PCMSO estão atualizados?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -363,6 +363,14 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
+      "id": "DIRFRE016",
+      "fornecedor": "Fresenius Terapia Renal",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "O gestor participa das reuniões de indicadores?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
       "id": "DIRFRE017",
       "fornecedor": "Fresenius Terapia Renal",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
@@ -384,7 +392,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBRA001",
       "fornecedor": "Brazil 3 Business Mamografia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -400,7 +408,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBRA003",
       "fornecedor": "Brazil 3 Business Mamografia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -408,7 +416,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBRA004",
       "fornecedor": "Brazil 3 Business Mamografia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -424,7 +432,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBRA006",
       "fornecedor": "Brazil 3 Business Mamografia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -432,7 +440,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBRA007",
       "fornecedor": "Brazil 3 Business Mamografia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -458,7 +466,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBAX001",
       "fornecedor": "Baxter Starling",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -474,7 +482,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBAX003",
       "fornecedor": "Baxter Starling",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -482,7 +490,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBAX004",
       "fornecedor": "Baxter Starling",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -498,7 +506,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBAX006",
       "fornecedor": "Baxter Starling",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -506,7 +514,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBAX007",
       "fornecedor": "Baxter Starling",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -532,7 +540,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAN001",
       "fornecedor": "Canon Ultrassom",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -548,7 +556,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAN003",
       "fornecedor": "Canon Ultrassom",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -556,7 +564,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAN004",
       "fornecedor": "Canon Ultrassom",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -572,7 +580,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAN006",
       "fornecedor": "Canon Ultrassom",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -580,7 +588,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAN007",
       "fornecedor": "Canon Ultrassom",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -606,7 +614,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGINV001",
       "fornecedor": "Invita CyberKnife & TomoTherapy",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -622,7 +630,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGINV003",
       "fornecedor": "Invita CyberKnife & TomoTherapy",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -630,7 +638,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGINV004",
       "fornecedor": "Invita CyberKnife & TomoTherapy",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -646,7 +654,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGINV006",
       "fornecedor": "Invita CyberKnife & TomoTherapy",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -654,7 +662,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGINV007",
       "fornecedor": "Invita CyberKnife & TomoTherapy",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -680,7 +688,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGSTE001",
       "fornecedor": "Steris Esterilizadoras",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -696,7 +704,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGSTE003",
       "fornecedor": "Steris Esterilizadoras",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -704,7 +712,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGSTE004",
       "fornecedor": "Steris Esterilizadoras",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -720,7 +728,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGSTE006",
       "fornecedor": "Steris Esterilizadoras",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -728,7 +736,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGSTE007",
       "fornecedor": "Steris Esterilizadoras",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -754,7 +762,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGHS001",
       "fornecedor": "H Strattner CyberKnife",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -770,7 +778,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGHS003",
       "fornecedor": "H Strattner CyberKnife",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -778,7 +786,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGHS004",
       "fornecedor": "H Strattner CyberKnife",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -794,7 +802,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGHS006",
       "fornecedor": "H Strattner CyberKnife",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -802,7 +810,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGHS007",
       "fornecedor": "H Strattner CyberKnife",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -828,7 +836,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGVAR001",
       "fornecedor": "Varian Radioterapia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -844,7 +852,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGVAR003",
       "fornecedor": "Varian Radioterapia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -852,7 +860,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGVAR004",
       "fornecedor": "Varian Radioterapia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -868,7 +876,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGVAR006",
       "fornecedor": "Varian Radioterapia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -876,7 +884,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGVAR007",
       "fornecedor": "Varian Radioterapia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -902,7 +910,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGGE001",
       "fornecedor": "GE Healthcare Imagem",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -918,7 +926,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGGE003",
       "fornecedor": "GE Healthcare Imagem",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -926,7 +934,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGGE004",
       "fornecedor": "GE Healthcare Imagem",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -942,7 +950,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGGE006",
       "fornecedor": "GE Healthcare Imagem",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -950,7 +958,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGGE007",
       "fornecedor": "GE Healthcare Imagem",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -973,15 +981,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
   ],
   "Brainlab Neuronavegador": [
     {
-      "id": "ENGBRA001",
+      "id": "ENGBRL001",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "ENGBRA002",
+      "id": "ENGBRL002",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "A empresa apresenta normas de qualidade e procedimentos internos",
@@ -989,23 +997,23 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "ENGBRA003",
+      "id": "ENGBRL003",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "ENGBRA004",
+      "id": "ENGBRL004",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "ENGBRA005",
+      "id": "ENGBRL005",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
       "pergunta": "A apresentação dos colaboradores está adequada? (crachá e uniforme)",
@@ -1013,23 +1021,23 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "ENGBRA006",
+      "id": "ENGBRL006",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "ENGBRA007",
+      "id": "ENGBRL007",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "ENGBRA008",
+      "id": "ENGBRL008",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
       "pergunta": "Pesquisa de opinião: satisfação dos pacientes pelo serviço prestado está dentro da meta?",
@@ -1037,7 +1045,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "ENGBRA009",
+      "id": "ENGBRL009",
       "fornecedor": "Brainlab Neuronavegador",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
       "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
@@ -1050,7 +1058,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCIS001",
       "fornecedor": "Cisa Brasile",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1066,7 +1074,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCIS003",
       "fornecedor": "Cisa Brasile",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1074,7 +1082,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCIS004",
       "fornecedor": "Cisa Brasile",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1090,7 +1098,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCIS006",
       "fornecedor": "Cisa Brasile",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1098,7 +1106,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCIS007",
       "fornecedor": "Cisa Brasile",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1124,7 +1132,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGPHI001",
       "fornecedor": "Philips medical Sys.",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1140,7 +1148,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGPHI003",
       "fornecedor": "Philips medical Sys.",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1148,7 +1156,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGPHI004",
       "fornecedor": "Philips medical Sys.",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1164,7 +1172,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGPHI006",
       "fornecedor": "Philips medical Sys.",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1172,7 +1180,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGPHI007",
       "fornecedor": "Philips medical Sys.",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1198,7 +1206,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGEND001",
       "fornecedor": "Endoclear",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1214,7 +1222,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGEND003",
       "fornecedor": "Endoclear",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1222,7 +1230,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGEND004",
       "fornecedor": "Endoclear",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1238,7 +1246,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGEND006",
       "fornecedor": "Endoclear",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1246,7 +1254,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGEND007",
       "fornecedor": "Endoclear",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1272,7 +1280,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGDRA001",
       "fornecedor": "Drager Anestesia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1288,7 +1296,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGDRA003",
       "fornecedor": "Drager Anestesia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1296,7 +1304,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGDRA004",
       "fornecedor": "Drager Anestesia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1312,7 +1320,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGDRA006",
       "fornecedor": "Drager Anestesia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1320,7 +1328,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGDRA007",
       "fornecedor": "Drager Anestesia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1346,7 +1354,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAR001",
       "fornecedor": "Carestream Dry & Raio-X",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1362,7 +1370,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAR003",
       "fornecedor": "Carestream Dry & Raio-X",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1370,7 +1378,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAR004",
       "fornecedor": "Carestream Dry & Raio-X",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1386,7 +1394,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAR006",
       "fornecedor": "Carestream Dry & Raio-X",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1394,7 +1402,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGCAR007",
       "fornecedor": "Carestream Dry & Raio-X",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1420,7 +1428,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBB001",
       "fornecedor": "Bbraun Bombas Infusão",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1436,7 +1444,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBB003",
       "fornecedor": "Bbraun Bombas Infusão",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1444,7 +1452,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBB004",
       "fornecedor": "Bbraun Bombas Infusão",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1460,7 +1468,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBB006",
       "fornecedor": "Bbraun Bombas Infusão",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1468,7 +1476,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGBB007",
       "fornecedor": "Bbraun Bombas Infusão",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1494,7 +1502,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGAIR001",
       "fornecedor": "Air Liquide (Eng. Clínica)",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1510,7 +1518,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGAIR003",
       "fornecedor": "Air Liquide (Eng. Clínica)",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1518,7 +1526,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGAIR004",
       "fornecedor": "Air Liquide (Eng. Clínica)",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1534,7 +1542,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGAIR006",
       "fornecedor": "Air Liquide (Eng. Clínica)",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1542,7 +1550,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "ENGAIR007",
       "fornecedor": "Air Liquide (Eng. Clínica)",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1910,7 +1918,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVBOB001",
       "fornecedor": "Bobson Odorizadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
+      "pergunta": "Cumprimento dos prazos de acordo com o cronograma corporativo?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1918,7 +1926,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVBOB002",
       "fornecedor": "Bobson Odorizadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados espordicos são atendidos dentro da SLA?",
+      "pergunta": "Os chamados esporádicos são atendidos dentro da SLA?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1934,7 +1942,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVBOB004",
       "fornecedor": "Bobson Odorizadores",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1942,7 +1950,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVBOB005",
       "fornecedor": "Bobson Odorizadores",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -1965,22 +1973,6 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
   ],
   "Dunamis Vigilância": [
     {
-      "id": "GOVDUN001",
-      "fornecedor": "Dunamis Vigilância",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "GOVDUN002",
-      "fornecedor": "Dunamis Vigilância",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados espordicos são atendidos dentro da SLA?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
       "id": "GOVDUN003",
       "fornecedor": "Dunamis Vigilância",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
@@ -1992,7 +1984,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVDUN004",
       "fornecedor": "Dunamis Vigilância",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2000,7 +1992,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVDUN005",
       "fornecedor": "Dunamis Vigilância",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2122,7 +2114,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVGOM001",
       "fornecedor": "Wesco Higiene",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
+      "pergunta": "Cumprimento dos prazos de acordo com o cronograma corporativo?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2130,7 +2122,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVGOM002",
       "fornecedor": "Wesco Higiene",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados espordicos são atendidos dentro da SLA?",
+      "pergunta": "Os chamados esporádicos são atendidos dentro da SLA?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2146,7 +2138,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVGOM004",
       "fornecedor": "Wesco Higiene",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2154,7 +2146,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVGOM005",
       "fornecedor": "Wesco Higiene",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2344,7 +2336,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVPEI001",
       "fornecedor": "Peixoto Paisagismo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
+      "pergunta": "Cumprimento dos prazos de acordo com o cronograma corporativo?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2410,7 +2402,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVPRA002",
       "fornecedor": "Praxxis Dedetização",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
+      "pergunta": "Cumprimento dos prazos de acordo com o cronograma corporativo?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2526,7 +2518,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "GOVSTÚ001",
       "fornecedor": "Studio D Essences / Bobson",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Cumprimento dos prazos de acordo com o cronograma coorporativo?",
+      "pergunta": "Cumprimento dos prazos de acordo com o cronograma corporativo?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2700,7 +2692,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "LABCON001",
       "fornecedor": "Controllab Qualidade",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Apresentação dos produtos com identificação e preços.",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -2708,7 +2700,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "LABCON002",
       "fornecedor": "Controllab Qualidade",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Existe plano controle de pragas periódicamente.",
+      "pergunta": "A empresa apresenta normas de qualidade e procedimentos internos?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3038,7 +3030,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANB3B001",
       "fornecedor": "B3B",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3054,7 +3046,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANB3B003",
       "fornecedor": "B3B",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3062,7 +3054,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANB3B004",
       "fornecedor": "B3B",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3078,7 +3070,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANB3B006",
       "fornecedor": "B3B",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3086,7 +3078,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANB3B007",
       "fornecedor": "B3B",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3109,82 +3101,10 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
   ],
   "Engepower Subestação": [
     {
-      "id": "MANGE001",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE002",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "A empresa apresenta normas de qualidade e procedimentos internos",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE003",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE004",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE005",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "A apresentação dos colaboradores está adequada? (crachá e uniforme)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE006",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE007",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE008",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Pesquisa de opinião: satisfação dos pacientes pelo serviço prestado está dentro da meta?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANGE009",
-      "fornecedor": "Engepower Subestação",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
       "id": "MANENG001",
       "fornecedor": "Engepower Subestação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3192,7 +3112,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANENG002",
       "fornecedor": "Engepower Subestação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3200,7 +3120,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANENG003",
       "fornecedor": "Engepower Subestação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3208,7 +3128,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANENG004",
       "fornecedor": "Engepower Subestação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3229,10 +3149,26 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
+      "id": "MANENG007",
+      "fornecedor": "Engepower Subestação",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANENG008",
+      "fornecedor": "Engepower Subestação",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
       "id": "MANENG009",
       "fornecedor": "Engepower Subestação",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3242,7 +3178,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM001",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3250,7 +3186,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM002",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3258,7 +3194,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM003",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3266,7 +3202,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM004",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3290,7 +3226,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM007",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANWM008",
+      "fornecedor": "Wm Aerocom Pneumático",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3298,7 +3242,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWM009",
       "fornecedor": "Wm Aerocom Pneumático",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3308,7 +3252,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR001",
       "fornecedor": "Air Liquide Gases",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "A contratada realiza assitência técnica preventiva mensalmente no recipiente criogênico?",
+      "pergunta": "A contratada realiza assistência técnica preventiva mensalmente no recipiente criogênico?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3316,7 +3260,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR002",
       "fornecedor": "Air Liquide Gases",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Ao final de cada visita do técnico é entregue um relatório de assitência técnica, o qual descreve o serviço solicitado, o serviço executado, peças trocadas e/ou substiuição de componentes?",
+      "pergunta": "Ao final de cada visita do técnico é entregue um relatório de assistência técnica, o qual descreve o serviço solicitado, o serviço executado, peças trocadas e/ou substituição de componentes?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3324,7 +3268,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR003",
       "fornecedor": "Air Liquide Gases",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os defeitos porventura existentes nas instações e/ou equipamentos são sanados em tempo hábil?",
+      "pergunta": "Os defeitos porventura existentes nas instalações e/ou equipamentos são sanados em tempo hábil?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3332,7 +3276,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR004",
       "fornecedor": "Air Liquide Gases",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O abastecimento dos gases é realizado em tempo hábil para atende as necessidades do hospital?",
+      "pergunta": "O abastecimento dos gases é realizado em tempo hábil para atender às necessidades do hospital?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3388,7 +3332,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR011",
       "fornecedor": "Air Liquide Gases",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3396,7 +3340,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANAIR013",
       "fornecedor": "Air Liquide Gases",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3406,7 +3350,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANATL001",
       "fornecedor": "Atlas Schindler Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vêz por mês?",
+      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vez por mês?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3438,7 +3382,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANATL005",
       "fornecedor": "Atlas Schindler Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza testes de seguança?",
+      "pergunta": "Realiza testes de segurança?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3454,7 +3398,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANATL007",
       "fornecedor": "Atlas Schindler Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Conserta ou substitui, independete do prévio orçamento, pequenas peças como parafusos, molas,",
+      "pergunta": "Conserta ou substitui, independente do prévio orçamento, pequenas peças como parafusos, molas,",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3486,7 +3430,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANATL011",
       "fornecedor": "Atlas Schindler Elevadores",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3494,22 +3438,22 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANATL013",
       "fornecedor": "Atlas Schindler Elevadores",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
   ],
   "Atlas Schindler Escada Rolante": [
     {
-      "id": "MANATL001",
+      "id": "MANATE001",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vêz por mês?",
+      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vez por mês?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANATL002",
+      "id": "MANATE002",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Realiza regulagem e ajuste das partes mecânicas e elétricas conforme acordado?",
@@ -3517,7 +3461,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL003",
+      "id": "MANATE003",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Realiza limpeza e lubrificação dos elevadores em todas as partes mecânicas e elétricas?",
@@ -3525,7 +3469,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL004",
+      "id": "MANATE004",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Fornece graxa, óleo e estopa necessárias para a limpeza e lubrificação dos itens anteriores?",
@@ -3533,15 +3477,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL005",
+      "id": "MANATE005",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza testes de seguança?",
+      "pergunta": "Realiza testes de segurança?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANATL006",
+      "id": "MANATE006",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Presta suporte e presteza quando acionado suporte conforme horário acordado?",
@@ -3549,15 +3493,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL007",
+      "id": "MANATE007",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Conserta ou substitui, independete do prévio orçamento, pequenas peças como parafusos, molas,",
+      "pergunta": "Conserta ou substitui, independente do prévio orçamento, pequenas peças como parafusos, molas,",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANATL008",
+      "id": "MANATE008",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Realiza troca de cabos de tração, cabos de comando, enrolamento de motores e outras peças de valor",
@@ -3565,7 +3509,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL009",
+      "id": "MANATE009",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS LEGAIS",
       "pergunta": "Os profissionais utilizam os EPI's recomendados?",
@@ -3573,7 +3517,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL010",
+      "id": "MANATE010",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
       "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
@@ -3581,18 +3525,18 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANATL011",
+      "id": "MANATE011",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANATL013",
+      "id": "MANATE013",
       "fornecedor": "Atlas Schindler Escada Rolante",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3602,7 +3546,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN001",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3610,7 +3554,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN002",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3618,7 +3562,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN003",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3626,7 +3570,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN004",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3650,7 +3594,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN007",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANBEN008",
+      "fornecedor": "RDI Bender IT Médico",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3658,7 +3610,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBEN009",
       "fornecedor": "RDI Bender IT Médico",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3668,7 +3620,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA001",
       "fornecedor": "Bra Clima",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3676,7 +3628,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA002",
       "fornecedor": "Bra Clima",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3684,7 +3636,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA003",
       "fornecedor": "Bra Clima",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3692,7 +3644,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA004",
       "fornecedor": "Bra Clima",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3716,7 +3668,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA007",
       "fornecedor": "Bra Clima",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANBRA008",
+      "fornecedor": "Bra Clima",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3724,7 +3684,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANBRA009",
       "fornecedor": "Bra Clima",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3734,7 +3694,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL001",
       "fornecedor": "CCL Capelas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3742,7 +3702,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL002",
       "fornecedor": "CCL Capelas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3750,7 +3710,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL003",
       "fornecedor": "CCL Capelas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3758,7 +3718,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL004",
       "fornecedor": "CCL Capelas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3782,7 +3742,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL007",
       "fornecedor": "CCL Capelas",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANCCL008",
+      "fornecedor": "CCL Capelas",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3790,7 +3758,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCCL009",
       "fornecedor": "CCL Capelas",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3800,7 +3768,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA001",
       "fornecedor": "Chama Industria",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3808,7 +3776,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA002",
       "fornecedor": "Chama Industria",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3816,7 +3784,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA003",
       "fornecedor": "Chama Industria",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3824,7 +3792,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA004",
       "fornecedor": "Chama Industria",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3848,7 +3816,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA007",
       "fornecedor": "Chama Industria",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANCHA008",
+      "fornecedor": "Chama Industria",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3856,7 +3832,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCHA009",
       "fornecedor": "Chama Industria",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3866,7 +3842,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC001",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3874,7 +3850,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC002",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3882,7 +3858,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC003",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3890,7 +3866,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC004",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3914,7 +3890,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC007",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANWTC008",
+      "fornecedor": "WTC Tratamento Água",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3922,7 +3906,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANWTC009",
       "fornecedor": "WTC Tratamento Água",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3932,7 +3916,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM001",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3940,7 +3924,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM002",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3948,7 +3932,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM003",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3956,7 +3940,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM004",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3980,7 +3964,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM007",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANCOM008",
+      "fornecedor": "COMERCIAL COMPOSTO",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -3988,7 +3980,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCOM009",
       "fornecedor": "COMERCIAL COMPOSTO",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -3998,7 +3990,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON001",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4006,7 +3998,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON002",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4014,7 +4006,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON003",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4022,7 +4014,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON004",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4046,7 +4038,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON007",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANCON008",
+      "fornecedor": "Controlbio Análise de Água",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4054,46 +4054,46 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANCON009",
       "fornecedor": "Controlbio Análise de Água",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
   ],
   "Controller Smart Automação": [
     {
-      "id": "MANCON001",
+      "id": "MANCSM001",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON002",
+      "id": "MANCSM002",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON003",
+      "id": "MANCSM003",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON004",
+      "id": "MANCSM004",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON005",
+      "id": "MANCSM005",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
       "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
@@ -4101,23 +4101,23 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANCON006",
+      "id": "MANCSM006",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON007",
+      "id": "MANCSM007",
       "fornecedor": "Controller Smart Automação",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuiem para a segurança e higiene do local?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
     {
-      "id": "MANCON008",
+      "id": "MANCSM008",
       "fornecedor": "Controller Smart Automação",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
       "pergunta": "Pesquisa de opinião: satisfação dos pacientes pelo serviço prestado está dentro da meta?",
@@ -4125,84 +4125,10 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "MANCON009",
+      "id": "MANCSM009",
       "fornecedor": "Controller Smart Automação",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
-      "obrigatoria": true,
-      "peso": 1.0
-    }
-  ],
-  "Planilha3": [
-    {
-      "id": "MANPLA001",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA002",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA003",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA004",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA005",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA006",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA007",
-      "fornecedor": "Planilha3",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuiem para a segurança e higiene do local?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA008",
-      "fornecedor": "Planilha3",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Pesquisa de opinião: satisfação dos pacientes pelo serviço prestado está dentro da meta?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANPLA009",
-      "fornecedor": "Planilha3",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4212,7 +4138,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO001",
       "fornecedor": "Evolutix",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4220,7 +4146,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO002",
       "fornecedor": "Evolutix",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4228,7 +4154,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO003",
       "fornecedor": "Evolutix",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4236,7 +4162,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO004",
       "fornecedor": "Evolutix",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4260,7 +4186,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO007",
       "fornecedor": "Evolutix",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANEVO008",
+      "fornecedor": "Evolutix",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4268,7 +4202,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANEVO009",
       "fornecedor": "Evolutix",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4278,7 +4212,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN001",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4286,7 +4220,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN002",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4294,7 +4228,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN003",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4302,7 +4236,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN004",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4326,7 +4260,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN007",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANMAN008",
+      "fornecedor": "Manusa Portas Automáticas",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4334,7 +4276,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMAN009",
       "fornecedor": "Manusa Portas Automáticas",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4344,7 +4286,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC001",
       "fornecedor": "Microambiental Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4352,7 +4294,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC002",
       "fornecedor": "Microambiental Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4360,7 +4302,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC003",
       "fornecedor": "Microambiental Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4368,7 +4310,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC004",
       "fornecedor": "Microambiental Água",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4392,7 +4334,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC007",
       "fornecedor": "Microambiental Água",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANMIC008",
+      "fornecedor": "Microambiental Água",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4400,7 +4350,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANMIC009",
       "fornecedor": "Microambiental Água",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4410,7 +4360,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET001",
       "fornecedor": "Net TV a Cabo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4418,7 +4368,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET002",
       "fornecedor": "Net TV a Cabo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4426,7 +4376,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET003",
       "fornecedor": "Net TV a Cabo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4434,7 +4384,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET004",
       "fornecedor": "Net TV a Cabo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4458,7 +4408,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET007",
       "fornecedor": "Net TV a Cabo",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANNET008",
+      "fornecedor": "Net TV a Cabo",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4466,7 +4424,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNET009",
       "fornecedor": "Net TV a Cabo",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4476,7 +4434,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB001",
       "fornecedor": "Nobreak Quality",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4484,7 +4442,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB002",
       "fornecedor": "Nobreak Quality",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4492,7 +4450,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB003",
       "fornecedor": "Nobreak Quality",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4500,7 +4458,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB004",
       "fornecedor": "Nobreak Quality",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4524,7 +4482,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB007",
       "fornecedor": "Nobreak Quality",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANNOB008",
+      "fornecedor": "Nobreak Quality",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4532,7 +4498,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANNOB009",
       "fornecedor": "Nobreak Quality",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4542,7 +4508,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS001",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4550,7 +4516,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS002",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4558,7 +4524,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS003",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4566,7 +4532,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS004",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4590,7 +4556,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS007",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANSOS008",
+      "fornecedor": "SOS Portas Corta Fogo",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4598,7 +4572,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANSOS009",
       "fornecedor": "SOS Portas Corta Fogo",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4608,7 +4582,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANKPM001",
       "fornecedor": "KPM Ar-condicionado PMOC",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Plano de manutenção, operação e controle (PMOC) esta disponível? (conforme norma NBR 13971(1997)",
+      "pergunta": "O Plano de manutenção, operação e controle (PMOC) está disponível? (conforme norma NBR 13971(1997)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4648,7 +4622,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANKPM006",
       "fornecedor": "KPM Ar-condicionado PMOC",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4690,7 +4664,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU001",
       "fornecedor": "Youcast",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4698,7 +4672,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU002",
       "fornecedor": "Youcast",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4706,7 +4680,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU003",
       "fornecedor": "Youcast",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4714,7 +4688,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU004",
       "fornecedor": "Youcast",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4738,7 +4712,15 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU007",
       "fornecedor": "Youcast",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANYOU008",
+      "fornecedor": "Youcast",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4746,73 +4728,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANYOU009",
       "fornecedor": "Youcast",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
-      "obrigatoria": true,
-      "peso": 1.0
-    }
-  ],
-  "DAIKIN": [
-    {
-      "id": "MANDAI001",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os representantes da empresa, usam os EPI's adequadamente?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI002",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Serviço prestado cumpre o que esta no escopo contratado?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI003",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O Cronograma de manutenção é seguido?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI004",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Os chamados emergenciais são atendidos no prazo acorado no contrato?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI005",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os profissionais seguem a norma da instituição quanto ao uso de adornos?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI006",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI007",
-      "fornecedor": "DAIKIN",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "MANDAI009",
-      "fornecedor": "DAIKIN",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4822,7 +4738,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANTHY001",
       "fornecedor": "Thyssem TKE Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vêz por mês?",
+      "pergunta": "Realiza inspeção dos elevadores 1 (uma) vez por mês?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4854,7 +4770,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANTHY005",
       "fornecedor": "Thyssem TKE Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Realiza testes de seguança?",
+      "pergunta": "Realiza testes de segurança?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4870,7 +4786,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANTHY007",
       "fornecedor": "Thyssem TKE Elevadores",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Conserta ou substitui, independete do prévio orçamento, pequenas peças como parafusos, molas,",
+      "pergunta": "Conserta ou substitui, independente do prévio orçamento, pequenas peças como parafusos, molas,",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4902,7 +4818,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANTHY011",
       "fornecedor": "Thyssem TKE Elevadores",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4910,7 +4826,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MANTHY013",
       "fornecedor": "Thyssem TKE Elevadores",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? ( Cronograma do hospital, sugerido semestralmente)",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -4920,7 +4836,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDRPH001",
       "fornecedor": "RPH Radiofarmácia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4936,7 +4852,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDRPH003",
       "fornecedor": "RPH Radiofarmácia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4944,7 +4860,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDRPH004",
       "fornecedor": "RPH Radiofarmácia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4960,7 +4876,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDRPH006",
       "fornecedor": "RPH Radiofarmácia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4968,7 +4884,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDRPH007",
       "fornecedor": "RPH Radiofarmácia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -4994,7 +4910,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDECK001",
       "fornecedor": "Eckert & Ziegler",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5010,7 +4926,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDECK003",
       "fornecedor": "Eckert & Ziegler",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5018,7 +4934,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDECK004",
       "fornecedor": "Eckert & Ziegler",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5034,7 +4950,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDECK006",
       "fornecedor": "Eckert & Ziegler",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5042,7 +4958,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDECK007",
       "fornecedor": "Eckert & Ziegler",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5068,7 +4984,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDIPE001",
       "fornecedor": "IPEN Radiofármacos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5084,7 +5000,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDIPE003",
       "fornecedor": "IPEN Radiofármacos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5092,7 +5008,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDIPE004",
       "fornecedor": "IPEN Radiofármacos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5108,7 +5024,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDIPE006",
       "fornecedor": "IPEN Radiofármacos",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5116,7 +5032,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDIPE007",
       "fornecedor": "IPEN Radiofármacos",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5142,7 +5058,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDR2001",
       "fornecedor": "IBF Farmoquímicos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5158,7 +5074,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDR2003",
       "fornecedor": "IBF Farmoquímicos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5166,7 +5082,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDR2004",
       "fornecedor": "IBF Farmoquímicos",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5182,7 +5098,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDR2006",
       "fornecedor": "IBF Farmoquímicos",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5190,7 +5106,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDR2007",
       "fornecedor": "IBF Farmoquímicos",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5216,7 +5132,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDCYC001",
       "fornecedor": "Cyclobras Laboratoriais",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O prestador comprova competencias para exercer as atividades?",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5232,7 +5148,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDCYC003",
       "fornecedor": "Cyclobras Laboratoriais",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apolice de seguro de responsabilidades civil vigente",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5240,7 +5156,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDCYC004",
       "fornecedor": "Cyclobras Laboratoriais",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5256,7 +5172,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDCYC006",
       "fornecedor": "Cyclobras Laboratoriais",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5264,7 +5180,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "MEDCYC007",
       "fornecedor": "Cyclobras Laboratoriais",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5290,7 +5206,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL001",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5298,7 +5214,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL002",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5306,7 +5222,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL003",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5314,7 +5230,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL004",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5330,7 +5246,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL006",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5338,7 +5254,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTMEL007",
       "fornecedor": "Melco Equipamentos Cozinha",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5364,7 +5280,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS001",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5372,7 +5288,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS002",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5380,7 +5296,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS003",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5388,7 +5304,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS004",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5404,7 +5320,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS006",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5412,7 +5328,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTSIS007",
       "fornecedor": "Sisnacmed Burlodge",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5438,7 +5354,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI001",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5446,7 +5362,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI002",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5454,7 +5370,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI003",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5462,7 +5378,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI004",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5478,7 +5394,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI006",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5486,7 +5402,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTPRI007",
       "fornecedor": "Prime Frio Refrigeração",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5512,7 +5428,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS001",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5520,7 +5436,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS002",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5528,7 +5444,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS003",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "O cronograma de manutenção é seguido?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5536,7 +5452,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS004",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5552,7 +5468,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS006",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5560,7 +5476,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTGPS007",
       "fornecedor": "GPS",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5581,110 +5497,12 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     }
   ],
-  "RE7 GASTRONOMIA LTDA": [
-    {
-      "id": "NUTRE7001",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7002",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7003",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7004",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7005",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "A apresentação dos colaboradores está adequada? (crachá e uniforme)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7006",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7007",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7008",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Pesquisa de opinião: satisfação dos pacientes pelo serviço prestado está dentro da meta?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7009",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7011",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Satisfação dos pacientes pelo serviço prestado",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7012",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Qualidade/segurança da refeição produzida",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
-      "id": "NUTRE7013",
-      "fornecedor": "RE7 GASTRONOMIA LTDA",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Número de colaboradores de acordo com contrato/Postura de colaborador",
-      "obrigatoria": true,
-      "peso": 1.0
-    }
-  ],
   "Roland Villard Gastronomia": [
     {
       "id": "NUTROL001",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "Possui alvará sanitário, licença de funcionamento e responsável técnico (nutricionista) vigentes?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5692,7 +5510,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTROL002",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "Segue as boas práticas de manipulação de alimentos (RDC 216/ANVISA) e o Manual de Boas Práticas da unidade?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5700,7 +5518,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTROL003",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "Os manipuladores de alimentos possuem ASO e treinamento em boas práticas atualizados?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5708,7 +5526,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTROL004",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "O número de profissionais está de acordo com o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5724,7 +5542,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTROL006",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5732,7 +5550,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTROL007",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5753,18 +5571,10 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "peso": 1.0
     },
     {
-      "id": "NUTROL011",
-      "fornecedor": "Roland Villard Gastronomia",
-      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Participação dos treinamentos institucionais",
-      "obrigatoria": true,
-      "peso": 1.0
-    },
-    {
       "id": "NUTROL012",
       "fornecedor": "Roland Villard Gastronomia",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
-      "pergunta": "Adequação de fluxos e processos para garatntir qualidade e segurança das refeições servidas",
+      "pergunta": "Adequação de fluxos e processos para garantir qualidade e segurança das refeições servidas",
       "obrigatoria": true,
       "peso": 1.0
     }
@@ -5774,7 +5584,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES001",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente ?",
+      "pergunta": "As entregas dos produtos são realizadas no prazo e na quantidade solicitados?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5782,7 +5592,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES002",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "pergunta": "Os produtos são entregues dentro do prazo de validade e com a identificação correta?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5790,7 +5600,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES003",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "pergunta": "A assistência técnica das máquinas em comodato atende os chamados no prazo acordado?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5798,7 +5608,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES004",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS LEGAIS",
-      "pergunta": "O número de profissionais esta de acordo com o contrato?",
+      "pergunta": "As máquinas em comodato recebem manutenção preventiva conforme o contrato?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5814,7 +5624,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES006",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5822,7 +5632,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "NUTNES007",
       "fornecedor": "Nestle Nespresso",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5880,7 +5690,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SESFER005",
       "fornecedor": "Fermar Fire Segurança",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -5888,7 +5698,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SESFER006",
       "fornecedor": "Fermar Fire Segurança",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuiem para a segurança e higiene do local.",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local.",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -6018,7 +5828,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SEGSYS014",
       "fornecedor": "Systempower CFTV",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -6026,7 +5836,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SEGSYS015",
       "fornecedor": "Systempower CFTV",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -6156,7 +5966,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SEGENG014",
       "fornecedor": "Engeradios Telecomunicações",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores  atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -6164,7 +5974,7 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "id": "SEGENG015",
       "fornecedor": "Engeradios Telecomunicações",
       "categoria": "ASPECTOS COMPORTAMENTAIS",
-      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local ?",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
       "obrigatoria": true,
       "peso": 1.0
     },
@@ -6181,6 +5991,516 @@ export const SUPPLIER_QUESTIONNAIRES_DATA: Record<string, SupplierQuestionItem[]
       "fornecedor": "Engeradios Telecomunicações",
       "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
       "pergunta": "O serviço realizado obteve o resultado esperado?",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Petroserv Diesel": [
+    {
+      "id": "MANPET001",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Possui autorização da ANP e licenças ambientais/operacionais vigentes?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET002",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "As entregas de óleo diesel são realizadas no prazo e na quantidade solicitados?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET003",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O combustível entregue atende à especificação contratada, com certificado de qualidade do lote?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET004",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "A descarga segue as normas de segurança (aterramento, contenção de vazamentos, extintor e sinalização)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET005",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O veículo e o motorista estão com a documentação de transporte de produtos perigosos em dia (MOPP, CIV/CIPP)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET006",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET007",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET008",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET009",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Atende às solicitações emergenciais de abastecimento no prazo acordado?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANPET010",
+      "fornecedor": "Petroserv Diesel",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Ortho Clinical Diagnostics": [
+    {
+      "id": "LABORT001",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O prestador comprova competências para exercer as atividades?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT002",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "A empresa apresenta normas de qualidade e procedimentos internos?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT003",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro de responsabilidade civil vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT004",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT005",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT006",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT007",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Pesquisa de opinião: satisfação pelo serviço prestado está dentro da meta?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "LABORT008",
+      "fornecedor": "Ortho Clinical Diagnostics",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Nexxto Sensores": [
+    {
+      "id": "DIRNEX001",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX002",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX003",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX004",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os profissionais seguem a norma da instituição quanto ao uso de adornos?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX005",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX006",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX007",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "DIRNEX008",
+      "fornecedor": "Nexxto Sensores",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Daikin Ar-condicionado": [
+    {
+      "id": "MANDAI001",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Os representantes da empresa usam os EPI's adequadamente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI002",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O serviço prestado cumpre o que está no escopo contratado?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI003",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O cronograma de manutenção é seguido?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI004",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Os chamados emergenciais são atendidos no prazo acordado no contrato?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI005",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os profissionais seguem a norma da instituição quanto ao uso de adornos?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI006",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI007",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI008",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Planos de ação estão atualizados para as não conformidades encontradas?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "MANDAI009",
+      "fornecedor": "Daikin Ar-condicionado",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "A contratada realiza treinamento para a equipe de manutenção do hospital quando solicitado? (Cronograma do hospital, sugerido semestralmente)",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Allpark Mão de Obra Estacionamento": [
+    {
+      "id": "GOVAPM001",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM002",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM003",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM004",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O número de profissionais (manobristas/atendentes) está de acordo com o contrato?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM005",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM006",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM007",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM008",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Pesquisa de opinião: satisfação dos pacientes e acompanhantes pelo serviço prestado está dentro da meta?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPM009",
+      "fornecedor": "Allpark Mão de Obra Estacionamento",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Allpark Bens & Serviços Estacionamento": [
+    {
+      "id": "GOVAPB001",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB002",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB003",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB004",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O número de profissionais (manobristas/atendentes) está de acordo com o contrato?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB005",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB006",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB007",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB008",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Pesquisa de opinião: satisfação dos pacientes e acompanhantes pelo serviço prestado está dentro da meta?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPB009",
+      "fornecedor": "Allpark Bens & Serviços Estacionamento",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
+      "obrigatoria": true,
+      "peso": 1.0
+    }
+  ],
+  "Allpark Cassolari's": [
+    {
+      "id": "GOVAPC001",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro para sinistro de roubo, furto, incêndio e colisão de veículo vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC002",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "Há apólice de seguro de \"Responsabilidade Civil Garagista\" vigente?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC003",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "É responsável pelo pagamento das multas aplicadas pelas autoridades competentes?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC004",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS LEGAIS",
+      "pergunta": "O número de profissionais (manobristas/atendentes) está de acordo com o contrato?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC005",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "A apresentação dos colaboradores está adequada? (Crachá e uniforme)",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC006",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores atendem aos aspectos comportamentais esperados (boa vontade em atender, educação, cordialidade, ética, agilidade)?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC007",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "ASPECTOS COMPORTAMENTAIS",
+      "pergunta": "Os colaboradores contribuem para a segurança e higiene do local?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC008",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Pesquisa de opinião: satisfação dos pacientes e acompanhantes pelo serviço prestado está dentro da meta?",
+      "obrigatoria": true,
+      "peso": 1.0
+    },
+    {
+      "id": "GOVAPC009",
+      "fornecedor": "Allpark Cassolari's",
+      "categoria": "PROGRAMA QUALIDADE E SEGURANÇA",
+      "pergunta": "Colaboradores participam dos treinamentos, como integração, SBV, Metas internacionais e outros do programa da qualidade?",
       "obrigatoria": true,
       "peso": 1.0
     }
