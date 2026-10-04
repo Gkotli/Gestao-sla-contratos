@@ -8,11 +8,11 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  senha?: string;
   cargo: string;
   role: UserRole;
   setorId?: string;       // Vinculado se for GESTOR
   fornecedorId?: string;  // Vinculado se for FORNECEDOR
+  acessoAtivo?: boolean;  // Supabase: já existe login (auth.users) ligado a este perfil
 }
 
 export interface Question {

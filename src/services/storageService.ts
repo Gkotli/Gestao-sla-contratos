@@ -1,34 +1,84 @@
 import { ActionPlan, Evaluation, Sector, Supplier, User } from '../types';
 import { INITIAL_ACTION_PLANS, INITIAL_EVALUATIONS, INITIAL_SECTORS, INITIAL_SUPPLIERS, INITIAL_USERS } from './mockData';
 import { safeNumber } from '../utils/formatters';
-import { KEYS, collectionForKey } from './storageKeys';
+import { KEYS, LEGACY_KEYS, collectionForKey } from './storageKeys';
 import { RemoteSync } from './remoteSync';
+import { SUPABASE_CONFIGURED } from './supabaseClient';
+
+// Nenhuma senha fica no navegador: descarta o campo de versões antigas.
+function withoutPassword<T extends object>(user: T): T {
+  const { senha: _discarded, ...rest } = user as T & { senha?: unknown };
+  return rest as T;
+}
 
 export class StorageService {
   // Grava uma coleção no cache local e envia a diferença para o banco compartilhado (se ativo).
   // As gravações iniciais com a base de demonstração não passam por aqui de propósito.
   private static persist(key: string, list: unknown[]): void {
-    const previous = localStorage.getItem(key);
-    localStorage.setItem(key, JSON.stringify(list));
     const collection = collectionForKey(key);
+    // Estado anterior lido pelo mesmo getter (normalizado): assim só o que mudou de verdade é enviado
+    const previous = collection ? this.readNormalized(key) : [];
+    localStorage.setItem(key, JSON.stringify(list));
     if (collection) RemoteSync.recordChange(collection, previous, list);
   }
 
+  private static readNormalized(key: string): unknown[] {
+    switch (key) {
+      case KEYS.SECTORS: return this.getSectors();
+      case KEYS.SUPPLIERS: return this.getSuppliers();
+      case KEYS.EVALUATIONS: return this.getEvaluations();
+      case KEYS.ACTION_PLANS: return this.getActionPlans();
+      default: return [];
+    }
+  }
+
+  // Lê uma coleção do cache. Sem cache, o modo local começa com a base de demonstração;
+  // com o Supabase começa vazio e é preenchido pelo banco após o login.
+  private static load(key: string, initial: unknown[]): any[] {
+    const data = localStorage.getItem(key);
+    if (!data) {
+      if (SUPABASE_CONFIGURED) return [];
+      localStorage.setItem(key, JSON.stringify(initial));
+      return [...initial];
+    }
+    try {
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [...initial];
+    } catch {
+      return [...initial];
+    }
+  }
+
+  // Apaga do navegador senhas e códigos de recuperação guardados por versões antigas.
+  static cleanupLegacyData(): void {
+    localStorage.removeItem(LEGACY_KEYS.PASSWORD_RESETS);
+    if (SUPABASE_CONFIGURED) {
+      // Usuários e sessão vêm do Supabase Auth; a cópia local não é mais usada
+      localStorage.removeItem(KEYS.USERS);
+      localStorage.removeItem(KEYS.CURRENT_USER);
+      return;
+    }
+    const users = localStorage.getItem(KEYS.USERS);
+    if (users && users.includes('"senha"')) {
+      localStorage.setItem(KEYS.USERS, JSON.stringify(this.getUsers()));
+    }
+    const current = this.getCurrentUser();
+    if (current) this.setCurrentUser(current);
+  }
+
+  // Usuários locais: usados apenas no modo local de demonstração (sem Supabase).
   static getUsers(): User[] {
     const data = localStorage.getItem(KEYS.USERS);
-    let list: any[] = [];
+    let list: any[] = INITIAL_USERS;
     if (!data) {
-      list = INITIAL_USERS;
       localStorage.setItem(KEYS.USERS, JSON.stringify(INITIAL_USERS));
     } else {
       try {
         const parsed = JSON.parse(data);
-        list = Array.isArray(parsed) ? parsed : INITIAL_USERS;
-      } catch {
-        list = INITIAL_USERS;
-      }
+        if (Array.isArray(parsed)) list = parsed;
+      } catch {}
     }
-    return list;
+    return list.map(withoutPassword);
   }
 
   static saveUser(user: User): User[] {
@@ -49,70 +99,11 @@ export class StorageService {
     return users;
   }
 
-  static savePasswordResetCode(email: string, code: string, expirationMinutes = 15): void {
-    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
-    let resets: Record<string, { code: string; expiresAt: number }> = {};
-    if (data) {
-      try {
-        resets = JSON.parse(data);
-      } catch {}
-    }
-    resets[email.toLowerCase().trim()] = {
-      code: code.trim(),
-      expiresAt: Date.now() + expirationMinutes * 60 * 1000
-    };
-    localStorage.setItem(KEYS.PASSWORD_RESETS, JSON.stringify(resets));
-  }
-
-  static verifyPasswordResetCode(email: string, code: string): { valid: boolean; message?: string } {
-    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
-    if (!data) return { valid: false, message: 'Nenhum código solicitado para este e-mail.' };
-    try {
-      const resets = JSON.parse(data);
-      const entry = resets[email.toLowerCase().trim()];
-      if (!entry) return { valid: false, message: 'Código não encontrado. Solicite um novo código.' };
-      if (Date.now() > entry.expiresAt) {
-        return { valid: false, message: 'O código de verificação expirou. Solicite um novo código.' };
-      }
-      if (entry.code !== code.trim()) {
-        return { valid: false, message: 'Código incorreto. Por favor, verifique os 6 dígitos informados.' };
-      }
-      return { valid: true };
-    } catch {
-      return { valid: false, message: 'Erro ao validar código.' };
-    }
-  }
-
-  static clearPasswordResetCode(email: string): void {
-    const data = localStorage.getItem(KEYS.PASSWORD_RESETS);
-    if (!data) return;
-    try {
-      const resets = JSON.parse(data);
-      delete resets[email.toLowerCase().trim()];
-      localStorage.setItem(KEYS.PASSWORD_RESETS, JSON.stringify(resets));
-    } catch {}
-  }
-
-  static updateUserPassword(email: string, newPassword: string): User | null {
-    const users = this.getUsers();
-    const idx = users.findIndex(u => u.email.toLowerCase().trim() === email.toLowerCase().trim());
-    if (idx >= 0) {
-      users[idx] = {
-        ...users[idx],
-        senha: newPassword
-      };
-      this.persist(KEYS.USERS, users);
-      this.clearPasswordResetCode(email);
-      return users[idx];
-    }
-    return null;
-  }
-
   static getCurrentUser(): User | null {
     const data = localStorage.getItem(KEYS.CURRENT_USER);
     if (!data) return null;
     try {
-      return JSON.parse(data);
+      return withoutPassword(JSON.parse(data));
     } catch {
       return null;
     }
@@ -120,43 +111,18 @@ export class StorageService {
 
   static setCurrentUser(user: User | null): void {
     if (user) {
-      localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(user));
+      localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(withoutPassword(user)));
     } else {
       localStorage.removeItem(KEYS.CURRENT_USER);
     }
   }
 
   static getSectors(): Sector[] {
-    const data = localStorage.getItem(KEYS.SECTORS);
-    let list: any[] = [];
-    if (!data) {
-      list = INITIAL_SECTORS;
-      localStorage.setItem(KEYS.SECTORS, JSON.stringify(INITIAL_SECTORS));
-    } else {
-      try {
-        const parsed = JSON.parse(data);
-        list = Array.isArray(parsed) ? parsed : INITIAL_SECTORS;
-      } catch {
-        list = INITIAL_SECTORS;
-      }
-    }
-    return list;
+    return this.load(KEYS.SECTORS, INITIAL_SECTORS);
   }
 
   static getSuppliers(): Supplier[] {
-    const data = localStorage.getItem(KEYS.SUPPLIERS);
-    let list: any[] = [];
-    if (!data) {
-      list = INITIAL_SUPPLIERS;
-      localStorage.setItem(KEYS.SUPPLIERS, JSON.stringify(INITIAL_SUPPLIERS));
-    } else {
-      try {
-        const parsed = JSON.parse(data);
-        list = Array.isArray(parsed) ? parsed : INITIAL_SUPPLIERS;
-      } catch {
-        list = INITIAL_SUPPLIERS;
-      }
-    }
+    const list = this.load(KEYS.SUPPLIERS, INITIAL_SUPPLIERS);
     return list.map((s, idx) => ({
       id: s?.id || `sup_${idx}`,
       cnpj: s?.cnpj || '',
@@ -191,19 +157,7 @@ export class StorageService {
   }
 
   static getEvaluations(): Evaluation[] {
-    const data = localStorage.getItem(KEYS.EVALUATIONS);
-    let list: any[] = [];
-    if (!data) {
-      list = INITIAL_EVALUATIONS;
-      localStorage.setItem(KEYS.EVALUATIONS, JSON.stringify(INITIAL_EVALUATIONS));
-    } else {
-      try {
-        const parsed = JSON.parse(data);
-        list = Array.isArray(parsed) ? parsed : INITIAL_EVALUATIONS;
-      } catch {
-        list = INITIAL_EVALUATIONS;
-      }
-    }
+    const list = this.load(KEYS.EVALUATIONS, INITIAL_EVALUATIONS);
 
     return list.map((ev, idx) => ({
       id: ev?.id || `eval_${idx}_${Date.now()}`,
@@ -262,20 +216,7 @@ export class StorageService {
   }
 
   static getActionPlans(): ActionPlan[] {
-    const data = localStorage.getItem(KEYS.ACTION_PLANS);
-    let list: any[] = [];
-    if (!data) {
-      list = INITIAL_ACTION_PLANS;
-      localStorage.setItem(KEYS.ACTION_PLANS, JSON.stringify(INITIAL_ACTION_PLANS));
-    } else {
-      try {
-        const parsed = JSON.parse(data);
-        list = Array.isArray(parsed) ? parsed : INITIAL_ACTION_PLANS;
-      } catch {
-        list = INITIAL_ACTION_PLANS;
-      }
-    }
-    return list;
+    return this.load(KEYS.ACTION_PLANS, INITIAL_ACTION_PLANS);
   }
 
   static saveActionPlan(plan: ActionPlan): ActionPlan[] {

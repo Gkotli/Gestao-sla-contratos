@@ -74,7 +74,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_gabriel',
     nome: 'Gabriel Kotliarenko',
     email: 'gabriel.kotliarenko@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Diretoria Operacional (Admin)',
     role: 'DIRETORIA'
   },
@@ -82,7 +81,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_maria_luisa',
     nome: 'Maria Luisa do Nascimento Moura',
     email: 'maria.nmoura@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Diretoria Geral',
     role: 'DIRETORIA',
     setorId: 'sec_diretoria'
@@ -91,7 +89,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_daniel',
     nome: 'Daniel Favarão Del Negro',
     email: 'daniel.fnegro@saoluiz.com.br',
-    senha: '123',
     cargo: 'Gestor - Diretoria Geral',
     role: 'DIRETORIA',
     setorId: 'sec_diretoria'
@@ -100,7 +97,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_mariana',
     nome: 'Mariana Ferres Candiotto',
     email: 'mariana.candiotto@rededor.com.br',
-    senha: '123',
     cargo: 'Gestor - Diretoria Geral',
     role: 'DIRETORIA',
     setorId: 'sec_diretoria'
@@ -109,7 +105,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_ellen',
     nome: 'Ellen Manoela F Zerbetto',
     email: 'ellen.zerbetto@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Engenharia Clínica',
     role: 'GESTOR',
     setorId: 'sec_eng_clinica'
@@ -118,7 +113,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_eduardo',
     nome: 'Eduardo Gonçalves Dias',
     email: 'eduardo.gdias@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Manutenção',
     role: 'GESTOR',
     setorId: 'sec_manutencao'
@@ -127,7 +121,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_karina',
     nome: 'Karina G Moutinho C Vasconcelos',
     email: 'karina.moutinho@oncologiador.com.br',
-    senha: '123',
     cargo: 'Gestor - Medicina Nuclear',
     role: 'GESTOR',
     setorId: 'sec_medicina_nuclear'
@@ -136,7 +129,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_vivian',
     nome: 'Vivian Paula Da Cunha Silva',
     email: 'vivian.cunha@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - SESMT',
     role: 'GESTOR',
     setorId: 'sec_sesmt'
@@ -145,7 +137,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_alex',
     nome: 'Alex Henrique Leite Dantes',
     email: 'alex.dantes@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Segurança Patrimonial',
     role: 'GESTOR',
     setorId: 'sec_seguranca'
@@ -154,7 +145,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_maira',
     nome: 'Maira Oliveira Vanucci',
     email: 'maira.vanucci@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Nutrição',
     role: 'GESTOR',
     setorId: 'sec_nutricao'
@@ -163,7 +153,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_jaqueline',
     nome: 'Jaqueline Cleide Aguiar Monteiro De Carvalho',
     email: 'jaqueline.monteiroc@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Governança',
     role: 'GESTOR',
     setorId: 'sec_governanca'
@@ -172,7 +161,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_manoel',
     nome: 'Manoel Iomar De Medeiros',
     email: 'manoel.medeiros@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Laboratório',
     role: 'GESTOR',
     setorId: 'sec_laboratorio'
@@ -181,7 +169,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_nicole',
     nome: 'Nicole Longo Fecarotta',
     email: 'nicole.longo@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Relacionamento Médico',
     role: 'GESTOR',
     setorId: 'sec_rel_medico'
@@ -190,7 +177,6 @@ export const INITIAL_USERS: User[] = [
     id: 'usr_giseli',
     nome: 'Giseli Carvalho',
     email: 'giseli.carvalho@vilanovastar.com.br',
-    senha: '123',
     cargo: 'Gestor - Equipe Multi',
     role: 'GESTOR',
     setorId: 'sec_multi'

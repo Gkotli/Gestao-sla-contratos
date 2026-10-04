@@ -21,7 +21,7 @@ interface HeaderProps {
   pendingActionPlansCount: number;
   currentUser: User | null;
   users: User[];
-  onSelectUser: (user: User) => void;
+  onSelectUser?: (user: User) => void;
   onLogout: () => void;
 }
 

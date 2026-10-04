@@ -2,6 +2,8 @@ import React, { useState, useMemo, Suspense, lazy } from 'react';
 import { ActionPlan, Evaluation, Sector, Supplier, User } from './types';
 import { StorageService } from './services/storageService';
 import { RemoteSync, SyncStatus } from './services/remoteSync';
+import { AuthService, AuthState } from './services/authService';
+import { AUTH_LINK_ERROR, SUPABASE_CONFIGURED, clearAuthLink } from './services/supabaseClient';
 import { isSystemAdmin } from './utils/security';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
@@ -25,8 +27,20 @@ const TabFallback = () => (
   </div>
 );
 
+// Com o Supabase configurado: login pelo Supabase Auth e dados protegidos por RLS.
+// Sem ele: modo local de demonstração (dados no navegador, sem senha).
+const REMOTE = SUPABASE_CONFIGURED;
+
+// Roda antes do primeiro render: remove senhas/códigos guardados por versões antigas
+StorageService.cleanupLegacyData();
+
+const INITIAL_NOTICE = AUTH_LINK_ERROR
+  ? 'O link de acesso é inválido ou expirou. Solicite um novo em "Esqueci minha senha" ou peça um novo convite à Diretoria.'
+  : null;
+if (AUTH_LINK_ERROR) clearAuthLink();
+
 const SYNC_LABELS: Record<SyncStatus, string> = {
-  local: 'Modo local (dados apenas neste navegador)',
+  local: 'Modo local de demonstração (dados apenas neste navegador)',
   connecting: 'Conectando ao banco compartilhado…',
   online: 'Banco compartilhado conectado',
   error: 'Falha na sincronização — alterações salvas localmente'
@@ -37,8 +51,11 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
   // Persistent Application State
-  const [currentUser, setCurrentUser] = useState<User | null>(() => StorageService.getCurrentUser());
-  const [users, setUsers] = useState<User[]>(() => StorageService.getUsers());
+  const [currentUser, setCurrentUser] = useState<User | null>(() => REMOTE ? null : StorageService.getCurrentUser());
+  const [users, setUsers] = useState<User[]>(() => REMOTE ? [] : StorageService.getUsers());
+  const [authState, setAuthState] = useState<AuthState>(() => REMOTE ? { status: 'loading' } : { status: 'signed_out' });
+  const [loginNotice, setLoginNotice] = useState<string | null>(INITIAL_NOTICE);
+  const currentUserIdRef = React.useRef<string | null>(null);
   const [sectors, setSectors] = useState<Sector[]>(() => StorageService.getSectors());
   const [suppliers, setSuppliers] = useState<Supplier[]>(() => StorageService.getSuppliers());
   const [evaluations, setEvaluations] = useState<Evaluation[]>(() => StorageService.getEvaluations());
@@ -67,16 +84,51 @@ export default function App() {
 
   React.useEffect(() => {
     const reloadFromCache = () => {
-      setUsers(StorageService.getUsers());
       setSectors(StorageService.getSectors());
       setSuppliers(StorageService.getSuppliers());
       setEvaluations(StorageService.getEvaluations());
       setActionPlans(StorageService.getActionPlans());
     };
-    const unsubscribe = RemoteSync.subscribe(setSyncStatus, reloadFromCache);
-    RemoteSync.start();
-    return unsubscribe;
+    return RemoteSync.subscribe(setSyncStatus, reloadFromCache, message => alert(message));
   }, []);
+
+  const refreshProfiles = React.useCallback(() => {
+    if (!REMOTE) return;
+    AuthService.listProfiles()
+      .then(setUsers)
+      .catch(err => console.error('[App] Falha ao carregar usuários:', err));
+  }, []);
+
+  // --- SESSÃO (Supabase Auth) ---
+  // O perfil (role, setor, fornecedor) vem da tabela profiles; a sincronização só
+  // começa depois do login, com as permissões desse perfil aplicadas pelo banco.
+  React.useEffect(() => {
+    if (!REMOTE) return;
+    return AuthService.watch(state => {
+      setAuthState(state);
+      if (state.status === 'signed_in') {
+        if (currentUserIdRef.current !== state.user.id) {
+          currentUserIdRef.current = state.user.id;
+          setActiveTab(state.user.role === 'FORNECEDOR' ? 'eval-list' : 'dashboard');
+        }
+        setLoginNotice(null);
+        setCurrentUser(state.user);
+        void RemoteSync.start({ authUserId: state.authUserId, role: state.user.role });
+        refreshProfiles();
+        return;
+      }
+      currentUserIdRef.current = null;
+      setCurrentUser(null);
+      setUsers([]);
+      if (state.status === 'no_profile') {
+        setLoginNotice(`O login ${state.email} não está vinculado a um perfil do sistema. Procure a Diretoria Operacional.`);
+        void AuthService.signOut();
+      } else if (state.status === 'signed_out') {
+        if (state.notice) setLoginNotice(state.notice);
+        void RemoteSync.stop();
+      }
+    });
+  }, [refreshProfiles]);
 
   const scopedSuppliers = useMemo(() => {
     if (!currentUser) return [];
@@ -124,7 +176,8 @@ export default function App() {
   }, [sectors, currentUser, isDiretoria, isGestor]);
 
   // --- Handlers de Autenticação ---
-  const handleLoginSuccess = (user: User) => {
+  // Modo local: entrada de demonstração, sem senha
+  const handleLocalLogin = (user: User) => {
     setCurrentUser(user);
     StorageService.setCurrentUser(user);
     if (user.role === 'FORNECEDOR') {
@@ -134,11 +187,25 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (!REMOTE) {
+      setCurrentUser(null);
+      StorageService.setCurrentUser(null);
+      return;
+    }
+    if (RemoteSync.hasPendingChanges() && !window.confirm(
+      'Existem alterações que ainda não foram enviadas ao banco (sem conexão?). Se sair agora elas serão descartadas deste navegador. Sair mesmo assim?'
+    )) {
+      return;
+    }
+    await AuthService.signOut();
+    currentUserIdRef.current = null;
     setCurrentUser(null);
-    StorageService.setCurrentUser(null);
+    setUsers([]);
+    await RemoteSync.stop();
   };
 
+  // Troca de sessão sem senha: só no modo local de demonstração
   const handleSelectUser = (user: User) => {
     setCurrentUser(user);
     StorageService.setCurrentUser(user);
@@ -165,22 +232,62 @@ export default function App() {
   };
 
   // --- User Handlers ---
-  const handleSaveUser = (user: User) => {
+  // No Supabase a permissão é conferida de novo pelo banco (RLS em profiles).
+  const handleSaveUser = async (user: User, isNew: boolean): Promise<boolean> => {
     if (currentUser?.role !== 'DIRETORIA') {
       alert('Acesso negado: Apenas a Diretoria possui permissão para gerenciar usuários.');
-      return;
+      return false;
     }
-    const updated = StorageService.saveUser(user);
-    setUsers(updated);
+    if (!REMOTE) {
+      setUsers(StorageService.saveUser(user));
+      return true;
+    }
+    const error = await AuthService.saveProfile(user, isNew);
+    if (error) {
+      alert(error);
+      return false;
+    }
+    if (isNew) {
+      const result = await AuthService.sendAccessEmail(user);
+      alert(result.ok ? `Usuário cadastrado. ${result.message}` : `Usuário cadastrado, mas o convite falhou.\n\n${result.message}`);
+    }
+    refreshProfiles();
+    return true;
   };
 
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = async (user: User) => {
     if (currentUser?.role !== 'DIRETORIA') {
       alert('Acesso negado: Apenas a Diretoria possui permissão para excluir usuários.');
       return;
     }
-    const updated = StorageService.deleteUser(userId);
-    setUsers(updated);
+    if (!REMOTE) {
+      setUsers(StorageService.deleteUser(user.id));
+      return;
+    }
+    const result = await AuthService.deleteProfile(user);
+    alert(result.message);
+    refreshProfiles();
+  };
+
+  // Convite (sem login ainda) ou link de nova senha (já tem login)
+  const handleSendAccess = async (user: User) => {
+    const result = await AuthService.sendAccessEmail(user);
+    alert(result.message);
+    refreshProfiles();
+  };
+
+  // Migração: convida de uma vez todos os perfis que ainda não têm login
+  const handleInvitePending = async () => {
+    const pending = users.filter(u => !u.acessoAtivo);
+    const failures: string[] = [];
+    for (const user of pending) {
+      const result = await AuthService.sendAccessEmail(user);
+      if (!result.ok) failures.push(result.message);
+    }
+    refreshProfiles();
+    alert(failures.length === 0
+      ? `${pending.length} convite(s) enviado(s).`
+      : `${pending.length - failures.length} de ${pending.length} convite(s) enviado(s).\n\n${failures.join('\n\n')}`);
   };
 
   // --- Supplier Handlers ---
@@ -371,17 +478,36 @@ export default function App() {
     return scopedActionPlans.filter(p => p.status === 'PENDENTE' || p.status === 'EM_ANDAMENTO' || p.status === 'ATRASADO').length;
   }, [scopedActionPlans]);
 
-  const handlePasswordReset = (updatedUser: User) => {
-    setUsers(prev => prev.map(u => (u.id === updatedUser.id ? updatedUser : u)));
-  };
+  if (REMOTE && authState.status === 'loading') {
+    return (
+      <div className="min-h-screen bg-[#F1F5F9] flex items-center justify-center text-xs font-semibold text-[#64748B]">
+        Verificando sessão…
+      </div>
+    );
+  }
+
+  // Link de convite ou de recuperação: pede a nova senha antes de abrir o sistema
+  if (REMOTE && authState.status === 'set_password') {
+    return (
+      <LoginPage
+        remote
+        setPassword={{
+          email: authState.user.email,
+          reason: authState.reason,
+          onCancel: () => void AuthService.signOut()
+        }}
+      />
+    );
+  }
 
   // Bloqueio de Acesso — Exibe Tela de Login se deslogado
   if (!currentUser) {
     return (
       <LoginPage
+        remote={REMOTE}
         users={users}
-        onLoginSuccess={handleLoginSuccess}
-        onPasswordReset={handlePasswordReset}
+        onLocalLogin={handleLocalLogin}
+        notice={loginNotice}
       />
     );
   }
@@ -403,8 +529,8 @@ export default function App() {
         pendingActionPlansCount={pendingActionPlansCount}
         currentUser={currentUser}
         users={users}
-        onSelectUser={handleSelectUser}
-        onLogout={handleLogout}
+        onSelectUser={REMOTE ? undefined : handleSelectUser}
+        onLogout={() => void handleLogout()}
       />
 
       {/* Conteúdo Principal (Oculto na Impressão no-print) */}
@@ -494,9 +620,12 @@ export default function App() {
             sectors={sectors}
             suppliers={suppliers}
             currentUser={currentUser}
+            remote={REMOTE}
             onSaveUser={handleSaveUser}
-            onDeleteUser={handleDeleteUser}
-            onSelectUser={handleSelectUser}
+            onDeleteUser={(u) => void handleDeleteUser(u)}
+            onSendAccess={REMOTE ? (u) => void handleSendAccess(u) : undefined}
+            onInvitePending={REMOTE ? () => void handleInvitePending() : undefined}
+            onSelectUser={REMOTE ? undefined : handleSelectUser}
           />
         )}
       </main>
