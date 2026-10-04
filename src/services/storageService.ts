@@ -156,7 +156,9 @@ export class StorageService {
         list = INITIAL_SUPPLIERS;
       }
     }
+    // `...s` preserva campos não listados abaixo (questionarioId, situacao, vigenciaInicio...)
     return list.map((s, idx) => ({
+      ...s,
       id: s?.id || `sup_${idx}`,
       cnpj: s?.cnpj || '',
       razaoSocial: s?.razaoSocial || 'Fornecedor',

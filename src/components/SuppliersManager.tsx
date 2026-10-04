@@ -59,6 +59,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
 
   // Função para determinar o status do contrato
   const getContractStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
+    if (sup.situacao === 'ENCERRADO') return 'VENCIDO';
     const vig = (sup.vigenciaFim || '').trim().toLowerCase();
 
     if (!vig || vig.includes('indeterminado') || vig.includes('automatico') || vig.includes('automático')) {
@@ -464,6 +465,11 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                         </span>
                       )}
 
+                      {sup.situacao === 'ENCERRADO' && (
+                        <span className="flex w-fit items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded bg-slate-100 text-[#475569] border border-[#CBD5E1] uppercase">
+                          Contrato encerrado
+                        </span>
+                      )}
                       <h3 className="font-extrabold text-[#172B4D] text-base leading-tight truncate">{sup.nomeFantasia}</h3>
                       <p className="text-xs text-[#475569] font-mono truncate">{sup.cnpj}</p>
                     </div>
@@ -509,12 +515,16 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
 
                 {/* Rodapé com Botões de Ação */}
                 <div className="p-3 bg-slate-50 border-t border-[#CBD5E1] flex items-center justify-between">
-                  <button
-                    onClick={() => onStartEvaluation(sup.id)}
-                    className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition flex items-center cursor-pointer"
-                  >
-                    <FileText className="w-3.5 h-3.5 mr-1.5" /> Avaliar Agora
-                  </button>
+                  {sup.situacao === 'ENCERRADO' ? (
+                    <span className="text-[11px] text-[#475569]">Mantido apenas para histórico</span>
+                  ) : (
+                    <button
+                      onClick={() => onStartEvaluation(sup.id)}
+                      className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition flex items-center cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5 mr-1.5" /> Avaliar Agora
+                    </button>
+                  )}
 
                   <div className="flex items-center space-x-1">
                     <button
