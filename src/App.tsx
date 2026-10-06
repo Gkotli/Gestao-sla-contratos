@@ -3,6 +3,7 @@ import { ActionPlan, Evaluation, Sector, Supplier, User } from './types';
 import { StorageService } from './services/storageService';
 import { RemoteSync, SyncStatus } from './services/remoteSync';
 import { isSystemAdmin } from './utils/security';
+import { aplicarDivisaoDiretoria } from './services/sectorSplit';
 import { computeLaudoCode, registerValidacaoFornecedor, registerVisualizacaoFornecedor } from './services/laudoEnvioService';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
@@ -82,6 +83,18 @@ export default function App() {
     RemoteSync.start();
     return unsubscribe;
   }, []);
+
+  // Divisão Diretoria / Operacional: aplicada uma vez por um usuário da Diretoria,
+  // só depois de carregar o banco compartilhado (ou direto, no modo local).
+  React.useEffect(() => {
+    if (!isDiretoria) return;
+    if (RemoteSync.isEnabled() && syncStatus !== 'online') return;
+    if (aplicarDivisaoDiretoria()) {
+      setSectors(StorageService.getSectors());
+      setSuppliers(StorageService.getSuppliers());
+      setUsers(StorageService.getUsers());
+    }
+  }, [isDiretoria, syncStatus]);
 
   const scopedSuppliers = useMemo(() => {
     if (!currentUser) return [];

@@ -142,6 +142,11 @@ export class StorageService {
     return list;
   }
 
+  static saveSectors(sectors: Sector[]): Sector[] {
+    this.persist(KEYS.SECTORS, sectors);
+    return sectors;
+  }
+
   static getSuppliers(): Supplier[] {
     const data = localStorage.getItem(KEYS.SUPPLIERS);
     let list: any[] = [];

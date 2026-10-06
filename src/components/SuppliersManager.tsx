@@ -3,6 +3,8 @@ import { RegularizacaoAditivo, Sector, Supplier } from '../types';
 import { RegularizacaoAditivoNotice } from './RegularizacaoAditivoNotice';
 import { SupplierContactsImport } from './SupplierContactsImport';
 import { isValidContractDateInput } from '../services/evaluationCycles';
+import { QuestionnaireService } from '../services/questionnaireService';
+import { SUPPLIER_QUESTIONNAIRES_DATA } from '../data/supplierQuestionnairesData';
 import { 
   Building2, 
   Plus, 
@@ -21,6 +23,8 @@ import {
   FileSpreadsheet,
   ShieldCheck
 } from 'lucide-react';
+
+const QUESTIONARIOS_DISPONIVEIS = Object.keys(SUPPLIER_QUESTIONNAIRES_DATA).sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
 interface SuppliersManagerProps {
   suppliers: Supplier[];
@@ -62,6 +66,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [numeroContrato, setNumeroContrato] = useState('');
   const [vigenciaFim, setVigenciaFim] = useState('');
   const [vigenciaInicio, setVigenciaInicio] = useState('');
+  // Vínculo fixo com um questionário específico ('' = localizar pelo nome do fornecedor)
+  const [questionarioId, setQuestionarioId] = useState('');
   const vigenciaInicioInvalida = !isValidContractDateInput(vigenciaInicio);
   // Regularização do aditivo (vigência expirada com serviço mantido)
   const [regResponsavel, setRegResponsavel] = useState<'' | RegularizacaoAditivo['responsavel']>('');
@@ -247,6 +253,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setNumeroContrato(`CT-${new Date().getFullYear()}/${randomContractNum}`);
     setVigenciaFim('2027-12-31');
     setVigenciaInicio('');
+    setQuestionarioId('');
     setRegResponsavel('');
     setRegNumeroDor('');
     setRegObservacao('');
@@ -266,6 +273,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setNumeroContrato(sup.numeroContrato);
     setVigenciaFim(sup.vigenciaFim);
     setVigenciaInicio(sup.vigenciaInicio || '');
+    setQuestionarioId(sup.questionarioId || '');
     setRegResponsavel(sup.regularizacaoAditivo?.responsavel || '');
     setRegNumeroDor(sup.regularizacaoAditivo?.numeroDor || '');
     setRegObservacao(sup.regularizacaoAditivo?.observacao || '');
@@ -306,6 +314,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       numeroContrato,
       vigenciaFim,
       vigenciaInicio: vigenciaInicio.trim() || undefined,
+      questionarioId: questionarioId || undefined,
       regularizacaoAditivo
     };
 
@@ -748,6 +757,27 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                   placeholder="Ex: Fisioterapia Respiratória e Motora em UTI"
                   className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                 />
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#172B4D] mb-1">Questionário de avaliação</label>
+                <select
+                  value={questionarioId}
+                  onChange={(e) => setQuestionarioId(e.target.value)}
+                  className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
+                >
+                  <option value="">Automático (pelo nome do fornecedor)</option>
+                  {QUESTIONARIOS_DISPONIVEIS.map(chave => (
+                    <option key={chave} value={chave}>
+                      {chave} ({SUPPLIER_QUESTIONNAIRES_DATA[chave].length} perguntas)
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-[10px] leading-snug text-[#475569]">
+                  {questionarioId
+                    ? 'As próximas avaliações usam este questionário, mesmo que o nome do fornecedor mude.'
+                    : `Hoje: ${QuestionnaireService.getQuestionsForSupplier({ ...(editingSupplier || {}), nomeFantasia, razaoSocial, questionarioId: undefined } as Supplier).label}`}
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
