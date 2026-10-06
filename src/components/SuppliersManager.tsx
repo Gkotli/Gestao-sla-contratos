@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Sector, Supplier } from '../types';
 import { SupplierContactsImport } from './SupplierContactsImport';
+import { isValidContractDateInput } from '../services/evaluationCycles';
 import { 
   Building2, 
   Plus, 
@@ -56,6 +57,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [contatoTelefone, setContatoTelefone] = useState('');
   const [numeroContrato, setNumeroContrato] = useState('');
   const [vigenciaFim, setVigenciaFim] = useState('');
+  const [vigenciaInicio, setVigenciaInicio] = useState('');
+  const vigenciaInicioInvalida = !isValidContractDateInput(vigenciaInicio);
 
   // Função para determinar o status do contrato
   const getContractStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
@@ -221,6 +224,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     const randomContractNum = 100 + (randomArray[0] % 900);
     setNumeroContrato(`CT-${new Date().getFullYear()}/${randomContractNum}`);
     setVigenciaFim('2027-12-31');
+    setVigenciaInicio('');
     setIsModalOpen(true);
   };
 
@@ -236,13 +240,17 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setContatoTelefone(sup.contatoTelefone);
     setNumeroContrato(sup.numeroContrato);
     setVigenciaFim(sup.vigenciaFim);
+    setVigenciaInicio(sup.vigenciaInicio || '');
     setIsModalOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (vigenciaInicioInvalida) return;
 
     const supplierData: Supplier = {
+      // Preserva campos que o formulário não edita (questionário vinculado, situação, contatos importados...)
+      ...editingSupplier,
       id: editingSupplier?.id || `sup_${Date.now()}`,
       cnpj,
       razaoSocial,
@@ -253,7 +261,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       contatoEmail,
       contatoTelefone,
       numeroContrato,
-      vigenciaFim
+      vigenciaFim,
+      vigenciaInicio: vigenciaInicio.trim() || undefined
     };
 
     onSaveSupplier(supplierData);
@@ -493,7 +502,16 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
 
                     <div className="flex items-center justify-between">
                       <span className="text-[#475569] flex items-center">
-                        <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Vigência:
+                        <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Início:
+                      </span>
+                      <strong className={`font-bold ${sup.vigenciaInicio ? 'text-[#172B4D]' : 'text-[#92400E]'}`}>
+                        {sup.vigenciaInicio || 'Não informado'}
+                      </strong>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#475569] flex items-center">
+                        <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Fim da vigência:
                       </span>
                       <strong className={`font-bold ${
                         status === 'A_VENCER' ? 'text-[#92400E]' : status === 'VENCIDO' ? 'text-[#B91C1C]' : 'text-[#172B4D]'
@@ -676,7 +694,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block font-bold text-[#172B4D] mb-1">Nº do Contrato *</label>
                   <input
@@ -687,6 +705,22 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                     placeholder="CT-2024/089"
                     className="w-full bg-slate-50 border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 font-mono focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
                   />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#172B4D] mb-1">Data de início do contrato</label>
+                  <input
+                    type="text"
+                    value={vigenciaInicio}
+                    onChange={(e) => setVigenciaInicio(e.target.value)}
+                    placeholder="DD/MM/AAAA"
+                    aria-invalid={vigenciaInicioInvalida}
+                    className={`w-full bg-slate-50 border text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768] ${vigenciaInicioInvalida ? 'border-[#B91C1C]' : 'border-[#CBD5E1]'}`}
+                  />
+                  <p className={`mt-1 text-[10px] leading-snug ${vigenciaInicioInvalida ? 'text-[#B91C1C] font-bold' : 'text-[#475569]'}`}>
+                    {vigenciaInicioInvalida
+                      ? 'Data inválida. Use DD/MM/AAAA.'
+                      : 'Avaliações anuais são obrigatórias a partir do ano desta data.'}
+                  </p>
                 </div>
                 <div>
                   <label className="block font-bold text-[#172B4D] mb-1">Fim da Vigência *</label>
@@ -711,7 +745,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow"
+                  disabled={vigenciaInicioInvalida}
+                  className="px-5 py-2 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Salvar Fornecedor
                 </button>
