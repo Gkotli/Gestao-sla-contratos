@@ -66,7 +66,13 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
       }
     } catch (err) {
       console.error('Erro ao exportar avaliação:', err);
-      alert('Não foi possível gerar o arquivo. Tente novamente ou use "Imprimir".');
+      if (err instanceof Error && err.message === 'SISTEMA_ATUALIZADO') {
+        if (confirm('O sistema foi atualizado desde que esta página foi aberta. Recarregar agora para gerar o PDF corretamente?')) {
+          window.location.reload();
+        }
+      } else {
+        alert('Não foi possível gerar o arquivo. Tente novamente ou use "Imprimir".');
+      }
     } finally {
       setExporting(null);
     }
@@ -352,7 +358,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               </div>
               <div>
                 <span className="text-[#475569] text-[10px] font-bold block uppercase">CONTATO DO FORNECEDOR</span>
-                <strong className="text-[#172B4D] font-bold block truncate">
+                <strong className="text-[#172B4D] font-bold block leading-tight break-words">
                   {temContatoFornecedor 
                     ? `${supplier?.contatoNome} ${supplier?.contatoTelefone ? `(${supplier.contatoTelefone})` : ''}` 
                     : 'A definir'}

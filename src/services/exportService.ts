@@ -78,20 +78,37 @@ const header = (labels: string[]): Cell[] =>
 
 // Elementos que não devem ser partidos entre duas páginas (quando cabem em uma página)
 const BLOCK_SELECTOR = '.print-avoid-break, .signature-block, [class*="rounded"], img, svg, blockquote';
-// Último recurso: ao menos não cortar uma linha de texto ou de tabela no meio
-const LINE_SELECTOR = 'tr, li, p, h1, h2, h3, h4, h5, strong, span, label, td, th';
+// Último recurso: ao menos não cortar uma linha de tabela, um ícone ou uma linha de texto no meio
+const LINE_SELECTOR = 'tr, img, svg';
 
 interface Block { top: number; bottom: number }
 
-function collectBlocks(element: HTMLElement, selector: string, pxRatio: number): Block[] {
+function collectBlocks(element: HTMLElement, selector: string): Block[] {
   const origin = element.getBoundingClientRect();
   const blocks: Block[] = [];
   element.querySelectorAll<HTMLElement>(selector).forEach(el => {
     const r = el.getBoundingClientRect();
     if (r.height <= 0) return;
-    blocks.push({ top: (r.top - origin.top) * pxRatio, bottom: (r.bottom - origin.top) * pxRatio });
+    blocks.push({ top: r.top - origin.top, bottom: r.bottom - origin.top });
   });
   return blocks;
+}
+
+// Cada linha de texto renderizada (inclusive dentro de parágrafos maiores que uma página)
+function collectTextLines(element: HTMLElement): Block[] {
+  const origin = element.getBoundingClientRect();
+  const lines: Block[] = [];
+  const doc = element.ownerDocument;
+  const walker = doc.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  const range = doc.createRange();
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.textContent || !node.textContent.trim()) continue;
+    range.selectNodeContents(node);
+    for (const r of Array.from(range.getClientRects())) {
+      if (r.height > 0) lines.push({ top: r.top - origin.top, bottom: r.bottom - origin.top });
+    }
+  }
+  return lines;
 }
 
 // Sobe o ponto de corte até o início do bloco mais externo (que caiba numa página) que seria cortado
@@ -118,14 +135,39 @@ function findPageBreak(blocks: Block[], lines: Block[], start: number, idealEnd:
   return byLine - start >= pageHeightPx * 0.5 ? byLine : idealEnd;
 }
 
+// Depois de uma atualização do site, uma aba aberta antes dela aponta para um CSS que não existe mais
+// (o servidor devolve a página HTML no lugar). A cópia que o html2canvas desenha sairia sem estilo.
+async function assertStylesheetsAvailable(): Promise<void> {
+  const links = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'))
+    .filter(l => l.href && new URL(l.href).origin === location.origin);
+  for (const link of links) {
+    const res = await fetch(link.href, { cache: 'no-store' });
+    const type = res.headers.get('content-type') || '';
+    if (!res.ok || !type.includes('css')) {
+      throw new Error('SISTEMA_ATUALIZADO');
+    }
+  }
+}
+
 export async function exportElementToPdf(element: HTMLElement, fileName: string): Promise<void> {
+  await assertStylesheetsAvailable();
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas')]);
 
+  // As posições dos blocos são medidas na cópia que o html2canvas monta e desenha: ela tem a largura
+  // do laudo (windowWidth) e pode quebrar as linhas de outro jeito que a tela
+  let measured: { blocks: Block[]; lines: Block[]; width: number } | null = null;
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
     backgroundColor: '#FFFFFF',
-    windowWidth: element.scrollWidth
+    windowWidth: element.scrollWidth,
+    onclone: (_doc, cloned) => {
+      measured = {
+        blocks: collectBlocks(cloned, BLOCK_SELECTOR),
+        lines: [...collectBlocks(cloned, LINE_SELECTOR), ...collectTextLines(cloned)],
+        width: cloned.getBoundingClientRect().width
+      };
+    }
   });
 
   const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -134,9 +176,11 @@ export async function exportElementToPdf(element: HTMLElement, fileName: string)
   const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2;
   // Altura (em pixels do canvas) que cabe em uma página
   const sliceHeightPx = Math.floor((pageHeight * canvas.width) / pageWidth);
-  const pxRatio = canvas.width / element.getBoundingClientRect().width;
-  const blocks = collectBlocks(element, BLOCK_SELECTOR, pxRatio);
-  const lines = collectBlocks(element, LINE_SELECTOR, pxRatio);
+  const m = measured as { blocks: Block[]; lines: Block[]; width: number } | null;
+  const pxRatio = m && m.width > 0 ? canvas.width / m.width : 0;
+  const toCanvas = (list: Block[]) => list.map(b => ({ top: b.top * pxRatio, bottom: b.bottom * pxRatio }));
+  const blocks = pxRatio ? toCanvas(m!.blocks) : [];
+  const lines = pxRatio ? toCanvas(m!.lines) : [];
 
   for (let offset = 0, page = 0; offset < canvas.height; page++) {
     const idealEnd = offset + sliceHeightPx;
