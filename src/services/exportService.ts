@@ -72,8 +72,52 @@ const header = (labels: string[]): Cell[] =>
   labels.map(value => ({ value, fontWeight: 'bold' as const, backgroundColor: '#123768', color: '#FFFFFF' }));
 
 // ---------------------------------------------------------------------------
-// PDF: captura o laudo já renderizado na tela e divide em páginas A4
+// PDF: captura o laudo já renderizado na tela e divide em páginas A4.
+// As quebras de página são ajustadas para não cortar blocos, linhas de tabela ou linhas de texto.
 // ---------------------------------------------------------------------------
+
+// Elementos que não devem ser partidos entre duas páginas (quando cabem em uma página)
+const BLOCK_SELECTOR = '.print-avoid-break, .signature-block, [class*="rounded"], img, svg, blockquote';
+// Último recurso: ao menos não cortar uma linha de texto ou de tabela no meio
+const LINE_SELECTOR = 'tr, li, p, h1, h2, h3, h4, h5, strong, span, label, td, th';
+
+interface Block { top: number; bottom: number }
+
+function collectBlocks(element: HTMLElement, selector: string, pxRatio: number): Block[] {
+  const origin = element.getBoundingClientRect();
+  const blocks: Block[] = [];
+  element.querySelectorAll<HTMLElement>(selector).forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.height <= 0) return;
+    blocks.push({ top: (r.top - origin.top) * pxRatio, bottom: (r.bottom - origin.top) * pxRatio });
+  });
+  return blocks;
+}
+
+// Sobe o ponto de corte até o início do bloco mais externo (que caiba numa página) que seria cortado
+function raiseCut(blocks: Block[], start: number, idealEnd: number, pageHeightPx: number): number {
+  let cut = idealEnd;
+  for (let pass = 0; pass < 50; pass++) {
+    let next = cut;
+    for (const b of blocks) {
+      if (b.bottom - b.top <= pageHeightPx && b.top > start && b.top < cut - 1 && b.bottom > cut + 1) {
+        next = Math.min(next, b.top);
+      }
+    }
+    if (next === cut) break;
+    cut = next;
+  }
+  return Math.floor(cut);
+}
+
+function findPageBreak(blocks: Block[], lines: Block[], start: number, idealEnd: number, pageHeightPx: number): number {
+  const byBlock = raiseCut([...blocks, ...lines], start, idealEnd, pageHeightPx);
+  // Não deixa a página com mais de 35% em branco só para manter um bloco grande inteiro
+  if (byBlock - start >= pageHeightPx * 0.65) return byBlock;
+  const byLine = raiseCut(lines, start, idealEnd, pageHeightPx);
+  return byLine - start >= pageHeightPx * 0.5 ? byLine : idealEnd;
+}
+
 export async function exportElementToPdf(element: HTMLElement, fileName: string): Promise<void> {
   const [{ jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas')]);
 
@@ -90,15 +134,22 @@ export async function exportElementToPdf(element: HTMLElement, fileName: string)
   const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2;
   // Altura (em pixels do canvas) que cabe em uma página
   const sliceHeightPx = Math.floor((pageHeight * canvas.width) / pageWidth);
+  const pxRatio = canvas.width / element.getBoundingClientRect().width;
+  const blocks = collectBlocks(element, BLOCK_SELECTOR, pxRatio);
+  const lines = collectBlocks(element, LINE_SELECTOR, pxRatio);
 
-  for (let offset = 0, page = 0; offset < canvas.height; offset += sliceHeightPx, page++) {
+  for (let offset = 0, page = 0; offset < canvas.height; page++) {
+    const idealEnd = offset + sliceHeightPx;
+    const end = idealEnd >= canvas.height ? canvas.height : findPageBreak(blocks, lines, offset, idealEnd, sliceHeightPx);
+
     const slice = document.createElement('canvas');
     slice.width = canvas.width;
-    slice.height = Math.min(sliceHeightPx, canvas.height - offset);
+    slice.height = end - offset;
     slice.getContext('2d')!.drawImage(canvas, 0, offset, canvas.width, slice.height, 0, 0, canvas.width, slice.height);
 
     if (page > 0) pdf.addPage();
     pdf.addImage(slice.toDataURL('image/jpeg', 0.92), 'JPEG', margin, margin, pageWidth, (slice.height * pageWidth) / canvas.width);
+    offset = end;
   }
 
   pdf.save(`${fileName}.pdf`);

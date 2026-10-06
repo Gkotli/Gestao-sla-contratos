@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Evaluation, EvaluationAnswers, EvaluationType, ExceptionItem, ScoreValue, Sector, Supplier, SupplierQuestionItem, User } from '../types';
 import { QuestionnaireService } from '../services/questionnaireService';
 import { safeFormatScore, safeNumber } from '../utils/formatters';
+import { getCycleApplicability, getCycleStatus, getCycleYears } from '../services/evaluationCycles';
 import { 
   Building2, 
   Calendar, 
@@ -437,6 +438,11 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
               <option value={2025}>Ano 2025</option>
               <option value={2024}>Ano 2024</option>
             </select>
+            {selectedSupplier && getCycleApplicability(selectedSupplier, selectedYear) === 'ANTES_DO_INICIO' && (
+              <p className="mt-1 text-[11px] text-[#92400E] leading-snug">
+                O contrato começou em {selectedSupplier.vigenciaInicio}: {selectedYear} não é um ciclo obrigatório para este fornecedor.
+              </p>
+            )}
           </div>
         </div>
 
@@ -568,7 +574,7 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#CBD5E1] text-[11px] text-[#475569]">
               <div>Contrato: <strong className="text-[#172B4D]">{selectedSupplier.numeroContrato}</strong></div>
-              <div>Vigência: <strong className="text-[#172B4D]">{selectedSupplier.vigenciaFim}</strong></div>
+              <div>Vigência: <strong className="text-[#172B4D]">{selectedSupplier.vigenciaInicio ? `${selectedSupplier.vigenciaInicio} a ` : ''}{selectedSupplier.vigenciaFim}</strong></div>
               <div>Avaliador: <strong className="text-[#172B4D]">{currentUser?.nome || selectedSector?.gestorResponsavel}</strong></div>
               <div>E-mail: <strong className="text-[#172B4D]">{currentUser?.email || selectedSector?.emailGestor}</strong></div>
             </div>
@@ -578,18 +584,19 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
               <span className="text-[#475569] font-bold flex items-center">
                 <Calendar className="w-3.5 h-3.5 mr-1 text-[#475569]" /> Histórico dos ciclos:
               </span>
-              <div className="flex items-center space-x-2">
-                {[2024, 2025, 2026].map(yr => {
-                  const evFound = allEvaluations.find(e => e.fornecedorId === selectedSupplier.id && e.ano === yr);
+              <div className="flex flex-wrap items-center gap-2">
+                {getCycleYears().map(yr => {
+                  const status = getCycleStatus(selectedSupplier, yr, allEvaluations);
+                  const style = {
+                    CONCLUIDA: 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]',
+                    PENDENTE_ANTERIOR: 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]',
+                    PENDENTE_ATUAL: 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]',
+                    NA: 'bg-slate-100 text-[#475569] border border-[#CBD5E1]'
+                  }[status];
+                  const label = { CONCLUIDA: 'Concluída', PENDENTE_ANTERIOR: 'Atrasado', PENDENTE_ATUAL: 'Pendente', NA: 'Não se aplica' }[status];
                   return (
-                    <span key={yr} className={`inline-flex items-center px-2 py-0.5 rounded font-bold ${
-                      evFound 
-                        ? 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]' 
-                        : yr < 2026 
-                        ? 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]' 
-                        : 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]'
-                    }`}>
-                      {yr} {evFound ? 'Concluída' : yr < 2026 ? 'Atrasado' : 'Pendente'}
+                    <span key={yr} className={`inline-flex items-center px-2 py-0.5 rounded font-bold ${style}`}>
+                      {yr} {label}
                     </span>
                   );
                 })}
