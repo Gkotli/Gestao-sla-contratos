@@ -5,6 +5,7 @@ import { QuestionnaireService } from '../services/questionnaireService';
 import { evaluationFileName, exportElementToPdf, exportEvaluationToExcel } from '../services/exportService';
 import { computeLaudoCode, formatDateTime, registerValidacaoFornecedor } from '../services/laudoEnvioService';
 import { safeFormatScore } from '../utils/formatters';
+import { getSupplierContact } from '../utils/supplierContact';
 import {
   Printer,
   X,
@@ -66,7 +67,13 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
       }
     } catch (err) {
       console.error('Erro ao exportar avaliação:', err);
-      alert('Não foi possível gerar o arquivo. Tente novamente ou use "Imprimir".');
+      if (err instanceof Error && err.message === 'SISTEMA_ATUALIZADO') {
+        if (confirm('O sistema foi atualizado desde que esta página foi aberta. Recarregar agora para gerar o PDF corretamente?')) {
+          window.location.reload();
+        }
+      } else {
+        alert('Não foi possível gerar o arquivo. Tente novamente ou use "Imprimir".');
+      }
     } finally {
       setExporting(null);
     }
@@ -131,7 +138,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
         justificativaAdicao: undefined
       }));
 
-  const temContatoFornecedor = supplier?.contatoNome || supplier?.contatoEmail || supplier?.contatoTelefone;
+  const contatoFornecedor = getSupplierContact(supplier, evaluation);
 
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-6 overflow-y-auto font-sans printable-laudo-modal">
@@ -352,11 +359,10 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
               </div>
               <div>
                 <span className="text-[#475569] text-[10px] font-bold block uppercase">CONTATO DO FORNECEDOR</span>
-                <strong className="text-[#172B4D] font-bold block truncate">
-                  {temContatoFornecedor 
-                    ? `${supplier?.contatoNome} ${supplier?.contatoTelefone ? `(${supplier.contatoTelefone})` : ''}` 
-                    : 'A definir'}
-                </strong>
+                <strong className="text-[#172B4D] font-bold block leading-tight break-words">{contatoFornecedor.principal}</strong>
+                {contatoFornecedor.detalhe && (
+                  <span className="text-[#475569] text-[11px] block leading-tight break-all mt-0.5">{contatoFornecedor.detalhe}</span>
+                )}
               </div>
             </div>
           </div>
@@ -492,7 +498,7 @@ export const EvaluationReportModal: React.FC<EvaluationReportModalProps> = ({
                 ) : (
                   <div>
                     <strong className="text-[#172B4D] font-bold block text-xs">
-                      {evaluation.nomeSignatario || (supplier?.contatoNome ? supplier.contatoNome : 'Preposto / Representante Legal (A definir)')}
+                      {evaluation.nomeSignatario || contatoFornecedor.nomePessoa || `Preposto / Representante Legal – ${supplier?.nomeFantasia || 'Fornecedor'}`}
                     </strong>
                     <span className="text-[11px] text-[#475569] block">{evaluation.cargoSignatario || 'Representante do Fornecedor'}</span>
                     <span className="text-[10px] text-[#475569] block">
