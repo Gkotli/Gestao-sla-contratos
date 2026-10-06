@@ -38,6 +38,15 @@ export interface Sector {
   emailGestor: string;
 }
 
+// Contrato com vigência expirada cujo aditivo está em tratativa: o serviço continua sendo prestado
+export interface RegularizacaoAditivo {
+  responsavel: 'DOR' | 'CORPORATIVO';   // DOR aberta no Portal Conecta ou tratativa conduzida pelo Corporativo
+  numeroDor?: string;
+  observacao?: string;
+  registradoEm: string;                 // ISO
+  registradoPor: string;
+}
+
 export interface Supplier {
   id: string;
   cnpj: string;
@@ -55,6 +64,7 @@ export interface Supplier {
   questionarioId?: string;
   // Contrato encerrado: sai das avaliações novas, mas continua no histórico e nos laudos
   situacao?: 'ATIVO' | 'ENCERRADO';
+  regularizacaoAditivo?: RegularizacaoAditivo;
 }
 
 export interface EvaluationAnswers {
