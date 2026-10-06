@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Sector, Supplier } from '../types';
+import { RegularizacaoAditivo, Sector, Supplier } from '../types';
+import { RegularizacaoAditivoNotice } from './RegularizacaoAditivoNotice';
 import { SupplierContactsImport } from './SupplierContactsImport';
 import { isValidContractDateInput } from '../services/evaluationCycles';
 import { 
@@ -17,7 +18,8 @@ import {
   AlertTriangle, 
   X,
   Layers,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ShieldCheck
 } from 'lucide-react';
 
 interface SuppliersManagerProps {
@@ -27,6 +29,7 @@ interface SuppliersManagerProps {
   onBulkSaveSuppliers?: (suppliers: Supplier[]) => void;
   onDeleteSupplier: (supplierId: string) => void;
   onStartEvaluation: (supplierId: string) => void;
+  currentUserName?: string;
 }
 
 export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
@@ -35,7 +38,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   onSaveSupplier,
   onBulkSaveSuppliers,
   onDeleteSupplier,
-  onStartEvaluation
+  onStartEvaluation,
+  currentUserName
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSectorFilter, setSelectedSectorFilter] = useState<string>('ALL');
@@ -59,10 +63,22 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [vigenciaFim, setVigenciaFim] = useState('');
   const [vigenciaInicio, setVigenciaInicio] = useState('');
   const vigenciaInicioInvalida = !isValidContractDateInput(vigenciaInicio);
+  // Regularização do aditivo (vigência expirada com serviço mantido)
+  const [regResponsavel, setRegResponsavel] = useState<'' | RegularizacaoAditivo['responsavel']>('');
+  const [regNumeroDor, setRegNumeroDor] = useState('');
+  const [regObservacao, setRegObservacao] = useState('');
+  const regDorSemNumero = regResponsavel === 'DOR' && !regNumeroDor.trim();
 
   // Função para determinar o status do contrato
-  const getContractStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
-    if (sup.situacao === 'ENCERRADO') return 'VENCIDO';
+  type ContractStatus = 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' | 'EM_REGULARIZACAO' | 'ENCERRADO';
+  const getContractStatus = (sup: Supplier): ContractStatus => {
+    if (sup.situacao === 'ENCERRADO') return 'ENCERRADO';
+    const status = getVigenciaStatus(sup);
+    // Vigência expirada com aditivo em tratativa (DOR ou Corporativo): serviço mantido, só falta a formalização
+    return status === 'VENCIDO' && sup.regularizacaoAditivo ? 'EM_REGULARIZACAO' : status;
+  };
+
+  const getVigenciaStatus = (sup: Supplier): 'VIGENTE' | 'A_VENCER' | 'VENCIDO' | 'INDETERMINADO' => {
     const vig = (sup.vigenciaFim || '').trim().toLowerCase();
 
     if (!vig || vig.includes('indeterminado') || vig.includes('automatico') || vig.includes('automático')) {
@@ -142,15 +158,19 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     let vigentes = 0;
     let aVencer = 0;
     let vencidos = 0;
+    let emRegularizacao = 0;
+    let encerrados = 0;
 
     sectorScopedSuppliers.forEach(s => {
       const st = getContractStatus(s);
       if (st === 'VIGENTE' || st === 'INDETERMINADO') vigentes++;
       else if (st === 'A_VENCER') aVencer++;
       else if (st === 'VENCIDO') vencidos++;
+      else if (st === 'EM_REGULARIZACAO') emRegularizacao++;
+      else if (st === 'ENCERRADO') encerrados++;
     });
 
-    return { total, vigentes, aVencer, vencidos };
+    return { total, vigentes, aVencer, vencidos, emRegularizacao, encerrados };
   }, [sectorScopedSuppliers]);
 
   // 3. Fornecedores Finais Exibidos no Grid (Setor + Status do Card + Busca por Texto)
@@ -201,7 +221,9 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     ? 'Contratos Vigentes' 
     : selectedStatusFilter === 'A_VENCER' 
     ? 'A Vencer / Em Aditivo' 
-    : 'Contratos Vencidos';
+    : selectedStatusFilter === 'EM_REGULARIZACAO'
+    ? 'Aditivo em Regularização'
+    : 'Vencidos sem Tratativa';
 
   const clearAllFilters = () => {
     setSearchTerm('');
@@ -225,6 +247,9 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setNumeroContrato(`CT-${new Date().getFullYear()}/${randomContractNum}`);
     setVigenciaFim('2027-12-31');
     setVigenciaInicio('');
+    setRegResponsavel('');
+    setRegNumeroDor('');
+    setRegObservacao('');
     setIsModalOpen(true);
   };
 
@@ -241,12 +266,30 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setNumeroContrato(sup.numeroContrato);
     setVigenciaFim(sup.vigenciaFim);
     setVigenciaInicio(sup.vigenciaInicio || '');
+    setRegResponsavel(sup.regularizacaoAditivo?.responsavel || '');
+    setRegNumeroDor(sup.regularizacaoAditivo?.numeroDor || '');
+    setRegObservacao(sup.regularizacaoAditivo?.observacao || '');
     setIsModalOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (vigenciaInicioInvalida) return;
+    if (vigenciaInicioInvalida || regDorSemNumero) return;
+
+    const anterior = editingSupplier?.regularizacaoAditivo;
+    const numeroDor = regResponsavel === 'DOR' ? regNumeroDor.trim() : undefined;
+    const observacao = regObservacao.trim() || undefined;
+    const regularizacaoAditivo: RegularizacaoAditivo | undefined = !regResponsavel
+      ? undefined
+      : anterior && anterior.responsavel === regResponsavel && anterior.numeroDor === numeroDor && anterior.observacao === observacao
+      ? anterior
+      : {
+          responsavel: regResponsavel,
+          numeroDor,
+          observacao,
+          registradoEm: new Date().toISOString(),
+          registradoPor: currentUserName || 'Diretoria'
+        };
 
     const supplierData: Supplier = {
       // Preserva campos que o formulário não edita (questionário vinculado, situação, contatos importados...)
@@ -262,7 +305,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       contatoTelefone,
       numeroContrato,
       vigenciaFim,
-      vigenciaInicio: vigenciaInicio.trim() || undefined
+      vigenciaInicio: vigenciaInicio.trim() || undefined,
+      regularizacaoAditivo
     };
 
     onSaveSupplier(supplierData);
@@ -301,7 +345,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       </div>
 
       {/* CARDS DE RESUMO CLICÁVEIS E DINÂMICOS CONFORME O SETOR SELECIONADO */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {/* CARD 1: TOTAL DO SETOR OU TOTAL GERAL */}
         <div 
           onClick={() => setSelectedStatusFilter('ALL')}
@@ -318,6 +362,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           <div className="text-2xl font-black mt-2">{sectorMetrics.total}</div>
           <p className={`text-[11px] truncate mt-0.5 ${selectedStatusFilter === 'ALL' ? 'opacity-80' : 'text-[#475569]'}`}>
             {selectedSectorFilter === 'ALL' ? 'Todos os fornecedores' : sectorLabel}
+            {sectorMetrics.encerrados > 0 ? ` · ${sectorMetrics.encerrados} encerrado${sectorMetrics.encerrados > 1 ? 's' : ''} (histórico)` : ''}
           </p>
         </div>
 
@@ -373,14 +418,35 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
           }`}
         >
           <div className="flex items-center justify-between text-xs font-semibold">
-            <span>CONTRATOS VENCIDOS</span>
+            <span>VENCIDOS SEM TRATATIVA</span>
             <AlertTriangle className={`w-4 h-4 ${selectedStatusFilter === 'VENCIDO' ? 'text-rose-200' : 'text-[#B91C1C]'}`} />
           </div>
           <div className={`text-2xl font-black mt-2 ${selectedStatusFilter === 'VENCIDO' ? 'text-white' : 'text-[#B91C1C]'}`}>
             {sectorMetrics.vencidos}
           </div>
           <p className={`text-[11px] mt-0.5 ${selectedStatusFilter === 'VENCIDO' ? 'opacity-80' : 'text-[#475569]'}`}>
-            Vigência expirada
+            Vigência expirada sem DOR ou tratativa registrada
+          </p>
+        </div>
+
+        {/* CARD 5: ADITIVO EM REGULARIZAÇÃO (serviço mantido) */}
+        <div
+          onClick={() => setSelectedStatusFilter('EM_REGULARIZACAO')}
+          className={`p-4 rounded-lg border transition cursor-pointer select-none ${
+            selectedStatusFilter === 'EM_REGULARIZACAO'
+              ? 'bg-[#1E40AF] text-white border-[#1E40AF] shadow-md ring-2 ring-blue-300'
+              : 'bg-white text-[#172B4D] border-[#CBD5E1] hover:border-blue-300 hover:bg-blue-50/40 shadow-sm'
+          }`}
+        >
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span>ADITIVO EM REGULARIZAÇÃO</span>
+            <ShieldCheck className={`w-4 h-4 ${selectedStatusFilter === 'EM_REGULARIZACAO' ? 'text-blue-200' : 'text-[#1E40AF]'}`} />
+          </div>
+          <div className={`text-2xl font-black mt-2 ${selectedStatusFilter === 'EM_REGULARIZACAO' ? 'text-white' : 'text-[#1E40AF]'}`}>
+            {sectorMetrics.emRegularizacao}
+          </div>
+          <p className={`text-[11px] mt-0.5 ${selectedStatusFilter === 'EM_REGULARIZACAO' ? 'opacity-80' : 'text-[#475569]'}`}>
+            Serviço mantido · formalização jurídica em andamento
           </p>
         </div>
       </div>
@@ -514,11 +580,34 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                         <Calendar className="w-3.5 h-3.5 mr-1 text-slate-400" /> Fim da vigência:
                       </span>
                       <strong className={`font-bold ${
-                        status === 'A_VENCER' ? 'text-[#92400E]' : status === 'VENCIDO' ? 'text-[#B91C1C]' : 'text-[#172B4D]'
+                        status === 'A_VENCER' ? 'text-[#92400E]'
+                          : status === 'VENCIDO' ? 'text-[#B91C1C]'
+                          : status === 'EM_REGULARIZACAO' ? 'text-[#1E40AF]'
+                          : 'text-[#172B4D]'
                       }`}>
                         {sup.vigenciaFim}
                       </strong>
                     </div>
+
+                    {status === 'EM_REGULARIZACAO' && sup.regularizacaoAditivo && (
+                      <div className="pt-2">
+                        <RegularizacaoAditivoNotice regularizacao={sup.regularizacaoAditivo} />
+                      </div>
+                    )}
+
+                    {status === 'VENCIDO' && (
+                      <div className="mt-2 flex items-start justify-between gap-2 bg-[#FEF2F2] border border-[#FECACA] rounded-md p-2.5">
+                        <span className="text-[11px] text-[#B91C1C] leading-snug">
+                          Vigência expirada sem DOR ou tratativa do Corporativo registrada.
+                        </span>
+                        <button
+                          onClick={() => openEditModal(sup)}
+                          className="shrink-0 text-[11px] font-bold text-[#1E40AF] hover:underline cursor-pointer whitespace-nowrap"
+                        >
+                          Registrar tratativa
+                        </button>
+                      </div>
+                    )}
 
                     {sup.contatoNome && (
                       <div className="flex items-center justify-between">
@@ -735,6 +824,55 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 </div>
               </div>
 
+              {/* Regularização do aditivo: vigência expirada com o serviço mantido */}
+              <fieldset className="border border-[#BFDBFE] bg-[#F8FAFF] rounded-lg p-4 space-y-3">
+                <legend className="px-1 font-bold text-[#1E40AF] flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4" /> Regularização do aditivo
+                </legend>
+                <p className="text-[11px] text-[#475569] leading-snug">
+                  Use quando a vigência expirou mas o serviço continua sendo prestado enquanto o aditivo é formalizado.
+                  O contrato passa a aparecer como "Aditivo em regularização", com esta explicação, em vez de "Vencido".
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block font-semibold text-[#172B4D] mb-1">Tratativa</label>
+                    <select
+                      value={regResponsavel}
+                      onChange={(e) => setRegResponsavel(e.target.value as typeof regResponsavel)}
+                      className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
+                    >
+                      <option value="">Nenhuma</option>
+                      <option value="DOR">DOR aberta no Portal Conecta</option>
+                      <option value="CORPORATIVO">Corporativo tratando o aditivo</option>
+                    </select>
+                  </div>
+                  {regResponsavel === 'DOR' && (
+                    <div>
+                      <label className="block font-semibold text-[#172B4D] mb-1">Nº da DOR *</label>
+                      <input
+                        type="text"
+                        value={regNumeroDor}
+                        onChange={(e) => setRegNumeroDor(e.target.value)}
+                        placeholder="Ex.: 123456"
+                        className={`w-full bg-white border text-[#172B4D] text-xs rounded-md p-2.5 font-mono focus:ring-2 focus:ring-[#123768] focus:border-[#123768] ${regDorSemNumero ? 'border-[#B91C1C]' : 'border-[#CBD5E1]'}`}
+                      />
+                    </div>
+                  )}
+                  {regResponsavel && (
+                    <div className={regResponsavel === 'DOR' ? '' : 'md:col-span-2'}>
+                      <label className="block font-semibold text-[#172B4D] mb-1">Observação (opcional)</label>
+                      <input
+                        type="text"
+                        value={regObservacao}
+                        onChange={(e) => setRegObservacao(e.target.value)}
+                        placeholder="Ex.: minuta do aditivo com o jurídico"
+                        className="w-full bg-white border border-[#CBD5E1] text-[#172B4D] text-xs rounded-md p-2.5 focus:ring-2 focus:ring-[#123768] focus:border-[#123768]"
+                      />
+                    </div>
+                  )}
+                </div>
+              </fieldset>
+
               <div className="flex items-center justify-end space-x-3 pt-4 border-t border-[#CBD5E1]">
                 <button
                   type="button"
@@ -745,7 +883,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 </button>
                 <button
                   type="submit"
-                  disabled={vigenciaInicioInvalida}
+                  disabled={vigenciaInicioInvalida || regDorSemNumero}
                   className="px-5 py-2 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Salvar Fornecedor

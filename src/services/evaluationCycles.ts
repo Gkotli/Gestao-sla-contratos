@@ -60,7 +60,8 @@ export function getCycleApplicability(sup: Supplier, year: number): CycleApplica
   const startYear = getContractStartYear(sup);
   // Sem data de início cadastrada o ciclo continua obrigatório (o cadastro sinaliza a falta)
   if (startYear !== null && year < startYear) return 'ANTES_DO_INICIO';
-  const endYear = getContractEndYear(sup);
+  // Aditivo em regularização: o serviço continua sendo prestado, então os ciclos seguem obrigatórios
+  const endYear = sup.regularizacaoAditivo ? null : getContractEndYear(sup);
   if (endYear !== null && year > endYear) return 'APOS_O_FIM';
   return 'APLICAVEL';
 }

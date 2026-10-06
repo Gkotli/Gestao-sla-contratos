@@ -540,6 +540,7 @@ export default function App() {
             onBulkSaveSuppliers={handleBulkSaveSuppliers}
             onDeleteSupplier={handleDeleteSupplier}
             onStartEvaluation={(supId) => handleStartNewEvaluation(supId)}
+            currentUserName={currentUser?.nome}
           />
         )}
 

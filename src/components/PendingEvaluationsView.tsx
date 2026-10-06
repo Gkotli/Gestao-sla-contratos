@@ -23,6 +23,7 @@ import {
   isPendingStatus,
   summarizeSupplierCycles
 } from '../services/evaluationCycles';
+import { RegularizacaoAditivoNotice } from './RegularizacaoAditivoNotice';
 
 export type { YearCycleStatus } from '../services/evaluationCycles';
 
@@ -260,6 +261,11 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       )}
       <span className="text-slate-300 mx-1">·</span>
       Fim <strong className="text-[#172B4D]">{sup.vigenciaFim || '—'}</strong>
+      {sup.regularizacaoAditivo && (
+        <span className="block mt-1">
+          <RegularizacaoAditivoNotice regularizacao={sup.regularizacaoAditivo} compact />
+        </span>
+      )}
     </span>
   );
 
