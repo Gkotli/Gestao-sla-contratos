@@ -590,10 +590,10 @@ export const EvaluationForm: React.FC<EvaluationFormProps> = ({
                   const style = {
                     CONCLUIDA: 'bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0]',
                     PENDENTE_ANTERIOR: 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FECACA]',
-                    PENDENTE_ATUAL: 'bg-[#FFFBEB] text-[#92400E] border border-[#FCD34D]',
+                    EM_ANALISE: 'bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE]',
                     NA: 'bg-slate-100 text-[#475569] border border-[#CBD5E1]'
                   }[status];
-                  const label = { CONCLUIDA: 'Concluída', PENDENTE_ANTERIOR: 'Atrasado', PENDENTE_ATUAL: 'Pendente', NA: 'Não se aplica' }[status];
+                  const label = { CONCLUIDA: 'Concluída', PENDENTE_ANTERIOR: 'Pendente', EM_ANALISE: 'Em análise', NA: 'Não se aplica' }[status];
                   return (
                     <span key={yr} className={`inline-flex items-center px-2 py-0.5 rounded font-bold ${style}`}>
                       {yr} {label}

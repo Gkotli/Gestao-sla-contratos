@@ -4,6 +4,7 @@
 //   início do contrato → período da avaliação → existência da avaliação → status
 // Um ciclo só pode ficar "Pendente" se o contrato esteve vigente em algum momento daquele ano.
 // Ex.: contrato iniciado em 15/03/2025 não tem ciclo 2024; iniciado em 29/07/2024 tem ciclo 2024.
+// O ciclo do ano corrente fica "Em análise" (contrato vigente): só vira pendência depois que o ano termina.
 
 import type { Evaluation, Supplier } from '../types';
 
@@ -20,7 +21,7 @@ export function getCycleYears(currentYear: number = getCurrentCycleYear()): numb
   return years;
 }
 
-export type YearCycleStatus = 'CONCLUIDA' | 'PENDENTE_ATUAL' | 'PENDENTE_ANTERIOR' | 'NA';
+export type YearCycleStatus = 'CONCLUIDA' | 'EM_ANALISE' | 'PENDENTE_ANTERIOR' | 'NA';
 
 // Aceita "DD/MM/AAAA" (padrão do cadastro) ou "AAAA-MM-DD". Retorna null para textos livres.
 export function parseContractDate(value?: string): Date | null {
@@ -79,19 +80,20 @@ export function getCycleStatus(
   // Avaliação registrada é sempre mostrada (ex.: histórica anterior ao contrato atual), mas nunca gera pendência
   if (findCycleEvaluation(evaluations, sup.id, year)) return 'CONCLUIDA';
   if (getCycleApplicability(sup, year) !== 'APLICAVEL') return 'NA';
-  return year < currentYear ? 'PENDENTE_ANTERIOR' : 'PENDENTE_ATUAL';
+  return year < currentYear ? 'PENDENTE_ANTERIOR' : 'EM_ANALISE';
 }
 
-export const isPendingStatus = (s: YearCycleStatus) => s === 'PENDENTE_ATUAL' || s === 'PENDENTE_ANTERIOR';
+export const isPendingStatus = (s: YearCycleStatus) => s === 'PENDENTE_ANTERIOR';
 
 export interface SupplierCycleSummary {
   statusByYear: Record<number, YearCycleStatus>;
   totalPendencias: number;
   hasPreviousOverdue: boolean;
-  ciclosObrigatorios: number;   // ciclos dentro da vigência (base dos percentuais)
+  ciclosObrigatorios: number;   // ciclos encerrados dentro da vigência (base dos percentuais)
   ciclosConcluidos: number;     // ciclos obrigatórios com avaliação
   semDataInicio: boolean;
   proximoAnoPendente?: number;  // o mais antigo primeiro (regulariza atrasos antes)
+  anoEmAnalise?: number;        // ciclo corrente ainda sem avaliação
 }
 
 export function summarizeSupplierCycles(
@@ -104,11 +106,14 @@ export function summarizeSupplierCycles(
   let ciclosObrigatorios = 0;
   let ciclosConcluidos = 0;
   let proximoAnoPendente: number | undefined;
+  let anoEmAnalise: number | undefined;
 
   for (const year of getCycleYears(currentYear)) {
     const status = getCycleStatus(sup, year, evaluations, currentYear);
     statusByYear[year] = status;
-    if (getCycleApplicability(sup, year) === 'APLICAVEL') {
+    if (status === 'EM_ANALISE') anoEmAnalise = year;
+    // O ano corrente só entra na base dos percentuais quando já foi avaliado
+    if (getCycleApplicability(sup, year) === 'APLICAVEL' && status !== 'EM_ANALISE') {
       ciclosObrigatorios++;
       if (status === 'CONCLUIDA') ciclosConcluidos++;
     }
@@ -125,6 +130,7 @@ export function summarizeSupplierCycles(
     ciclosObrigatorios,
     ciclosConcluidos,
     semDataInicio: getContractStartYear(sup) === null,
-    proximoAnoPendente
+    proximoAnoPendente,
+    anoEmAnalise
   };
 }
