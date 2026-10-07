@@ -33,7 +33,7 @@ interface ExecutiveDashboardProps {
   suppliers: Supplier[];
   sectors: Sector[];
   actionPlans: ActionPlan[];
-  onNewEvaluation: () => void;
+  onNewEvaluation?: () => void; // ausente = somente consulta
   onViewEvaluation: (evalId: string) => void;
   onManageActionPlans: () => void;
 }
@@ -183,12 +183,14 @@ export const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
             </select>
           </div>
 
-          <button
-            onClick={onNewEvaluation}
-            className="inline-flex items-center h-9 px-4 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer"
-          >
-            + Nova Avaliação
-          </button>
+          {onNewEvaluation && (
+            <button
+              onClick={onNewEvaluation}
+              className="inline-flex items-center h-9 px-4 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer"
+            >
+              + Nova Avaliação
+            </button>
+          )}
         </div>
       </div>
 

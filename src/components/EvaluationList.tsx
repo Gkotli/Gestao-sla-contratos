@@ -57,6 +57,8 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
   const [selectedStatus, setSelectedStatus] = useState('ALL');
 
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  // Gestor/Diretoria alteram; Fornecedor e Gestão da Qualidade (somente consulta) não
+  const podeAlterar = !isFornecedor && currentUser?.role !== 'QUALIDADE';
   const pendentesValidacao = isFornecedor ? (evaluations || []).filter(ev => ev && !ev.validacaoFornecedor).length : 0;
 
   const filteredEvaluations = useMemo(() => {
@@ -115,7 +117,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
           </button>
 
           {/* Botão de Nova Avaliação exibido APENAS para Gestores e Diretoria (Oculto para Fornecedor) */}
-          {!isFornecedor && (
+          {podeAlterar && (
             <button
               onClick={onNewEvaluation}
               className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition cursor-pointer"
@@ -342,7 +344,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           </button>
 
                           {/* Enviar laudo ao fornecedor (Outlook) */}
-                          {!isFornecedor && onOpenSendModal && (
+                          {podeAlterar && onOpenSendModal && (
                             <button
                               onClick={() => onOpenSendModal(ev)}
                               className="p-1.5 text-[#475569] hover:text-[#1E40AF] hover:bg-[#EFF6FF] rounded-md transition cursor-pointer"
@@ -353,16 +355,18 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           )}
 
                           {/* Assinatura / Ciência */}
-                          <button
-                            onClick={() => onOpenSignatureModal(ev)}
-                            className="p-1.5 text-[#475569] hover:text-[#047857] hover:bg-emerald-50 rounded-md transition cursor-pointer"
-                            title="Registrar Ciência do Fornecedor"
-                          >
-                            <PenTool className="w-4 h-4" />
-                          </button>
+                          {currentUser?.role !== 'QUALIDADE' && (
+                            <button
+                              onClick={() => onOpenSignatureModal(ev)}
+                              className="p-1.5 text-[#475569] hover:text-[#047857] hover:bg-emerald-50 rounded-md transition cursor-pointer"
+                              title="Registrar Ciência do Fornecedor"
+                            >
+                              <PenTool className="w-4 h-4" />
+                            </button>
+                          )}
 
                           {/* Plano de Ação se nota < 4.0 */}
-                          {!isFornecedor && mediaGeralVal < 4.0 && (
+                          {podeAlterar && mediaGeralVal < 4.0 && (
                             <button
                               onClick={() => onOpenActionPlanModal(ev)}
                               className="p-1.5 text-[#92400E] hover:bg-amber-50 rounded-md transition cursor-pointer"
@@ -373,7 +377,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           )}
 
                           {/* Editar (Apenas para Gestor/Diretoria) */}
-                          {!isFornecedor && (
+                          {podeAlterar && (
                             <button
                               onClick={() => onEditEvaluation(ev)}
                               className="p-1.5 text-[#475569] hover:text-[#123768] hover:bg-slate-100 rounded-md transition cursor-pointer"
@@ -384,7 +388,7 @@ export const EvaluationList: React.FC<EvaluationListProps> = ({
                           )}
 
                           {/* Excluir (Apenas para Gestor/Diretoria) */}
-                          {!isFornecedor && (
+                          {podeAlterar && (
                             <button
                               onClick={() => {
                                 if (confirm('Deseja realmente remover esta avaliação anual?')) {

@@ -33,7 +33,9 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout
 }) => {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
-  const isGestor = currentUser?.role === 'GESTOR' || isDiretoria;
+  const isQualidade = currentUser?.role === 'QUALIDADE';
+  // Abas de consulta: Gestor, Diretoria e Gestão da Qualidade
+  const isGestor = currentUser?.role === 'GESTOR' || isDiretoria || isQualidade;
   const isGabrielAdmin = isSystemAdmin(currentUser);
 
   return (
@@ -73,9 +75,10 @@ export const Header: React.FC<HeaderProps> = ({
                     <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
                       currentUser.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF]' :
                       currentUser.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857]' :
+                      isQualidade ? 'bg-[#F5F3FF] text-[#5B21B6]' :
                       'bg-[#FFFBEB] text-[#92400E]'
                     }`}>
-                      {currentUser.role === 'DIRETORIA' ? 'Diretoria' : currentUser.role === 'GESTOR' ? 'Gestor' : 'Fornecedor'}
+                      {currentUser.role === 'DIRETORIA' ? 'Diretoria' : currentUser.role === 'GESTOR' ? 'Gestor' : isQualidade ? 'Qualidade' : 'Fornecedor'}
                     </span>
                   </div>
                   <span className="text-[10px] text-slate-300 block">{currentUser.cargo}</span>
@@ -113,11 +116,11 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Painel da Diretoria
+                {isQualidade ? 'Painel da Qualidade' : 'Painel da Diretoria'}
               </button>
             )}
 
-            {isGestor && (
+            {isGestor && !isQualidade && (
               <button
                 onClick={() => setActiveTab('new-eval')}
                 className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
@@ -176,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
-            {isDiretoria && (
+            {(isDiretoria || isQualidade) && (
               <button
                 onClick={() => setActiveTab('suppliers')}
                 className={`flex items-center px-3.5 py-2 rounded-md text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
@@ -186,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <Users className="w-4 h-4 mr-2" />
-                Fornecedores & Contratos
+                {isQualidade ? 'Fornecedores & Contratos' : 'Fornecedores & Contratos'}
               </button>
             )}
 
