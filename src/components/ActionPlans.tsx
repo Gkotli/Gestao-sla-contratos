@@ -14,6 +14,7 @@ interface ActionPlansProps {
   evaluations: Evaluation[];
   suppliers: Supplier[];
   sectors: Sector[];
+  readOnly?: boolean; // somente consulta (Gestão da Qualidade)
   onSaveActionPlan: (plan: ActionPlan) => void;
   onDeleteActionPlan: (planId: string) => void;
   targetEvaluation?: Evaluation | null;
@@ -24,6 +25,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
   evaluations,
   suppliers,
   sectors,
+  readOnly = false,
   onSaveActionPlan,
   onDeleteActionPlan,
   targetEvaluation
@@ -155,13 +157,15 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
           <p className="text-xs text-[#475569]">Planos de melhoria corretiva gerados para fornecedores abaixo da meta de SLA (&lt; 4,00)</p>
         </div>
 
-        <button
-          onClick={() => openNewPlanModal()}
-          className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Plano de Ação
-        </button>
+        {!readOnly && (
+          <button
+            onClick={() => openNewPlanModal()}
+            className="inline-flex items-center px-4 py-2.5 text-sm font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow transition self-start sm:self-auto cursor-pointer"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Plano de Ação
+          </button>
+        )}
       </div>
 
       {/* Filtros de Status */}
@@ -262,7 +266,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                 {/* Ações do Card */}
                 <div className="p-3 bg-slate-50 border-t border-[#CBD5E1] flex items-center justify-between">
                   <span className="text-[11px] text-[#475569]">Criado em: {plan.dataCriacao}</span>
-                  <div className="flex items-center space-x-2">
+                  {!readOnly && <div className="flex items-center space-x-2">
                     <button
                       onClick={() => openEditModal(plan)}
                       className="px-2.5 py-1 text-xs font-semibold text-[#172B4D] bg-white border border-[#CBD5E1] rounded-md hover:bg-slate-100 transition flex items-center cursor-pointer"
@@ -279,7 +283,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                  </div>
+                  </div>}
                 </div>
               </div>
             );
@@ -292,7 +296,7 @@ export const ActionPlans: React.FC<ActionPlansProps> = ({
       </div>
 
       {/* Modal 5W2H para Criar / Editar Plano de Ação */}
-      {isModalOpen && (
+      {isModalOpen && !readOnly && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white w-full max-w-2xl rounded-lg shadow-2xl border border-[#CBD5E1] overflow-hidden my-8">
             <div className="bg-[#123768] text-white p-5 flex items-center justify-between">

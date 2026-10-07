@@ -33,7 +33,7 @@ interface PendingEvaluationsViewProps {
   evaluations: Evaluation[];
   users: User[];
   currentUser: User;
-  onStartEvaluation: (supplierId: string, year?: number) => void;
+  onStartEvaluation?: (supplierId: string, year?: number) => void; // ausente = somente consulta
 }
 
 export interface SupplierPendingRow extends SupplierCycleSummary {
@@ -220,8 +220,9 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       case 'PENDENTE_ANTERIOR':
         return (
           <button
-            onClick={() => onStartEvaluation(sup.id, year)}
-            className={`${base} font-extrabold bg-[#FEF2F2] hover:bg-rose-100 text-[#B91C1C] border-[#FECACA] transition cursor-pointer shadow-sm`}
+            onClick={() => onStartEvaluation?.(sup.id, year)}
+            disabled={!onStartEvaluation}
+            className={`${base} font-extrabold bg-[#FEF2F2] hover:bg-rose-100 text-[#B91C1C] border-[#FECACA] transition cursor-pointer disabled:cursor-default disabled:hover:bg-[#FEF2F2] shadow-sm`}
             title={`Clique para regularizar a avaliação pendente de ${year}`}
           >
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
@@ -231,8 +232,9 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       case 'PENDENTE_ATUAL':
         return (
           <button
-            onClick={() => onStartEvaluation(sup.id, year)}
-            className={`${base} font-bold bg-[#FFFBEB] hover:bg-amber-100 text-[#92400E] border-[#FCD34D] transition cursor-pointer`}
+            onClick={() => onStartEvaluation?.(sup.id, year)}
+            disabled={!onStartEvaluation}
+            className={`${base} font-bold bg-[#FFFBEB] hover:bg-amber-100 text-[#92400E] border-[#FCD34D] transition cursor-pointer disabled:cursor-default disabled:hover:bg-[#FFFBEB]`}
             title={`Clique para realizar a avaliação de ${year}`}
           >
             <Clock className="w-3.5 h-3.5 shrink-0" />
@@ -283,7 +285,11 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
     );
 
   const renderAction = (row: SupplierPendingRow) =>
-    row.proximoAnoPendente ? (
+    !onStartEvaluation ? (
+      <span className="text-[11px] text-[#475569] font-semibold italic">
+        {row.proximoAnoPendente ? `Pendente: ${row.proximoAnoPendente}` : 'Nada pendente'}
+      </span>
+    ) : row.proximoAnoPendente ? (
       <button
         onClick={() => onStartEvaluation(row.supplier.id, row.proximoAnoPendente)}
         className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer whitespace-nowrap"

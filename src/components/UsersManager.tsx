@@ -166,6 +166,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border ${
                     u.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]' :
                     u.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]' :
+                    u.role === 'QUALIDADE' ? 'bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]' :
                     'bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]'
                   }`}>
                     {u.role}
@@ -199,10 +200,12 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                       u.role === 'DIRETORIA' ? 'bg-[#EFF6FF] text-[#1E40AF] border-[#BFDBFE]' :
                       u.role === 'GESTOR' ? 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]' :
+                      u.role === 'QUALIDADE' ? 'bg-[#F5F3FF] text-[#5B21B6] border-[#DDD6FE]' :
                       'bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]'
                     }`}>
                       {u.role === 'DIRETORIA' ? 'Diretoria Operacional (Admin)' :
                        u.role === 'GESTOR' ? 'Gestor de Setor Hospitalar' :
+                       u.role === 'QUALIDADE' ? 'Gestão da Qualidade (JCI)' :
                        'Preposto Fornecedor'}
                     </span>
                     <h3 className="font-bold text-[#172B4D] text-base pt-1">{u.nome}</h3>
@@ -348,6 +351,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   >
                     <option value="DIRETORIA">Diretoria Operacional</option>
                     <option value="GESTOR">Gestor de Setor</option>
+                    <option value="QUALIDADE">Gestão da Qualidade (consulta JCI)</option>
                     <option value="FORNECEDOR">Preposto Fornecedor</option>
                   </select>
                 </div>
@@ -378,6 +382,13 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     ))}
                   </select>
                 </div>
+              )}
+
+              {role === 'QUALIDADE' && (
+                <p className="text-[11px] text-[#475569] leading-snug bg-[#F5F3FF] border border-[#DDD6FE] rounded-md p-2.5">
+                  Somente consulta: vê painel, contratos, avaliações, laudos, pendências e planos de ação
+                  apenas dos fornecedores marcados como "Auditoria JCI" no cadastro.
+                </p>
               )}
 
               {role === 'FORNECEDOR' && (

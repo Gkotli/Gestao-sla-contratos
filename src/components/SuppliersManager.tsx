@@ -5,6 +5,7 @@ import { SupplierContactsImport } from './SupplierContactsImport';
 import { isValidContractDateInput } from '../services/evaluationCycles';
 import { QuestionnaireService } from '../services/questionnaireService';
 import { SUPPLIER_QUESTIONNAIRES_DATA } from '../data/supplierQuestionnairesData';
+import { isFornecedorJCI, isPadraoJCI } from '../services/jciSuppliers';
 import { 
   Building2, 
   Plus, 
@@ -34,6 +35,7 @@ interface SuppliersManagerProps {
   onDeleteSupplier: (supplierId: string) => void;
   onStartEvaluation: (supplierId: string) => void;
   currentUserName?: string;
+  readOnly?: boolean; // somente consulta (Gestão da Qualidade)
 }
 
 export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
@@ -43,7 +45,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   onBulkSaveSuppliers,
   onDeleteSupplier,
   onStartEvaluation,
-  currentUserName
+  currentUserName,
+  readOnly = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSectorFilter, setSelectedSectorFilter] = useState<string>('ALL');
@@ -68,6 +71,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
   const [vigenciaInicio, setVigenciaInicio] = useState('');
   // Vínculo fixo com um questionário específico ('' = localizar pelo nome do fornecedor)
   const [questionarioId, setQuestionarioId] = useState('');
+  const [auditoriaJCI, setAuditoriaJCI] = useState(false);
   const vigenciaInicioInvalida = !isValidContractDateInput(vigenciaInicio);
   // Regularização do aditivo (vigência expirada com serviço mantido)
   const [regResponsavel, setRegResponsavel] = useState<'' | RegularizacaoAditivo['responsavel']>('');
@@ -254,6 +258,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setVigenciaFim('2027-12-31');
     setVigenciaInicio('');
     setQuestionarioId('');
+    setAuditoriaJCI(false);
     setRegResponsavel('');
     setRegNumeroDor('');
     setRegObservacao('');
@@ -274,6 +279,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
     setVigenciaFim(sup.vigenciaFim);
     setVigenciaInicio(sup.vigenciaInicio || '');
     setQuestionarioId(sup.questionarioId || '');
+    setAuditoriaJCI(isFornecedorJCI(sup));
     setRegResponsavel(sup.regularizacaoAditivo?.responsavel || '');
     setRegNumeroDor(sup.regularizacaoAditivo?.numeroDor || '');
     setRegObservacao(sup.regularizacaoAditivo?.observacao || '');
@@ -315,6 +321,8 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       vigenciaFim,
       vigenciaInicio: vigenciaInicio.trim() || undefined,
       questionarioId: questionarioId || undefined,
+      // Só grava quando difere da lista padrão, para a lista continuar valendo nos demais
+      auditoriaJCI: auditoriaJCI === isPadraoJCI({ ...editingSupplier, cnpj, nomeFantasia, razaoSocial } as Supplier) ? undefined : auditoriaJCI,
       regularizacaoAditivo
     };
 
@@ -327,11 +335,15 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#172B4D]">Cadastro de Fornecedores & Contratos</h2>
-          <p className="text-xs text-[#475569]">Gestão dos prestadores de serviço terceirizados e vinculação aos setores hospitalares</p>
+          <h2 className="text-xl font-bold text-[#172B4D]">{readOnly ? 'Fornecedores da Auditoria JCI' : 'Cadastro de Fornecedores & Contratos'}</h2>
+          <p className="text-xs text-[#475569]">
+            {readOnly
+              ? 'Contratos apresentados na auditoria da JCI: vigência, situação do aditivo e setor responsável (somente consulta)'
+              : 'Gestão dos prestadores de serviço terceirizados e vinculação aos setores hospitalares'}
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+        {!readOnly && <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           {onBulkSaveSuppliers && (
             <button
               onClick={() => setIsContactsImportOpen(true)}
@@ -350,7 +362,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
             <Plus className="w-4 h-4 mr-2" />
             Cadastrar Fornecedor
           </button>
-        </div>
+        </div>}
       </div>
 
       {/* CARDS DE RESUMO CLICÁVEIS E DINÂMICOS CONFORME O SETOR SELECIONADO */}
@@ -549,6 +561,12 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                         </span>
                       )}
 
+                      {!readOnly && isFornecedorJCI(sup) && (
+                        <span className="flex w-fit items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE] uppercase">
+                          <ShieldCheck className="w-3 h-3 mr-1" /> Auditoria JCI
+                        </span>
+                      )}
+
                       {sup.situacao === 'ENCERRADO' && (
                         <span className="flex w-fit items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded bg-slate-100 text-[#475569] border border-[#CBD5E1] uppercase">
                           Contrato encerrado
@@ -609,12 +627,14 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                         <span className="text-[11px] text-[#B91C1C] leading-snug">
                           Vigência expirada sem DOR ou tratativa do Corporativo registrada.
                         </span>
-                        <button
-                          onClick={() => openEditModal(sup)}
-                          className="shrink-0 text-[11px] font-bold text-[#1E40AF] hover:underline cursor-pointer whitespace-nowrap"
-                        >
-                          Registrar tratativa
-                        </button>
+                        {!readOnly && (
+                          <button
+                            onClick={() => openEditModal(sup)}
+                            className="shrink-0 text-[11px] font-bold text-[#1E40AF] hover:underline cursor-pointer whitespace-nowrap"
+                          >
+                            Registrar tratativa
+                          </button>
+                        )}
                       </div>
                     )}
 
@@ -630,7 +650,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                 </div>
 
                 {/* Rodapé com Botões de Ação */}
-                <div className="p-3 bg-slate-50 border-t border-[#CBD5E1] flex items-center justify-between">
+                {!readOnly && <div className="p-3 bg-slate-50 border-t border-[#CBD5E1] flex items-center justify-between">
                   {sup.situacao === 'ENCERRADO' ? (
                     <span className="text-[11px] text-[#475569]">Mantido apenas para histórico</span>
                   ) : (
@@ -662,7 +682,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
-                </div>
+                </div>}
               </div>
             );
           })
@@ -682,7 +702,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       </div>
 
       {/* Modal para Cadastro / Edição de Fornecedor */}
-      {isModalOpen && (
+      {isModalOpen && !readOnly && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white w-full max-w-xl rounded-lg shadow-2xl border border-[#CBD5E1] overflow-hidden my-8">
             <div className="bg-[#123768] text-white p-5 flex items-center justify-between">
@@ -779,6 +799,21 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                     : `Hoje: ${QuestionnaireService.getQuestionsForSupplier({ ...(editingSupplier || {}), nomeFantasia, razaoSocial, questionarioId: undefined } as Supplier).label}`}
                 </p>
               </div>
+
+              <label className="flex items-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={auditoriaJCI}
+                  onChange={(e) => setAuditoriaJCI(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-[#123768]"
+                />
+                <span>
+                  <span className="font-bold text-[#172B4D]">Auditoria JCI</span>
+                  <span className="block text-[10px] text-[#475569] leading-snug">
+                    Aparece para o login da Gestão da Qualidade (somente consulta).
+                  </span>
+                </span>
+              </label>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div>

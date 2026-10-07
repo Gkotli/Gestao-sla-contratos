@@ -4,6 +4,7 @@ import { StorageService } from './services/storageService';
 import { RemoteSync, SyncStatus } from './services/remoteSync';
 import { isSystemAdmin } from './utils/security';
 import { aplicarDivisaoDiretoria } from './services/sectorSplit';
+import { isFornecedorJCI } from './services/jciSuppliers';
 import { computeLaudoCode, registerValidacaoFornecedor, registerVisualizacaoFornecedor } from './services/laudoEnvioService';
 import { Header } from './components/Header';
 import { LoginPage } from './components/LoginPage';
@@ -64,6 +65,8 @@ export default function App() {
   const isDiretoria = currentUser?.role === 'DIRETORIA';
   const isGestor = currentUser?.role === 'GESTOR';
   const isFornecedor = currentUser?.role === 'FORNECEDOR';
+  // Gestão da Qualidade: somente consulta, restrita aos fornecedores da auditoria JCI
+  const isQualidade = currentUser?.role === 'QUALIDADE';
   const isGabrielAdmin = isSystemAdmin(currentUser);
 
   // --- SINCRONIZAÇÃO COM O BANCO COMPARTILHADO (Supabase) ---
@@ -105,8 +108,9 @@ export default function App() {
     if (isFornecedor && currentUser.fornecedorId) {
       return suppliers.filter(s => s.id === currentUser.fornecedorId);
     }
+    if (isQualidade) return suppliers.filter(isFornecedorJCI);
     return suppliers;
-  }, [suppliers, currentUser, isDiretoria, isGestor, isFornecedor]);
+  }, [suppliers, currentUser, isDiretoria, isGestor, isFornecedor, isQualidade]);
 
   // Contratos encerrados continuam no histórico, mas não entram em avaliações novas nem em pendências
   const activeScopedSuppliers = useMemo(
@@ -123,8 +127,12 @@ export default function App() {
     if (isFornecedor && currentUser.fornecedorId) {
       return evaluations.filter(e => e.fornecedorId === currentUser.fornecedorId);
     }
+    if (isQualidade) {
+      const ids = new Set(scopedSuppliers.map(s => s.id));
+      return evaluations.filter(e => ids.has(e.fornecedorId));
+    }
     return evaluations;
-  }, [evaluations, currentUser, isDiretoria, isGestor, isFornecedor]);
+  }, [evaluations, currentUser, isDiretoria, isGestor, isFornecedor, isQualidade, scopedSuppliers]);
 
   const scopedActionPlans = useMemo(() => {
     if (!currentUser) return [];
@@ -132,11 +140,11 @@ export default function App() {
     if (isGestor && currentUser.setorId) {
       return actionPlans.filter(ap => ap.setorId === currentUser.setorId);
     }
-    if (isFornecedor && currentUser.fornecedorId) {
+    if ((isFornecedor && currentUser.fornecedorId) || isQualidade) {
       return actionPlans.filter(ap => scopedEvaluations.some(ev => ev.id === ap.evaluationId));
     }
     return actionPlans;
-  }, [actionPlans, currentUser, isDiretoria, isGestor, isFornecedor, scopedEvaluations]);
+  }, [actionPlans, currentUser, isDiretoria, isGestor, isFornecedor, isQualidade, scopedEvaluations]);
 
   const scopedSectors = useMemo(() => {
     if (!currentUser) return [];
@@ -144,8 +152,12 @@ export default function App() {
     if (isGestor && currentUser.setorId) {
       return sectors.filter(sec => sec.id === currentUser.setorId);
     }
+    if (isQualidade) {
+      const ids = new Set(scopedSuppliers.map(s => s.setorResponsavelId));
+      return sectors.filter(sec => ids.has(sec.id));
+    }
     return sectors;
-  }, [sectors, currentUser, isDiretoria, isGestor]);
+  }, [sectors, currentUser, isDiretoria, isGestor, isQualidade, scopedSuppliers]);
 
   // --- Handlers de Autenticação ---
   const handleLoginSuccess = (user: User) => {
@@ -482,13 +494,13 @@ export default function App() {
             suppliers={scopedSuppliers}
             sectors={scopedSectors}
             actionPlans={scopedActionPlans}
-            onNewEvaluation={handleStartNewEvaluation}
+            onNewEvaluation={isQualidade ? undefined : handleStartNewEvaluation}
             onViewEvaluation={handleViewReport}
             onManageActionPlans={() => setActiveTab('action-plans')}
           />
         )}
 
-        {activeTab === 'new-eval' && currentUser.role !== 'FORNECEDOR' && (
+        {activeTab === 'new-eval' && currentUser.role !== 'FORNECEDOR' && !isQualidade && (
           <EvaluationForm
             suppliers={activeScopedSuppliers}
             sectors={scopedSectors}
@@ -509,7 +521,7 @@ export default function App() {
             evaluations={scopedEvaluations}
             users={users}
             currentUser={currentUser}
-            onStartEvaluation={(supId, yr) => handleStartNewEvaluation(supId, yr)}
+            onStartEvaluation={isQualidade ? undefined : (supId, yr) => handleStartNewEvaluation(supId, yr)}
           />
         )}
 
@@ -539,16 +551,18 @@ export default function App() {
             evaluations={scopedEvaluations}
             suppliers={scopedSuppliers}
             sectors={scopedSectors}
+            readOnly={isQualidade}
             onSaveActionPlan={handleSaveActionPlan}
             onDeleteActionPlan={handleDeleteActionPlan}
             targetEvaluation={actionPlanTargetEval}
           />
         )}
 
-        {activeTab === 'suppliers' && currentUser.role === 'DIRETORIA' && (
+        {activeTab === 'suppliers' && (isDiretoria || isQualidade) && (
           <SuppliersManager
-            suppliers={suppliers}
-            sectors={sectors}
+            suppliers={scopedSuppliers}
+            sectors={scopedSectors}
+            readOnly={isQualidade}
             onSaveSupplier={handleSaveSupplier}
             onBulkSaveSuppliers={handleBulkSaveSuppliers}
             onDeleteSupplier={handleDeleteSupplier}
@@ -590,7 +604,7 @@ export default function App() {
           supplier={selectedReportSupplier}
           sector={selectedReportSector}
           actionPlan={selectedReportActionPlan}
-          onOpenSendModal={currentUser.role !== 'FORNECEDOR' ? handleOpenSendModal : undefined}
+          onOpenSendModal={currentUser.role !== 'FORNECEDOR' && !isQualidade ? handleOpenSendModal : undefined}
           currentUser={currentUser}
           onSupplierValidate={currentUser.role === 'FORNECEDOR' && !currentUser.sessaoAlternadaPor ? handleSupplierValidate : undefined}
           onClose={handleCloseReportModal}

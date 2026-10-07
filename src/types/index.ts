@@ -2,7 +2,8 @@ export type ScoreValue = 5 | 4 | 3 | 2 | 1 | 'NA';
 
 export type QuestionCategory = 'LEGAIS' | 'COMPORTAMENTAIS' | 'QUALIDADE';
 
-export type UserRole = 'DIRETORIA' | 'GESTOR' | 'FORNECEDOR';
+// QUALIDADE: Gestão da Qualidade, somente consulta dos fornecedores da auditoria JCI
+export type UserRole = 'DIRETORIA' | 'GESTOR' | 'FORNECEDOR' | 'QUALIDADE';
 
 export interface User {
   id: string;
@@ -65,6 +66,8 @@ export interface Supplier {
   // Contrato encerrado: sai das avaliações novas, mas continua no histórico e nos laudos
   situacao?: 'ATIVO' | 'ENCERRADO';
   regularizacaoAditivo?: RegularizacaoAditivo;
+  // Aparece para a Gestão da Qualidade (auditoria JCI). Sem valor: segue a lista padrão (ver jciSuppliers)
+  auditoriaJCI?: boolean;
 }
 
 export interface EvaluationAnswers {
