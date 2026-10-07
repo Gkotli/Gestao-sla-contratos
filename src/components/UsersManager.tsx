@@ -205,7 +205,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                     }`}>
                       {u.role === 'DIRETORIA' ? 'Diretoria Operacional (Admin)' :
                        u.role === 'GESTOR' ? 'Gestor de Setor Hospitalar' :
-                       u.role === 'QUALIDADE' ? 'Gestão da Qualidade (JCI)' :
+                       u.role === 'QUALIDADE' ? 'Gestão da Qualidade' :
                        'Preposto Fornecedor'}
                     </span>
                     <h3 className="font-bold text-[#172B4D] text-base pt-1">{u.nome}</h3>
@@ -351,7 +351,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
                   >
                     <option value="DIRETORIA">Diretoria Operacional</option>
                     <option value="GESTOR">Gestor de Setor</option>
-                    <option value="QUALIDADE">Gestão da Qualidade (consulta JCI)</option>
+                    <option value="QUALIDADE">Gestão da Qualidade (somente consulta)</option>
                     <option value="FORNECEDOR">Preposto Fornecedor</option>
                   </select>
                 </div>
@@ -387,7 +387,7 @@ export const UsersManager: React.FC<UsersManagerProps> = ({
               {role === 'QUALIDADE' && (
                 <p className="text-[11px] text-[#475569] leading-snug bg-[#F5F3FF] border border-[#DDD6FE] rounded-md p-2.5">
                   Somente consulta: vê painel, contratos, avaliações, laudos, pendências e planos de ação
-                  apenas dos fornecedores marcados como "Auditoria JCI" no cadastro.
+                  apenas dos fornecedores marcados como "Visível para a Qualidade" no cadastro.
                 </p>
               )}
 

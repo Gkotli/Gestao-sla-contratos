@@ -335,10 +335,10 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#172B4D]">{readOnly ? 'Fornecedores da Auditoria JCI' : 'Cadastro de Fornecedores & Contratos'}</h2>
+          <h2 className="text-xl font-bold text-[#172B4D]">{readOnly ? 'Fornecedores & Contratos' : 'Cadastro de Fornecedores & Contratos'}</h2>
           <p className="text-xs text-[#475569]">
             {readOnly
-              ? 'Contratos apresentados na auditoria da JCI: vigência, situação do aditivo e setor responsável (somente consulta)'
+              ? 'Vigência, situação do aditivo e setor responsável de cada contrato (somente consulta)'
               : 'Gestão dos prestadores de serviço terceirizados e vinculação aos setores hospitalares'}
           </p>
         </div>
@@ -563,7 +563,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
 
                       {!readOnly && isFornecedorJCI(sup) && (
                         <span className="flex w-fit items-center text-[10px] font-extrabold px-2.5 py-0.5 rounded bg-[#EFF6FF] text-[#1E40AF] border border-[#BFDBFE] uppercase">
-                          <ShieldCheck className="w-3 h-3 mr-1" /> Auditoria JCI
+                          <ShieldCheck className="w-3 h-3 mr-1" /> Qualidade
                         </span>
                       )}
 
@@ -808,7 +808,7 @@ export const SuppliersManager: React.FC<SuppliersManagerProps> = ({
                   className="mt-0.5 h-4 w-4 accent-[#123768]"
                 />
                 <span>
-                  <span className="font-bold text-[#172B4D]">Auditoria JCI</span>
+                  <span className="font-bold text-[#172B4D]">Visível para a Qualidade</span>
                   <span className="block text-[10px] text-[#475569] leading-snug">
                     Aparece para o login da Gestão da Qualidade (somente consulta).
                   </span>

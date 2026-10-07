@@ -189,7 +189,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }`}
               >
                 <Users className="w-4 h-4 mr-2" />
-                {isQualidade ? 'Fornecedores JCI' : 'Fornecedores & Contratos'}
+                {isQualidade ? 'Fornecedores & Contratos' : 'Fornecedores & Contratos'}
               </button>
             )}
 
