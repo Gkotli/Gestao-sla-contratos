@@ -140,13 +140,13 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         const statusInYr = row.statusByYear[parseInt(selectedYearFilter, 10)];
         if (selectedStatusFilter === 'CONCLUIDA' && statusInYr !== 'CONCLUIDA') return false;
         if (selectedStatusFilter === 'PENDENTE' && !isPendingStatus(statusInYr)) return false;
-        if (selectedStatusFilter === 'ATRASADO' && statusInYr !== 'PENDENTE_ANTERIOR') return false;
+        if (selectedStatusFilter === 'EM_ANALISE' && statusInYr !== 'EM_ANALISE') return false;
         if (selectedStatusFilter === 'NA' && statusInYr !== 'NA') return false;
       } else {
         // Filtro Geral por Status
         if (selectedStatusFilter === 'CONCLUIDA' && row.totalPendencias > 0) return false;
         if (selectedStatusFilter === 'PENDENTE' && row.totalPendencias === 0) return false;
-        if (selectedStatusFilter === 'ATRASADO' && !row.hasPreviousOverdue) return false;
+        if (selectedStatusFilter === 'EM_ANALISE' && !row.anoEmAnalise) return false;
       }
 
       return true;
@@ -157,7 +157,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
   const metrics = useMemo(() => {
     let emDia = 0;
     let comPendencias = 0;
-    let pendenciasAnteriores = 0;
+    let emAnalise = 0;
     let ciclosObrigatorios = 0;
     let ciclosConcluidos = 0;
     let semDataInicio = 0;
@@ -165,7 +165,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
     filteredRows.forEach(r => {
       if (r.totalPendencias === 0) emDia++;
       else comPendencias++;
-      if (r.hasPreviousOverdue) pendenciasAnteriores++;
+      if (r.anoEmAnalise) emAnalise++;
       ciclosObrigatorios += r.ciclosObrigatorios;
       ciclosConcluidos += r.ciclosConcluidos;
       if (r.semDataInicio) semDataInicio++;
@@ -177,7 +177,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
       totalSobGestao: filteredRows.length,
       emDia,
       comPendencias,
-      pendenciasAnteriores,
+      emAnalise,
       ciclosObrigatorios,
       ciclosConcluidos,
       conformidade,
@@ -226,19 +226,19 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
             title={`Clique para regularizar a avaliação pendente de ${year}`}
           >
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-            Atrasada
+            Pendente
           </button>
         );
-      case 'PENDENTE_ATUAL':
+      case 'EM_ANALISE':
         return (
           <button
             onClick={() => onStartEvaluation?.(sup.id, year)}
             disabled={!onStartEvaluation}
-            className={`${base} font-bold bg-[#FFFBEB] hover:bg-amber-100 text-[#92400E] border-[#FCD34D] transition cursor-pointer disabled:cursor-default disabled:hover:bg-[#FFFBEB]`}
-            title={`Clique para realizar a avaliação de ${year}`}
+            className={`${base} font-semibold bg-[#EFF6FF] hover:bg-blue-100 text-[#1E40AF] border-[#BFDBFE] transition cursor-pointer disabled:cursor-default disabled:hover:bg-[#EFF6FF]`}
+            title={`Ciclo ${year} em andamento: contrato vigente, em análise durante o ano`}
           >
             <Clock className="w-3.5 h-3.5 shrink-0" />
-            Pendente
+            Em análise
           </button>
         );
       case 'NA':
@@ -277,9 +277,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         Em dia
       </span>
     ) : (
-      <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-extrabold whitespace-nowrap border ${
-        row.hasPreviousOverdue ? 'bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]' : 'bg-[#FFFBEB] text-[#92400E] border-[#FCD34D]'
-      }`}>
+      <span className="inline-block px-2 py-0.5 rounded text-[11px] font-extrabold whitespace-nowrap border bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]">
         {row.totalPendencias} {row.totalPendencias === 1 ? 'pendência' : 'pendências'}
       </span>
     );
@@ -295,6 +293,13 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
         className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold text-white bg-[#123768] hover:bg-[#0B2850] rounded-md shadow-sm transition cursor-pointer whitespace-nowrap"
       >
         <Play className="w-3.5 h-3.5 mr-1 shrink-0" /> Avaliar {row.proximoAnoPendente}
+      </button>
+    ) : row.anoEmAnalise ? (
+      <button
+        onClick={() => onStartEvaluation(row.supplier.id, row.anoEmAnalise)}
+        className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-bold text-[#123768] bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-md transition cursor-pointer whitespace-nowrap"
+      >
+        <Play className="w-3.5 h-3.5 mr-1 shrink-0" /> Avaliar {row.anoEmAnalise}
       </button>
     ) : (
       <span className="text-[11px] text-[#475569] font-semibold italic">Nada pendente</span>
@@ -312,7 +317,7 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
           Matriz de Pendências de Avaliações Anuais
         </h2>
         <p className="text-xs text-[#475569] mt-0.5">
-          Obrigações anuais por contrato: cada ciclo só é cobrado a partir do ano de início da vigência do contrato.
+          Obrigações anuais por contrato: cada ciclo só é cobrado a partir do ano de início da vigência e depois que o ano termina.
         </p>
       </div>
 
@@ -335,25 +340,25 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
             <CheckCircle2 className="w-4 h-4 shrink-0" />
           </div>
           <div className="text-2xl font-black mt-2 text-[#047857]">{metrics.emDia}</div>
-          <p className="text-[11px] text-[#047857] mt-0.5 leading-snug">Todos os ciclos da vigência concluídos</p>
-        </div>
-
-        <div className="p-4 rounded-lg bg-[#FFFBEB] border border-[#FCD34D] shadow-sm">
-          <div className="flex items-start justify-between gap-2 text-xs font-bold text-[#92400E]">
-            <span>Com pendências</span>
-            <Clock className="w-4 h-4 shrink-0" />
-          </div>
-          <div className="text-2xl font-black mt-2 text-[#92400E]">{metrics.comPendencias}</div>
-          <p className="text-[11px] text-[#92400E] mt-0.5 leading-snug">Ao menos um ciclo da vigência sem avaliação</p>
+          <p className="text-[11px] text-[#047857] mt-0.5 leading-snug">Todos os anos já encerrados estão avaliados</p>
         </div>
 
         <div className="p-4 rounded-lg bg-[#FEF2F2] border border-[#FECACA] shadow-sm">
           <div className="flex items-start justify-between gap-2 text-xs font-bold text-[#B91C1C]">
-            <span>Atrasos (anos anteriores)</span>
+            <span>Com pendências</span>
             <AlertTriangle className="w-4 h-4 shrink-0" />
           </div>
-          <div className="text-2xl font-black mt-2 text-[#B91C1C]">{metrics.pendenciasAnteriores}</div>
-          <p className="text-[11px] text-[#B91C1C] mt-0.5 leading-snug">Exigem regularização prioritária</p>
+          <div className="text-2xl font-black mt-2 text-[#B91C1C]">{metrics.comPendencias}</div>
+          <p className="text-[11px] text-[#B91C1C] mt-0.5 leading-snug">Algum ano já encerrado sem avaliação</p>
+        </div>
+
+        <div className="p-4 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] shadow-sm">
+          <div className="flex items-start justify-between gap-2 text-xs font-bold text-[#1E40AF]">
+            <span>Em análise ({currentYear})</span>
+            <Clock className="w-4 h-4 shrink-0" />
+          </div>
+          <div className="text-2xl font-black mt-2 text-[#1E40AF]">{metrics.emAnalise}</div>
+          <p className="text-[11px] text-[#1E40AF] mt-0.5 leading-snug">Contratos vigentes, avaliação do ano em andamento</p>
         </div>
       </div>
 
@@ -419,8 +424,8 @@ export const PendingEvaluationsView: React.FC<PendingEvaluationsViewProps> = ({
             <select value={selectedStatusFilter} onChange={(e) => setSelectedStatusFilter(e.target.value)} className={selectClass}>
               <option value="ALL">Todos os status</option>
               <option value="CONCLUIDA">✅ Em dia / Concluídas</option>
-              <option value="PENDENTE">🟡 Pendente (geral)</option>
-              <option value="ATRASADO">🔴 Atrasada (anos anteriores)</option>
+              <option value="PENDENTE">🔴 Pendente (anos encerrados)</option>
+              <option value="EM_ANALISE">🔵 Em análise (ciclo atual)</option>
               {selectedYearFilter !== 'ALL' && <option value="NA">⚪ Não se aplica</option>}
             </select>
           </div>
